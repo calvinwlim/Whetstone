@@ -1,6 +1,9 @@
 import type { Question, Topic, Track, TrackId } from "@/content/types";
 import * as systemDesign from "./tracks/system-design";
 import * as aiEngineering from "./tracks/ai-engineering";
+import * as apiIntegration from "./tracks/api-integration";
+import * as dataEnterprise from "./tracks/data-enterprise";
+import * as frontendTrack from "./tracks/frontend";
 import * as communication from "./tracks/communication";
 import * as dsaConcepts from "./tracks/dsa-concepts";
 import * as workplace from "./tracks/workplace";
@@ -14,6 +17,9 @@ import * as depthSkills from "./tracks/depth-skills";
 export const TRACKS: Track[] = [
   systemDesign.track,
   aiEngineering.track,
+  apiIntegration.track,
+  dataEnterprise.track,
+  frontendTrack.track,
   communication.track,
   dsaConcepts.track,
   workplace.track,
@@ -22,6 +28,9 @@ export const TRACKS: Track[] = [
 export const ALL_QUESTIONS: Question[] = [
   ...systemDesign.questions,
   ...aiEngineering.questions,
+  ...apiIntegration.questions,
+  ...dataEnterprise.questions,
+  ...frontendTrack.questions,
   ...communication.questions,
   ...dsaConcepts.questions,
   ...workplace.questions,
