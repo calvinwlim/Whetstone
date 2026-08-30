@@ -5,6 +5,8 @@ import * as dsaConcepts from "./tracks/dsa-concepts";
 import * as workplace from "./tracks/workplace";
 import * as foundations from "./tracks/foundations";
 import * as advanced from "./tracks/advanced";
+import * as depthSystemDesign from "./tracks/depth-system-design";
+import * as depthSkills from "./tracks/depth-skills";
 
 /** The whole bank, bundled at build time. Nothing here touches a database,
  *  so rendering a question costs zero network round trips. */
@@ -24,6 +26,9 @@ export const ALL_QUESTIONS: Question[] = [
   // and hardest bands stay easy to see, audit, and extend.
   ...foundations.questions,
   ...advanced.questions,
+  // Depth added to topics that were thin after the first authoring pass.
+  ...depthSystemDesign.questions,
+  ...depthSkills.questions,
 ];
 
 export const ALL_TOPICS: Topic[] = TRACKS.flatMap((track) => track.topics);
