@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/* Instrument-panel palette. Amber is the signal colour and is spent sparingly:
+   streak, XP, and the one primary action per screen. Verdigris and rust are
+   reserved for answer feedback and never used decoratively. */
+:root {
+  --ink: #0f1720;
+  --ink-raised: #ffffff;
+  --ink-sunken: #e3e7ec;
+  --paper: #edeff2;
+  --text: #0f1720;
+  --text-muted: #5b6875;
+  --text-faint: #93a0ad;
+  --rule: #d2d8df;
+  --amber: #b87516;
+  --amber-bright: #e09a3c;
+  --amber-wash: #fbf1e0;
+  --verdigris: #1f6d5b;
+  --verdigris-wash: #e2f0ec;
+  --rust: #a8412c;
+  --rust-wash: #f8e7e3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #0f1720;
+    --ink-raised: #18212c;
+    --ink-sunken: #0a1016;
+    --paper: #0f1720;
+    --text: #e6ebf1;
+    --text-muted: #93a0ad;
+    --text-faint: #5b6875;
+    --rule: #263241;
+    --amber: #e09a3c;
+    --amber-bright: #f0b055;
+    --amber-wash: #2a1f0f;
+    --verdigris: #4fb99e;
+    --verdigris-wash: #10261f;
+    --rust: #e07a62;
+    --rust-wash: #2a1512;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-raised: var(--ink-raised);
+  --color-sunken: var(--ink-sunken);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
+  --color-rule: var(--rule);
+  --color-amber: var(--amber);
+  --color-amber-bright: var(--amber-bright);
+  --color-amber-wash: var(--amber-wash);
+  --color-verdigris: var(--verdigris);
+  --color-verdigris-wash: var(--verdigris-wash);
+  --color-rust: var(--rust);
+  --color-rust-wash: var(--rust-wash);
+
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-prose: var(--font-source-serif), Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+body {
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Gauge readouts: the wide width axis is what makes a number read as an
+   instrument display rather than ordinary bold text. */
+.readout {
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  font-variation-settings: "wdth" 112;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.label {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.prose-lesson {
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.prose-lesson p {
+  margin-bottom: 1.1em;
+}
+
+.prose-lesson strong {
+  font-weight: 600;
+}
+
+.prose-lesson em {
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

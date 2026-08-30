@@ -1,0 +1,53 @@
+import type { Question, Topic, Track, TrackId } from "@/content/types";
+import * as systemDesign from "./tracks/system-design";
+import * as communication from "./tracks/communication";
+import * as dsaConcepts from "./tracks/dsa-concepts";
+import * as workplace from "./tracks/workplace";
+import * as foundations from "./tracks/foundations";
+import * as advanced from "./tracks/advanced";
+
+/** The whole bank, bundled at build time. Nothing here touches a database,
+ *  so rendering a question costs zero network round trips. */
+export const TRACKS: Track[] = [
+  systemDesign.track,
+  communication.track,
+  dsaConcepts.track,
+  workplace.track,
+];
+
+export const ALL_QUESTIONS: Question[] = [
+  ...systemDesign.questions,
+  ...communication.questions,
+  ...dsaConcepts.questions,
+  ...workplace.questions,
+  // Difficulty 1 and 5 sets live apart from the per-topic files so the easiest
+  // and hardest bands stay easy to see, audit, and extend.
+  ...foundations.questions,
+  ...advanced.questions,
+];
+
+export const ALL_TOPICS: Topic[] = TRACKS.flatMap((track) => track.topics);
+
+const questionsById = new Map(ALL_QUESTIONS.map((q) => [q.id, q]));
+const topicsById = new Map(ALL_TOPICS.map((t) => [t.id, t]));
+const tracksById = new Map(TRACKS.map((t) => [t.id, t]));
+
+export function getQuestion(id: string): Question | undefined {
+  return questionsById.get(id);
+}
+
+export function getTopic(id: string): Topic | undefined {
+  return topicsById.get(id);
+}
+
+export function getTrack(id: TrackId): Track | undefined {
+  return tracksById.get(id);
+}
+
+export function questionsForTopic(topicId: string): Question[] {
+  return ALL_QUESTIONS.filter((q) => q.topic === topicId);
+}
+
+export function questionsForTrack(trackId: TrackId): Question[] {
+  return ALL_QUESTIONS.filter((q) => q.track === trackId);
+}

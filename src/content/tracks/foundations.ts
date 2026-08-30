@@ -1,0 +1,325 @@
+import type { Question } from "@/content/types";
+
+/** Difficulty 1 across every track. These exist so the easiest difficulty band
+ *  has a real pool to draw from -- a learner whose accuracy has dropped should
+ *  get genuinely easier questions, not the same mid-tier ones. */
+export const questions: Question[] = [
+  {
+    id: "fd-cache-001",
+    type: "mcq",
+    track: "system-design",
+    topic: "caching",
+    difficulty: 1,
+    prompt: "What is the primary purpose of a cache?",
+    options: [
+      { id: "a", text: "Serve frequently requested data faster and reduce load on the source" },
+      { id: "b", text: "Permanently store data that must never be lost" },
+      { id: "c", text: "Encrypt data before it reaches the database" },
+      { id: "d", text: "Balance requests across multiple servers" },
+    ],
+    answer: "a",
+    explanation:
+      "A cache keeps a copy of data somewhere faster to reach than the original. It buys latency and reduces load, and it deliberately trades away freshness — which is why a cache is never the system of record.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-cache-002",
+    type: "short",
+    track: "system-design",
+    topic: "caching",
+    difficulty: 1,
+    prompt:
+      "What is the three-letter abbreviation for the setting that makes a cache entry expire after a fixed time?",
+    answers: ["ttl", "time to live", "time-to-live"],
+    typoTolerance: true,
+    explanation:
+      "TTL — time to live. It is the simplest form of cache invalidation: rather than tracking when data changes, you accept that a cached copy is at most TTL seconds out of date.",
+    tags: ["fundamentals", "ttl"],
+  },
+  {
+    id: "fd-lb-001",
+    type: "mcq",
+    track: "system-design",
+    topic: "load-balancing",
+    difficulty: 1,
+    prompt: "What does a load balancer do?",
+    options: [
+      { id: "a", text: "Distributes incoming requests across multiple servers" },
+      { id: "b", text: "Compresses responses to save bandwidth" },
+      { id: "c", text: "Stores session data shared between servers" },
+      { id: "d", text: "Converts HTTP requests into database queries" },
+    ],
+    answer: "a",
+    explanation:
+      "It spreads traffic across a pool of backends so no single server carries everything, and it stops sending traffic to backends that fail their health checks.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-db-001",
+    type: "mcq",
+    track: "system-design",
+    topic: "databases",
+    difficulty: 1,
+    prompt: "What does an index on a database column give you?",
+    options: [
+      { id: "a", text: "Faster lookups on that column, at the cost of slower writes" },
+      { id: "b", text: "Guaranteed uniqueness of every value" },
+      { id: "c", text: "Automatic backups of that column" },
+      { id: "d", text: "Compression of the stored data" },
+    ],
+    answer: "a",
+    explanation:
+      "An index is a sorted structure that lets the database seek instead of scanning every row. The tradeoff is that every insert and update must maintain it, so indexes you never query are pure cost.",
+    tags: ["fundamentals", "indexes"],
+  },
+  {
+    id: "fd-db-002",
+    type: "short",
+    track: "system-design",
+    topic: "databases",
+    difficulty: 1,
+    prompt:
+      "What word describes a group of database operations that all succeed or all fail together?",
+    answers: ["transaction", "a transaction", "transactions", "atomic transaction"],
+    typoTolerance: true,
+    explanation:
+      "A transaction. Its defining property is atomicity: partial application is impossible, so you never end up having debited one account without crediting the other.",
+    tags: ["fundamentals", "transactions"],
+  },
+  {
+    id: "fd-repl-001",
+    type: "mcq",
+    track: "system-design",
+    topic: "replication",
+    difficulty: 1,
+    prompt: "Why do systems keep replicas of their data?",
+    options: [
+      { id: "a", text: "To survive a machine failing, and to serve more reads" },
+      { id: "b", text: "To reduce the total storage used" },
+      { id: "c", text: "To make writes faster than a single machine" },
+      { id: "d", text: "To avoid needing backups" },
+    ],
+    answer: "a",
+    explanation:
+      "Replication buys durability and read capacity. It costs storage rather than saving it, and it usually makes writes slower, not faster, since they must propagate. Replicas are also not backups — a bad delete replicates faithfully.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-q-001",
+    type: "mcq",
+    track: "system-design",
+    topic: "queues",
+    difficulty: 1,
+    prompt: "What is the main benefit of putting slow work on a queue?",
+    options: [
+      { id: "a", text: "The request returns immediately instead of waiting for the work to finish" },
+      { id: "b", text: "The work completes faster than doing it directly" },
+      { id: "c", text: "It removes the need to handle errors" },
+      { id: "d", text: "It guarantees the work happens exactly once" },
+    ],
+    answer: "a",
+    explanation:
+      "A queue decouples asking for work from doing it, so the user is not held waiting. The work itself is not faster, errors still need handling, and most brokers give at-least-once delivery rather than exactly-once.",
+    tags: ["fundamentals", "async"],
+  },
+  {
+    id: "fd-api-001",
+    type: "matching",
+    track: "system-design",
+    topic: "api-design",
+    difficulty: 1,
+    prompt: "Match each HTTP method to what it is meant to do.",
+    pairs: [
+      { left: "GET", right: "Read a resource without changing it" },
+      { left: "POST", right: "Create a new resource" },
+      { left: "PUT", right: "Replace a resource at a known location" },
+      { left: "DELETE", right: "Remove a resource" },
+    ],
+    explanation:
+      "GET, PUT, and DELETE are idempotent — repeating them lands in the same state. POST is not, which is why retrying a failed POST risks creating two of something and why payment endpoints need idempotency keys.",
+    tags: ["fundamentals", "http"],
+  },
+  {
+    id: "fd-obs-001",
+    type: "mcq",
+    track: "system-design",
+    topic: "observability",
+    difficulty: 1,
+    prompt: "What does p99 latency mean?",
+    options: [
+      { id: "a", text: "99% of requests were faster than this value" },
+      { id: "b", text: "The average latency across 99% of requests" },
+      { id: "c", text: "The system was available 99% of the time" },
+      { id: "d", text: "99% of requests succeeded" },
+    ],
+    answer: "a",
+    explanation:
+      "It is the 99th percentile: only the slowest 1% took longer. It matters because averages hide the tail, and a page making many backend calls will hit that slowest 1% on almost every load.",
+    tags: ["fundamentals", "percentiles"],
+  },
+  {
+    id: "fd-stor-001",
+    type: "mcq",
+    track: "system-design",
+    topic: "storage",
+    difficulty: 1,
+    prompt: "What is object storage best suited for?",
+    options: [
+      { id: "a", text: "Large files like images, video, and backups" },
+      { id: "b", text: "Data you need to query with complex joins" },
+      { id: "c", text: "Counters that update thousands of times per second" },
+      { id: "d", text: "Session state that must be read in under a millisecond" },
+    ],
+    answer: "a",
+    explanation:
+      "Object storage is cheap, effectively unlimited, and addressed by key — ideal for large immutable blobs. It has no query language and relatively high per-request latency, so it is wrong for anything you need to search or update rapidly.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-scope-001",
+    type: "mcq",
+    track: "communication",
+    topic: "scoping",
+    difficulty: 1,
+    prompt:
+      "You are asked to build something and the requirements are ambiguous. What should you do first?",
+    options: [
+      { id: "a", text: "Ask clarifying questions until the problem is bounded" },
+      { id: "b", text: "Start building the most likely interpretation" },
+      { id: "c", text: "Estimate the longest possible version to be safe" },
+      { id: "d", text: "Wait for someone else to clarify it" },
+    ],
+    answer: "a",
+    explanation:
+      "Ambiguity does not go away by being ignored — it turns into rework. Turning a vague request into a bounded problem is the job, and doing it out loud is what separates a senior response from an eager one.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-struct-001",
+    type: "mcq",
+    track: "communication",
+    topic: "structuring",
+    difficulty: 1,
+    prompt:
+      "You have two minutes to explain a technical decision to your team. How should you open?",
+    options: [
+      { id: "a", text: "With the decision itself, then the reasoning behind it" },
+      { id: "b", text: "With the background that led you to investigate" },
+      { id: "c", text: "With the alternatives you rejected" },
+      { id: "d", text: "With the implementation details" },
+    ],
+    answer: "a",
+    explanation:
+      "Lead with the conclusion. Listeners can then treat everything after it as support, rather than holding facts in memory while waiting to find out what they are for — and if you get cut off, you have already delivered the important part.",
+    tags: ["fundamentals", "top-down"],
+  },
+  {
+    id: "fd-cx-001",
+    type: "mcq",
+    track: "dsa-concepts",
+    topic: "complexity",
+    difficulty: 1,
+    prompt: "What is the time complexity of a single loop over n items?",
+    options: [
+      { id: "a", text: "O(n)" },
+      { id: "b", text: "O(1)" },
+      { id: "c", text: "O(log n)" },
+      { id: "d", text: "O(n log n)" },
+    ],
+    answer: "a",
+    explanation:
+      "Linear: the work grows in direct proportion to the input size. Nesting a second loop over the same n would make it O(n squared).",
+    tags: ["fundamentals", "big-o"],
+  },
+  {
+    id: "fd-struct2-001",
+    type: "mcq",
+    track: "dsa-concepts",
+    topic: "structure-choice",
+    difficulty: 1,
+    prompt:
+      "You need to check whether you have seen a value before, as fast as possible. Which structure?",
+    options: [
+      { id: "a", text: "A hash set" },
+      { id: "b", text: "An array you scan each time" },
+      { id: "c", text: "A linked list" },
+      { id: "d", text: "A stack" },
+    ],
+    answer: "a",
+    explanation:
+      "A hash set answers membership in constant time on average. Scanning an array is O(n) per check, which turns a single pass into quadratic work — this swap is the most common optimisation in interview problems.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-cr-001",
+    type: "mcq",
+    track: "workplace",
+    topic: "code-review",
+    difficulty: 1,
+    prompt: "What should a code review prioritise above everything else?",
+    options: [
+      { id: "a", text: "Correctness and security" },
+      { id: "b", text: "Consistent formatting" },
+      { id: "c", text: "Variable naming" },
+      { id: "d", text: "Comment coverage" },
+    ],
+    answer: "a",
+    explanation:
+      "A bug or a security hole is the expensive thing to miss. Formatting should be owned by a linter or formatter — spending human review attention on it means less attention on the things a machine cannot check.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-dbg-001",
+    type: "mcq",
+    track: "workplace",
+    topic: "debugging",
+    difficulty: 1,
+    prompt: "Why should you reproduce a bug before trying to fix it?",
+    options: [
+      { id: "a", text: "Without a reproduction you cannot confirm the fix actually worked" },
+      { id: "b", text: "Reproducing it is required before filing a ticket" },
+      { id: "c", text: "It makes the stack trace shorter" },
+      { id: "d", text: "It proves the bug is the user's fault" },
+    ],
+    answer: "a",
+    explanation:
+      "If you cannot make it happen on demand, you cannot tell whether your change fixed it or the problem simply did not occur that time. Minimising the reproduction also tends to reveal the cause on its own.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-est-001",
+    type: "mcq",
+    track: "workplace",
+    topic: "estimation",
+    difficulty: 1,
+    prompt: "What is most commonly left out of an engineering estimate?",
+    options: [
+      { id: "a", text: "Review, testing, deployment, and follow-up bugs" },
+      { id: "b", text: "The time to write the main code path" },
+      { id: "c", text: "Time spent reading the requirements" },
+      { id: "d", text: "The cost of the servers involved" },
+    ],
+    answer: "a",
+    explanation:
+      "Writing the code is the part everyone remembers, and it is often less than half the total. Review latency, tests, migrations, and the bug tail after release are all real work with real duration.",
+    tags: ["fundamentals"],
+  },
+  {
+    id: "fd-inc-001",
+    type: "mcq",
+    track: "workplace",
+    topic: "incidents",
+    difficulty: 1,
+    prompt: "Users are affected by an outage right now. What is the priority?",
+    options: [
+      { id: "a", text: "Stop the user impact, then investigate the cause" },
+      { id: "b", text: "Find the root cause before changing anything" },
+      { id: "c", text: "Write the postmortem while details are fresh" },
+      { id: "d", text: "Identify who caused it" },
+    ],
+    answer: "a",
+    explanation:
+      "Mitigate first — roll back, disable the flag, shift traffic. The evidence is still there afterwards, and every minute spent diagnosing while users are down is a minute of avoidable impact.",
+    tags: ["fundamentals"],
+  },
+];
