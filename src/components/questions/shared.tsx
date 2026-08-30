@@ -13,18 +13,26 @@ export interface QuestionInputProps<
 
 type ChoiceState = "idle" | "selected" | "correct" | "wrong" | "missed";
 
-const STATE_CLASSES: Record<ChoiceState, string> = {
-  idle: "border-rule bg-raised hover:border-amber",
-  selected: "border-amber bg-amber-wash",
-  correct: "border-verdigris bg-verdigris-wash",
-  wrong: "border-rust bg-rust-wash",
+const TILE_CLASS: Record<ChoiceState, string> = {
+  idle: "tile",
+  selected: "tile tile-on",
+  correct: "tile tile-right",
+  wrong: "tile tile-wrong",
   // The right answer the learner did not pick: marked, but not as their error.
-  missed: "border-verdigris border-dashed bg-transparent",
+  missed: "tile tile-missed",
 };
 
-const STATE_MARK: Record<ChoiceState, string | null> = {
-  idle: null,
-  selected: null,
+const MARK_CLASS: Record<ChoiceState, string> = {
+  idle: "border-border-strong",
+  selected: "border-green bg-green text-white",
+  correct: "border-green bg-green text-white",
+  wrong: "border-red bg-red text-white",
+  missed: "border-green text-green",
+};
+
+const MARK: Record<ChoiceState, string> = {
+  idle: "",
+  selected: "",
   correct: "✓",
   wrong: "✕",
   missed: "✓",
@@ -43,31 +51,21 @@ export function Choice({
   children: React.ReactNode;
   multi?: boolean;
 }) {
-  const mark = STATE_MARK[state];
-
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-pressed={state === "selected" || state === "correct" || state === "wrong"}
-      className={`flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left text-[0.9375rem] leading-snug transition-colors disabled:cursor-default ${STATE_CLASSES[state]}`}
+      aria-pressed={state !== "idle" && state !== "missed"}
+      className={`${TILE_CLASS[state]} flex w-full items-start gap-3 px-3.5 py-3 text-left text-[0.9375rem] leading-snug disabled:cursor-default`}
     >
       <span
         aria-hidden
-        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border text-xs ${
-          multi ? "rounded-[4px]" : "rounded-full"
-        } ${
-          state === "correct" || state === "missed"
-            ? "border-verdigris text-verdigris"
-            : state === "wrong"
-              ? "border-rust text-rust"
-              : state === "selected"
-                ? "border-amber bg-amber"
-                : "border-rule"
-        }`}
+        className={`mt-px grid h-5 w-5 shrink-0 place-items-center border-[1.5px] text-[11px] font-bold ${
+          multi ? "rounded-[5px]" : "rounded-full"
+        } ${MARK_CLASS[state]}`}
       >
-        {mark}
+        {MARK[state]}
       </span>
       <span className="flex-1">{children}</span>
     </button>

@@ -64,7 +64,7 @@ export function MultiInput({
 
   return (
     <div className="space-y-2.5">
-      <p className="label">Select all that apply</p>
+      <p className="text-sm font-medium text-text-2">Select all that apply</p>
       {options.map((option) => (
         <Choice
           key={option.id}

@@ -2,7 +2,7 @@ import { parseInline, splitParagraphs } from "@/lib/lesson-text";
 
 export function LessonProse({ text }: { text: string }) {
   return (
-    <div className="prose-lesson">
+    <div className="lesson max-w-[62ch]">
       {splitParagraphs(text).map((paragraph, index) => (
         <p key={index}>
           {parseInline(paragraph).map((segment, segmentIndex) => {

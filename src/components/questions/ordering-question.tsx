@@ -7,7 +7,7 @@ import type { QuestionInputProps } from "./shared";
 
 /** Move-up / move-down rather than drag-and-drop, for the same reasons as
  *  matching: touch-friendly, keyboard-operable, nothing to drop in the wrong
- *  place. */
+ *  place. Each control is a 40px square so it stays tappable on a phone. */
 export function OrderingInput({
   question,
   value,
@@ -37,47 +37,49 @@ export function OrderingInput({
   }
 
   return (
-    <div className="space-y-2">
-      <p className="label">Put these in order</p>
-      <ol className="space-y-2">
+    <div>
+      <p className="text-sm font-medium text-text-2">Put these in order</p>
+      <ol className="mt-1.5 space-y-1.5">
         {items.map((item, index) => {
           const inPlace = question.items[index] === item;
 
           return (
             <li
               key={item}
-              className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors ${
+              className={`flex items-center gap-2.5 rounded-lg border-[1.5px] px-2.5 py-2 transition-colors ${
                 !locked
-                  ? "border-rule bg-raised"
+                  ? "border-border bg-bg"
                   : inPlace
-                    ? "border-verdigris bg-verdigris-wash"
-                    : "border-rust bg-rust-wash"
+                    ? "border-green bg-green-wash"
+                    : "border-red bg-red-wash"
               }`}
             >
-              <span className="font-mono text-xs text-faint">{index + 1}</span>
-              <span className="flex-1 text-[0.9375rem] leading-snug">{item}</span>
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-surface-2 font-mono text-xs tabular-nums">
+                {index + 1}
+              </span>
+              <span className="flex-1 text-[0.9375rem] leading-snug">
+                {item}
+              </span>
 
               {!locked ? (
-                /* Each control is a 40px square so it stays comfortably
-                   tappable on a phone, where most sessions happen. */
                 <span className="flex shrink-0 gap-1">
                   <button
                     type="button"
                     onClick={() => move(index, index - 1)}
                     disabled={index === 0}
                     aria-label={`Move "${item}" up`}
-                    className="flex h-10 w-10 items-center justify-center rounded-md border border-rule text-muted transition-colors hover:border-amber hover:text-amber disabled:opacity-20 disabled:hover:border-rule disabled:hover:text-muted"
+                    className="grid h-10 w-10 place-items-center rounded-lg border border-border text-text-2 transition-colors hover:border-border-strong hover:text-text disabled:opacity-25"
                   >
-                    ▲
+                    ↑
                   </button>
                   <button
                     type="button"
                     onClick={() => move(index, index + 1)}
                     disabled={index === items.length - 1}
                     aria-label={`Move "${item}" down`}
-                    className="flex h-10 w-10 items-center justify-center rounded-md border border-rule text-muted transition-colors hover:border-amber hover:text-amber disabled:opacity-20 disabled:hover:border-rule disabled:hover:text-muted"
+                    className="grid h-10 w-10 place-items-center rounded-lg border border-border text-text-2 transition-colors hover:border-border-strong hover:text-text disabled:opacity-25"
                   >
-                    ▼
+                    ↓
                   </button>
                 </span>
               ) : null}
@@ -87,12 +89,14 @@ export function OrderingInput({
       </ol>
 
       {locked ? (
-        <div className="pt-2">
-          <p className="label">Correct order</p>
+        <div className="mt-3 rounded-lg border border-border bg-surface p-3">
+          <p className="text-sm font-medium">Correct order</p>
           <ol className="mt-1.5 space-y-1">
             {question.items.map((item, index) => (
-              <li key={item} className="text-sm text-muted">
-                <span className="font-mono text-xs text-faint">{index + 1} </span>
+              <li key={item} className="text-sm text-text-2">
+                <span className="font-mono text-xs tabular-nums">
+                  {index + 1}.{" "}
+                </span>
                 {item}
               </li>
             ))}

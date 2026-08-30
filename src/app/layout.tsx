@@ -1,24 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Source_Serif_4, IBM_Plex_Mono } from "next/font/google";
+import { Rubik, JetBrains_Mono } from "next/font/google";
 import { ProgressProvider } from "@/components/progress-provider";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
 
-const archivo = Archivo({
-  variable: "--font-archivo",
-  subsets: ["latin"],
-  axes: ["wdth"],
-});
-
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
+const rubik = Rubik({
+  variable: "--font-rubik",
   subsets: ["latin"],
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -29,8 +23,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#edeff2" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f1720" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#14171a" },
   ],
 };
 
@@ -38,12 +32,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${sourceSerif.variable} ${plexMono.variable} h-full`}
+      className={`${rubik.variable} ${jetbrainsMono.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <ProgressProvider>
           <NavBar />
-          <main className="flex-1 w-full max-w-3xl mx-auto px-5 pb-24 pt-6 sm:px-8">
+          <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-24 pt-5 sm:px-6 sm:pb-10">
             {children}
           </main>
         </ProgressProvider>

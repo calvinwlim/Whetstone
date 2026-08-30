@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useProgress } from "@/components/progress-provider";
 import { SignalStrip, type Signal } from "@/components/signal-strip";
+import { DifficultyPill } from "@/components/difficulty-pill";
 import {
   QuestionInput,
   hasAnswer,
@@ -44,7 +45,15 @@ export default function DrillPage() {
         topicAccuracy: byTopic,
       }),
     );
-  }, [hydrated, session, state.srs, state.dailyGoal, state.enabledTracks, accuracy, byTopic]);
+  }, [
+    hydrated,
+    session,
+    state.srs,
+    state.dailyGoal,
+    state.enabledTracks,
+    accuracy,
+    byTopic,
+  ]);
 
   const question = session?.[index];
 
@@ -78,19 +87,25 @@ export default function DrillPage() {
 
   if (!hydrated || session === null) {
     return (
-      <div className="animate-pulse space-y-4 pt-4">
-        <div className="h-6 w-40 rounded bg-sunken" />
-        <div className="h-32 rounded-xl bg-sunken" />
+      <div className="animate-pulse space-y-3">
+        <div className="h-8 w-40 rounded-lg bg-surface" />
+        <div className="h-28 rounded-xl bg-surface" />
       </div>
     );
   }
 
   if (session.length === 0) {
     return (
-      <EmptyState
-        title="Nothing due right now"
-        body="You have answered everything available in your enabled tracks. Reviews return as they fall due."
-      />
+      <div className="rounded-xl border border-border p-5">
+        <p className="font-semibold">Nothing due right now</p>
+        <p className="mt-1 text-sm text-text-2">
+          You have answered everything available in your enabled tracks. Reviews
+          return as they fall due.
+        </p>
+        <Link href="/" className="key key-plain mt-4 inline-block px-4 py-2 text-sm">
+          Back to today
+        </Link>
+      </div>
     );
   }
 
@@ -101,6 +116,7 @@ export default function DrillPage() {
   if (!question) return null;
 
   const topic = getTopic(question.topic);
+  const resources = question.resources ?? topic?.resources ?? [];
   const correct = locked
     ? gradeResponse(question, response ?? { type: "mcq", optionId: null }).correct
     : false;
@@ -110,36 +126,40 @@ export default function DrillPage() {
   );
 
   return (
-    <div className="pt-2">
+    <div className="pb-32 sm:pb-0">
       <div className="flex items-center justify-between gap-4">
-        {/* Once answered, the tick shows its result rather than staying
-            highlighted -- the strip should always read as history. */}
-        <SignalStrip signals={signals} activeIndex={locked ? undefined : index} />
-        <span className="font-mono text-xs text-faint">
-          {index + 1} / {session.length}
+        <SignalStrip
+          signals={signals}
+          activeIndex={locked ? undefined : index}
+        />
+        <span className="font-mono text-sm tabular-nums text-text-2">
+          {index + 1}/{session.length}
         </span>
       </div>
 
-      <div className="mt-8">
-        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          {topic ? <span className="label">{topic.title}</span> : null}
-          <span className="label text-faint">
-            Level {question.difficulty}
-          </span>
-        </div>
-
-        {question.context ? (
-          <p className="mt-4 border-l-2 border-rule pl-4 text-[0.9375rem] leading-relaxed text-muted">
-            {question.context}
-          </p>
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        {topic ? (
+          <Link
+            href={`/topics/${topic.id}`}
+            className="text-sm font-medium text-text-2 hover:text-green hover:underline"
+          >
+            {topic.title}
+          </Link>
         ) : null}
-
-        <h1 className="mt-4 text-xl leading-snug font-medium">
-          {question.prompt}
-        </h1>
+        <DifficultyPill difficulty={question.difficulty} />
       </div>
 
-      <div className="mt-6">
+      {question.context ? (
+        <p className="mt-3 rounded-lg border-l-[3px] border-border-strong bg-surface px-3.5 py-2.5 text-sm leading-relaxed text-text-2">
+          {question.context}
+        </p>
+      ) : null}
+
+      <h1 className="mt-3 text-lg font-semibold leading-snug">
+        {question.prompt}
+      </h1>
+
+      <div className="mt-4">
         <QuestionInput
           question={question}
           value={response}
@@ -149,78 +169,75 @@ export default function DrillPage() {
       </div>
 
       {locked ? (
-        <div className="mt-6 rounded-xl border border-rule bg-raised p-5">
+        <div
+          className={`mt-4 rounded-xl border-[1.5px] p-4 ${
+            correct
+              ? "border-green bg-green-wash"
+              : "border-red bg-red-wash"
+          }`}
+        >
           <div className="flex items-baseline justify-between gap-4">
             <p
-              className={`readout text-lg ${
-                correct ? "text-verdigris" : "text-rust"
-              }`}
+              className={`font-semibold ${correct ? "text-green-deep" : "text-red-deep"}`}
             >
               {correct ? "Correct" : "Not quite"}
             </p>
             {correct ? (
-              <span className="font-mono text-xs text-amber">
+              <span className="font-mono text-sm tabular-nums text-green-deep">
                 +{xpForAnswer(true, question.difficulty)} XP
               </span>
             ) : null}
           </div>
 
-          <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">
-            {question.explanation}
-          </p>
+          <p className="mt-2 text-sm leading-relaxed">{question.explanation}</p>
 
-          {question.resources && question.resources.length > 0 ? (
-            <div className="mt-4 border-t border-rule pt-3">
-              <p className="label">Go deeper</p>
-              <ul className="mt-2 space-y-1">
-                {question.resources.map((resource) => (
-                  <li key={resource.url}>
-                    <a
-                      href={resource.url}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className="text-sm text-amber underline underline-offset-2"
-                    >
-                      {resource.label} ↗
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          {topic ? (
-            <Link
-              href={`/topics/${topic.id}`}
-              className="mt-4 inline-block text-sm text-muted underline underline-offset-2 hover:text-text"
-            >
-              Read the {topic.title} lesson
-            </Link>
+          {/* Questions rarely carry their own links, so fall back to the
+              topic's -- otherwise this panel would almost never appear. */}
+          {resources.length > 0 ? (
+            <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+              {resources.map((resource) => (
+                <li key={resource.url}>
+                  <a
+                    href={resource.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="text-sm font-medium underline underline-offset-2"
+                  >
+                    {resource.label} ↗
+                  </a>
+                </li>
+              ))}
+            </ul>
           ) : null}
         </div>
       ) : null}
 
-      <div className="mt-6">
-        {locked ? (
-          <button
-            type="button"
-            onClick={next}
-            className="w-full rounded-xl bg-amber px-5 py-4 text-[#0f1720] transition-transform hover:-translate-y-0.5"
-          >
-            <span className="readout text-lg">
+      {/* Pinned on a phone so the action is always under your thumb. */}
+      <div className="fixed inset-x-0 bottom-14 z-10 border-t border-border bg-bg px-4 py-3 sm:static sm:mt-5 sm:border-0 sm:bg-transparent sm:p-0">
+        <div className="mx-auto max-w-5xl">
+          {locked ? (
+            <button
+              type="button"
+              onClick={next}
+              className="key key-green w-full px-5 py-3.5 text-lg"
+            >
               {index + 1 === session.length ? "Finish" : "Next"}
-            </span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={submit}
-            disabled={!hasAnswer(question, response)}
-            className="w-full rounded-xl bg-amber px-5 py-4 text-[#0f1720] transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:bg-sunken disabled:text-faint"
-          >
-            <span className="readout text-lg">Check</span>
-          </button>
-        )}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={submit}
+              disabled={!hasAnswer(question, response)}
+              className={`key w-full px-5 py-3.5 text-lg ${
+                hasAnswer(question, response)
+                  ? "key-green"
+                  : "bg-surface-2 text-text-2"
+              }`}
+            >
+              Check
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -235,77 +252,63 @@ function SessionSummary({
 }) {
   const correct = results.filter(Boolean).length;
   const missed = session.filter((_, i) => results[i] === false);
-  const accuracy = results.length > 0 ? correct / results.length : 0;
+  const percent =
+    results.length > 0 ? Math.round((correct / results.length) * 100) : 0;
 
   return (
-    <div className="space-y-8 pt-6">
-      <section>
-        <p className="label">Session complete</p>
-        <div className="mt-1 flex items-baseline gap-3">
-          <span className="readout text-6xl leading-none">
-            {correct}
-            <span className="text-3xl text-muted">/{results.length}</span>
+    <div className="space-y-4">
+      <section className="rounded-xl border border-border p-5 text-center">
+        <p className="text-sm font-medium text-text-2">Session complete</p>
+        <p className="mt-1 text-3xl font-bold tabular-nums">
+          {correct}
+          <span className="text-text-2">/{results.length}</span>
+          <span className="ml-2 text-xl font-semibold text-text-2">
+            {percent}%
           </span>
-          <span className="text-lg text-muted">
-            {Math.round(accuracy * 100)}%
-          </span>
-        </div>
-        <SignalStrip signals={results} className="mt-5" />
+        </p>
+        <SignalStrip signals={results} className="mt-3 justify-center" />
       </section>
 
       {missed.length > 0 ? (
-        <section>
-          <p className="label">Coming back for review</p>
-          <ul className="mt-3 divide-y divide-rule border-y border-rule">
+        <section className="rounded-xl border border-border p-4">
+          <h2 className="text-sm font-semibold">Coming back for review</h2>
+          <ul className="mt-2 divide-y divide-border">
             {missed.map((question) => {
               const topic = getTopic(question.topic);
               return (
-                <li key={question.id} className="py-3">
+                <li key={question.id} className="py-2.5">
                   <p className="text-sm leading-snug">{question.prompt}</p>
                   {topic ? (
                     <Link
                       href={`/topics/${topic.id}`}
-                      className="mt-1 inline-block font-mono text-xs text-muted hover:text-amber"
+                      className="mt-1 inline-block text-xs font-medium text-text-2 hover:text-green hover:underline"
                     >
-                      {topic.title} →
+                      {topic.title}
                     </Link>
                   ) : null}
                 </li>
               );
             })}
           </ul>
-          <p className="mt-3 text-xs text-muted">
-            Missed questions return tomorrow, then at widening intervals as you
-            get them right.
+          <p className="mt-2 text-xs text-text-2">
+            These return tomorrow, then at widening intervals as you get them
+            right.
           </p>
         </section>
       ) : (
-        <p className="text-sm text-muted">
+        <p className="rounded-xl border border-border p-4 text-sm text-text-2">
           Everything correct. These questions move to a longer review interval.
         </p>
       )}
 
-      <Link
-        href="/"
-        className="block rounded-xl bg-amber px-5 py-4 text-center text-[#0f1720]"
-      >
-        <span className="readout text-lg">Back to today</span>
-      </Link>
-    </div>
-  );
-}
-
-function EmptyState({ title, body }: { title: string; body: string }) {
-  return (
-    <div className="pt-10">
-      <p className="readout text-xl">{title}</p>
-      <p className="mt-2 text-sm text-muted">{body}</p>
-      <Link
-        href="/"
-        className="mt-6 inline-block text-sm text-amber underline underline-offset-2"
-      >
-        Back to today
-      </Link>
+      <div className="flex gap-2">
+        <Link
+          href="/"
+          className="key key-green flex-1 px-5 py-3 text-center text-base"
+        >
+          Back to today
+        </Link>
+      </div>
     </div>
   );
 }

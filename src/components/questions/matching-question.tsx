@@ -32,7 +32,7 @@ export function MatchingInput({
   }
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       {question.pairs.map((pair) => {
         const chosen = pairs[pair.left] ?? "";
         const isCorrect = chosen === pair.right;
@@ -40,12 +40,12 @@ export function MatchingInput({
         return (
           <div
             key={pair.left}
-            className={`rounded-lg border px-4 py-3 transition-colors ${
+            className={`rounded-lg border-[1.5px] px-3.5 py-2.5 transition-colors ${
               !locked
-                ? "border-rule bg-raised"
+                ? "border-border bg-bg"
                 : isCorrect
-                  ? "border-verdigris bg-verdigris-wash"
-                  : "border-rust bg-rust-wash"
+                  ? "border-green bg-green-wash"
+                  : "border-red bg-red-wash"
             }`}
           >
             <label
@@ -60,7 +60,7 @@ export function MatchingInput({
               value={chosen}
               disabled={locked}
               onChange={(event) => setPair(pair.left, event.target.value)}
-              className="mt-2 w-full rounded-md border border-rule bg-paper px-3 py-2 text-sm outline-none focus:border-amber disabled:cursor-default"
+              className="mt-1.5 w-full rounded-md border border-border bg-bg px-2.5 py-2 text-sm outline-none focus:border-green disabled:cursor-default"
             >
               <option value="">Choose…</option>
               {rights.map((right) => (
@@ -71,8 +71,8 @@ export function MatchingInput({
             </select>
 
             {locked && !isCorrect ? (
-              <p className="mt-2 text-xs text-muted">
-                Correct: <span className="text-text">{pair.right}</span>
+              <p className="mt-1.5 text-xs text-text-2">
+                Correct: <span className="font-medium text-text">{pair.right}</span>
               </p>
             ) : null}
           </div>

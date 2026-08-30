@@ -1,58 +1,48 @@
-/** The signature element: a row of ticks reading like the uptime bar on a
- *  status page. Correct is verdigris, wrong is rust, not-yet-answered is faint.
- *  Reused at three scales -- recent history on Today, the live session on a
- *  drill, and per-topic history on Stats -- so one glance always means the
- *  same thing. */
+/** A run of recent answers, chunky enough to read at a glance: green solid for
+ *  correct, red for wrong, hollow for not yet reached. */
 
 export type Signal = boolean | null;
 
 interface SignalStripProps {
   signals: Signal[];
-  /** Index currently being answered, highlighted in amber. */
+  /** Index currently being answered, drawn taller and in amber. */
   activeIndex?: number;
-  label?: string;
   className?: string;
 }
 
 export function SignalStrip({
   signals,
   activeIndex,
-  label,
   className = "",
 }: SignalStripProps) {
   if (signals.length === 0) return null;
 
+  const answered = signals.filter((s) => s !== null).length;
+  const correct = signals.filter(Boolean).length;
+
   return (
-    <div className={className}>
-      <div
-        className="flex items-end gap-[3px]"
-        role="img"
-        aria-label={
-          label ??
-          `${signals.filter(Boolean).length} correct of ${
-            signals.filter((s) => s !== null).length
-          } answered`
-        }
-      >
-        {signals.map((signal, index) => {
-          const active = index === activeIndex;
-          return (
-            <span
-              key={index}
-              className={`w-[3px] rounded-[1px] transition-all ${
-                active
-                  ? "h-5 bg-amber"
-                  : signal === true
-                    ? "h-4 bg-verdigris"
-                    : signal === false
-                      ? "h-4 bg-rust"
-                      : "h-2.5 bg-rule"
-              }`}
-            />
-          );
-        })}
-      </div>
-      {label ? <p className="label mt-2">{label}</p> : null}
+    <div
+      className={`flex items-center gap-1 ${className}`}
+      role="img"
+      aria-label={`${correct} correct of ${answered} answered`}
+    >
+      {signals.map((signal, index) => {
+        const active = index === activeIndex;
+        return (
+          <span
+            key={index}
+            className={`h-5 w-[7px] rounded-[3px] transition-colors ${
+              active
+                ? "bg-amber"
+                : signal === true
+                  ? "bg-green"
+                  : signal === false
+                    ? "bg-red"
+                    : "bg-surface-2"
+            }`}
+          />
+        );
+      })}
     </div>
   );
 }

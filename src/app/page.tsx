@@ -4,23 +4,17 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useProgress } from "@/components/progress-provider";
 import { SignalStrip } from "@/components/signal-strip";
-import { ALL_QUESTIONS, getTopic } from "@/content";
+import { DifficultyPill } from "@/components/difficulty-pill";
+import { ALL_QUESTIONS, getTopic, getTrack } from "@/content";
 import { composeSession } from "@/lib/session";
 import { isDue } from "@/lib/srs";
 
-const RECENT_SIGNALS = 30;
-const WEAK_TOPIC_THRESHOLD = 0.7;
+const RECENT_SIGNALS = 20;
+const WEAK_THRESHOLD = 0.7;
 
 export default function TodayPage() {
-  const {
-    state,
-    hydrated,
-    accuracy,
-    byTopic,
-    level,
-    streak,
-    answeredToday,
-  } = useProgress();
+  const { state, hydrated, accuracy, byTopic, level, answeredToday } =
+    useProgress();
 
   const session = useMemo(() => {
     if (!hydrated) return [];
@@ -33,7 +27,14 @@ export default function TodayPage() {
       accuracy,
       topicAccuracy: byTopic,
     });
-  }, [hydrated, state.srs, state.dailyGoal, state.enabledTracks, accuracy, byTopic]);
+  }, [
+    hydrated,
+    state.srs,
+    state.dailyGoal,
+    state.enabledTracks,
+    accuracy,
+    byTopic,
+  ]);
 
   const dueCount = useMemo(() => {
     const now = new Date();
@@ -41,146 +42,177 @@ export default function TodayPage() {
       .length;
   }, [session, state.srs]);
 
-  const recent = useMemo(() => {
-    const results = state.attempts.slice(-RECENT_SIGNALS).map((a) => a.correct);
-    const padding = Array<null>(Math.max(0, RECENT_SIGNALS - results.length)).fill(
-      null,
-    );
-    return [...padding, ...results];
-  }, [state.attempts]);
+  const recent = useMemo(
+    () => state.attempts.slice(-RECENT_SIGNALS).map((a) => a.correct),
+    [state.attempts],
+  );
 
-  const weakTopics = useMemo(
+  const weak = useMemo(
     () =>
       Object.entries(byTopic)
-        .filter(([, value]) => value < WEAK_TOPIC_THRESHOLD)
+        .filter(([, value]) => value < WEAK_THRESHOLD)
         .sort((a, b) => a[1] - b[1])
-        .slice(0, 4),
+        .slice(0, 5),
     [byTopic],
   );
 
-  if (!hydrated) {
-    return (
-      <div className="animate-pulse space-y-6 pt-4">
-        <div className="h-24 rounded-xl bg-sunken" />
-        <div className="h-20 rounded-xl bg-sunken" />
-      </div>
-    );
-  }
-
   const goalMet = answeredToday >= state.dailyGoal;
-  const isFirstEver = state.attempts.length === 0;
+  const goalPercent = Math.min(
+    100,
+    (answeredToday / Math.max(1, state.dailyGoal)) * 100,
+  );
+  const upNext = session[0];
 
   return (
-    <div className="space-y-10 pt-2">
-      <section>
-        <p className="label">Streak</p>
-        <div className="mt-1 flex items-baseline gap-3">
-          <span className="readout text-6xl leading-none">{streak}</span>
-          <span className="text-lg text-muted">
-            {streak === 1 ? "day" : "days"}
+    <div className="space-y-4">
+      <section className="rounded-xl border border-border bg-surface p-4">
+        <div className="flex items-baseline justify-between gap-4">
+          <h1 className="text-base font-semibold">Daily goal</h1>
+          <span className="font-mono text-sm tabular-nums text-text-2">
+            {hydrated ? answeredToday : 0} / {state.dailyGoal}
           </span>
         </div>
-        <SignalStrip
-          signals={recent}
-          label={
-            isFirstEver ? "No answers yet" : `Last ${RECENT_SIGNALS} answers`
-          }
-          className="mt-5"
-        />
-      </section>
 
-      <section>
+        <div className="mt-2 h-3 overflow-hidden rounded-full bg-surface-2">
+          <div
+            className={`h-full rounded-full transition-[width] duration-300 ${
+              goalMet ? "bg-green" : "bg-amber"
+            }`}
+            style={{ width: `${hydrated ? goalPercent : 0}%` }}
+          />
+        </div>
+
         {session.length > 0 ? (
-          <Link
-            href="/drill"
-            className="group block rounded-xl bg-amber px-5 py-5 text-[#0f1720] transition-transform hover:-translate-y-0.5"
-          >
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="readout text-2xl">
-                  {goalMet ? "Keep going" : "Start today's drill"}
-                </p>
-                <p className="mt-1 text-sm opacity-80">
-                  {session.length}{" "}
-                  {session.length === 1 ? "question" : "questions"}
-                  {dueCount > 0
-                    ? ` · ${dueCount} due for review`
-                    : " · all new material"}
-                </p>
-              </div>
-              <span
-                aria-hidden
-                className="text-2xl transition-transform group-hover:translate-x-1"
-              >
-                →
+          <>
+            <Link
+              href="/drill"
+              className="key key-green mt-4 block px-5 py-3.5 text-center text-lg"
+            >
+              {goalMet
+                ? "Keep drilling"
+                : answeredToday > 0
+                  ? "Continue drill"
+                  : "Start drill"}
+            </Link>
+
+            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-sm text-text-2">
+              <span>
+                {session.length} question{session.length === 1 ? "" : "s"}
+                {dueCount > 0 ? ` · ${dueCount} due for review` : ""}
               </span>
+              {upNext ? (
+                <span className="flex items-center gap-1.5">
+                  <span>Up next</span>
+                  <span className="font-medium text-text">
+                    {getTopic(upNext.topic)?.title}
+                  </span>
+                  <DifficultyPill difficulty={upNext.difficulty} />
+                </span>
+              ) : null}
             </div>
-          </Link>
+          </>
         ) : (
-          <div className="rounded-xl border border-rule bg-raised px-5 py-6">
-            <p className="readout text-xl">Nothing due right now</p>
-            <p className="mt-1.5 text-sm text-muted">
+          <div className="mt-4 rounded-lg border border-border bg-bg p-4 text-sm">
+            <p className="font-medium">Nothing due right now</p>
+            <p className="mt-1 text-text-2">
               You have answered everything available in your enabled tracks.
-              Reviews will come back as they fall due — or turn on another track
-              in <Link href="/settings" className="text-amber underline">Settings</Link>.
+              Reviews come back as they fall due, or turn on another track in{" "}
+              <Link href="/settings" className="font-medium text-green underline">
+                Settings
+              </Link>
+              .
             </p>
           </div>
         )}
-
-        <div className="mt-3 flex items-center justify-between text-sm text-muted">
-          <span>
-            {answeredToday} of {state.dailyGoal} answered today
-          </span>
-          {goalMet ? (
-            <span className="text-verdigris">Goal met</span>
-          ) : null}
-        </div>
       </section>
 
-      <section>
-        <div className="flex items-baseline justify-between">
-          <p className="label">{level.level.title}</p>
-          <p className="font-mono text-xs text-faint">
-            {state.totalXp.toLocaleString()} XP
-          </p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <section className="rounded-xl border border-border p-4">
+          <h2 className="text-sm font-semibold">Needs work</h2>
+          {weak.length > 0 ? (
+            <ul className="mt-2.5 space-y-0.5">
+              {weak.map(([topicId, value]) => {
+                const topic = getTopic(topicId);
+                if (!topic) return null;
+                return (
+                  <li key={topicId}>
+                    <Link
+                      href={`/topics/${topicId}`}
+                      className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-surface"
+                    >
+                      <span className="truncate">{topic.title}</span>
+                      <span className="shrink-0 font-mono text-xs tabular-nums text-red">
+                        {Math.round(value * 100)}%
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="mt-2 text-sm text-text-2">
+              {state.attempts.length === 0
+                ? "Answer a few questions and your weak spots show up here."
+                : "Nothing below 70% yet."}
+            </p>
+          )}
+        </section>
+
+        <section className="rounded-xl border border-border p-4">
+          <h2 className="text-sm font-semibold">Recent answers</h2>
+          {recent.length > 0 ? (
+            <>
+              <SignalStrip signals={recent} className="mt-3" />
+              <p className="mt-2.5 font-mono text-xs tabular-nums text-text-2">
+                {recent.filter(Boolean).length} of {recent.length} correct
+              </p>
+            </>
+          ) : (
+            <p className="mt-2 text-sm text-text-2">No answers yet.</p>
+          )}
+        </section>
+      </div>
+
+      <section className="rounded-xl border border-border p-4">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="text-sm font-semibold">{level.level.title}</h2>
+          <span className="font-mono text-xs tabular-nums text-text-2">
+            {level.xpToNext === null
+              ? "Top level"
+              : `${level.xpToNext.toLocaleString()} XP to go`}
+          </span>
         </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-sunken">
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2">
           <div
-            className="h-full rounded-full bg-amber transition-all"
-            style={{ width: `${Math.max(2, level.progress * 100)}%` }}
+            className="h-full rounded-full bg-green transition-[width] duration-300"
+            style={{ width: `${hydrated ? Math.max(1, level.progress * 100) : 0}%` }}
           />
         </div>
-        <p className="mt-2 text-xs text-muted">
-          {level.xpToNext === null
-            ? "Top level reached"
-            : `${level.xpToNext.toLocaleString()} XP to next level`}
-        </p>
       </section>
 
-      {weakTopics.length > 0 ? (
-        <section>
-          <p className="label">Needs attention</p>
-          <ul className="mt-3 divide-y divide-rule border-y border-rule">
-            {weakTopics.map(([topicId, value]) => {
-              const topic = getTopic(topicId);
-              if (!topic) return null;
-              return (
-                <li key={topicId}>
-                  <Link
-                    href={`/topics/${topicId}`}
-                    className="flex items-center justify-between gap-4 py-3 text-sm hover:text-amber"
-                  >
-                    <span>{topic.title}</span>
-                    <span className="font-mono text-xs text-muted">
-                      {Math.round(value * 100)}%
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ) : null}
+      <section className="rounded-xl border border-border p-4">
+        <h2 className="text-sm font-semibold">Tracks</h2>
+        <ul className="mt-2.5 grid gap-0.5 sm:grid-cols-2">
+          {state.enabledTracks.map((trackId) => {
+            const track = getTrack(trackId);
+            if (!track) return null;
+            const count = ALL_QUESTIONS.filter((q) => q.track === trackId).length;
+            return (
+              <li key={trackId}>
+                <Link
+                  href="/topics"
+                  className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-surface"
+                >
+                  <span className="truncate">{track.title}</span>
+                  <span className="shrink-0 font-mono text-xs tabular-nums text-text-2">
+                    {count}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
     </div>
   );
 }

@@ -1,124 +1,246 @@
 @import "tailwindcss";
 
-/* Instrument-panel palette. Amber is the signal colour and is spent sparingly:
-   streak, XP, and the one primary action per screen. Verdigris and rust are
-   reserved for answer feedback and never used decoratively. */
+/* Light-first, like the practice sites this borrows its density from.
+   Colour is functional: green means correct or easy, amber means medium,
+   red means wrong or hard. Nothing is tinted for decoration. */
 :root {
-  --ink: #0f1720;
-  --ink-raised: #ffffff;
-  --ink-sunken: #e3e7ec;
-  --paper: #edeff2;
-  --text: #0f1720;
-  --text-muted: #5b6875;
-  --text-faint: #93a0ad;
-  --rule: #d2d8df;
-  --amber: #b87516;
-  --amber-bright: #e09a3c;
-  --amber-wash: #fbf1e0;
-  --verdigris: #1f6d5b;
-  --verdigris-wash: #e2f0ec;
-  --rust: #a8412c;
-  --rust-wash: #f8e7e3;
+  --bg: #ffffff;
+  --surface: #f4f6f8;
+  --surface-2: #e9edf1;
+  --border: #d5dbe2;
+  --border-strong: #b6c0cb;
+  --text: #14171a;
+  --text-2: #57616c;
+
+  --green: #37a353;
+  --green-deep: #29803f;
+  --green-wash: #e6f4ea;
+
+  --amber: #d4870f;
+  --amber-deep: #a56a0b;
+  --amber-wash: #fdf2de;
+
+  --red: #d33c30;
+  --red-deep: #a92e24;
+  --red-wash: #fceae8;
+
+  --shadow: rgba(20, 23, 26, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink: #0f1720;
-    --ink-raised: #18212c;
-    --ink-sunken: #0a1016;
-    --paper: #0f1720;
-    --text: #e6ebf1;
-    --text-muted: #93a0ad;
-    --text-faint: #5b6875;
-    --rule: #263241;
-    --amber: #e09a3c;
-    --amber-bright: #f0b055;
-    --amber-wash: #2a1f0f;
-    --verdigris: #4fb99e;
-    --verdigris-wash: #10261f;
-    --rust: #e07a62;
-    --rust-wash: #2a1512;
+    --bg: #14171a;
+    --surface: #1c2126;
+    --surface-2: #252c33;
+    --border: #333c45;
+    --border-strong: #48545f;
+    --text: #e9edf1;
+    --text-2: #9aa5b1;
+
+    --green: #4cbb69;
+    --green-deep: #2f7d45;
+    --green-wash: #17301f;
+
+    --amber: #e5a02e;
+    --amber-deep: #9c6c12;
+    --amber-wash: #2f2513;
+
+    --red: #e8574a;
+    --red-deep: #a03127;
+    --red-wash: #331815;
+
+    --shadow: rgba(0, 0, 0, 0.4);
   }
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-raised: var(--ink-raised);
-  --color-sunken: var(--ink-sunken);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-text: var(--text);
-  --color-muted: var(--text-muted);
-  --color-faint: var(--text-faint);
-  --color-rule: var(--rule);
+  --color-text-2: var(--text-2);
+  --color-green: var(--green);
+  --color-green-deep: var(--green-deep);
+  --color-green-wash: var(--green-wash);
   --color-amber: var(--amber);
-  --color-amber-bright: var(--amber-bright);
+  --color-amber-deep: var(--amber-deep);
   --color-amber-wash: var(--amber-wash);
-  --color-verdigris: var(--verdigris);
-  --color-verdigris-wash: var(--verdigris-wash);
-  --color-rust: var(--rust);
-  --color-rust-wash: var(--rust-wash);
+  --color-red: var(--red);
+  --color-red-deep: var(--red-deep);
+  --color-red-wash: var(--red-wash);
 
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-prose: var(--font-source-serif), Georgia, serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
 body {
-  background: var(--paper);
+  background: var(--bg);
   color: var(--text);
-  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Gauge readouts: the wide width axis is what makes a number read as an
-   instrument display rather than ordinary bold text. */
-.readout {
-  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  font-variation-settings: "wdth" 112;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-
-.label {
-  font-family: var(--font-plex-mono), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-}
-
-.prose-lesson {
-  font-family: var(--font-source-serif), Georgia, serif;
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  color: var(--text);
-}
-
-.prose-lesson p {
-  margin-bottom: 1.1em;
-}
-
-.prose-lesson strong {
+/* The signature: a solid bottom edge that compresses under the press, so a
+   primary action feels like a physical key rather than a coloured rectangle. */
+.key {
+  border-radius: 12px;
   font-weight: 600;
+  box-shadow: 0 4px 0 var(--key-edge, var(--border-strong));
+  transition:
+    transform 60ms ease-out,
+    box-shadow 60ms ease-out,
+    filter 120ms ease-out;
 }
 
-.prose-lesson em {
-  font-style: italic;
-  color: var(--text-muted);
+.key:hover:not(:disabled) {
+  filter: brightness(1.04);
 }
 
-*:focus-visible {
-  outline: 2px solid var(--amber);
-  outline-offset: 2px;
-  border-radius: 2px;
+.key:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--key-edge, var(--border-strong));
+}
+
+.key:disabled {
+  box-shadow: 0 4px 0 var(--border);
+  cursor: not-allowed;
+}
+
+.key-green {
+  --key-edge: var(--green-deep);
+  background: var(--green);
+  color: #ffffff;
+}
+
+.key-plain {
+  --key-edge: var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  border: 1.5px solid var(--border-strong);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .key,
+  .key:active:not(:disabled) {
+    transform: none;
+    transition: none;
   }
+}
+
+/* Selectable answers get the same physicality, one step quieter. */
+.tile {
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  border-radius: 10px;
+  box-shadow: 0 2px 0 var(--border);
+  transition:
+    transform 60ms ease-out,
+    box-shadow 60ms ease-out,
+    border-color 120ms ease-out,
+    background-color 120ms ease-out;
+}
+
+.tile:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.tile:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 var(--border);
+}
+
+.tile-on {
+  border-color: var(--green);
+  background: var(--green-wash);
+  box-shadow: 0 2px 0 var(--green);
+}
+
+.tile-right {
+  border-color: var(--green);
+  background: var(--green-wash);
+  box-shadow: 0 2px 0 var(--green);
+}
+
+.tile-wrong {
+  border-color: var(--red);
+  background: var(--red-wash);
+  box-shadow: 0 2px 0 var(--red);
+}
+
+.tile-missed {
+  border-color: var(--green);
+  border-style: dashed;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .tile:active:not(:disabled) {
+    transform: none;
+    transition: none;
+  }
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.pill-easy {
+  background: var(--green-wash);
+  color: var(--green-deep);
+}
+
+.pill-medium {
+  background: var(--amber-wash);
+  color: var(--amber-deep);
+}
+
+.pill-hard {
+  background: var(--red-wash);
+  color: var(--red-deep);
+}
+
+@media (prefers-color-scheme: dark) {
+  .pill-easy {
+    color: var(--green);
+  }
+  .pill-medium {
+    color: var(--amber);
+  }
+  .pill-hard {
+    color: var(--red);
+  }
+}
+
+.lesson {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+.lesson p {
+  margin-bottom: 0.95em;
+}
+
+.lesson strong {
+  font-weight: 600;
+}
+
+.lesson em {
+  font-style: normal;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 4px;
 }

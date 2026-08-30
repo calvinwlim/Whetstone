@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { LessonProse } from "@/components/lesson-prose";
 import { TopicProgress } from "@/components/topic-progress";
+import { DifficultySpread } from "@/components/difficulty-pill";
 import { ALL_TOPICS, getTopic, getTrack, questionsForTopic } from "@/content";
 
-/** Every topic is known at build time, so all 28 lesson pages ship as static
+/** Every topic is known at build time, so all lesson pages ship as static
  *  HTML -- no server work per visit. */
 export function generateStaticParams() {
   return ALL_TOPICS.map((topic) => ({ topicId: topic.id }));
@@ -32,58 +33,64 @@ export default async function TopicPage({
   const questions = questionsForTopic(topic.id);
 
   return (
-    <article className="pt-2">
-      <nav className="flex items-center gap-2 font-mono text-xs text-faint">
-        <Link href="/topics" className="hover:text-amber">
+    <article>
+      <nav className="flex items-center gap-1.5 text-sm text-text-2">
+        <Link href="/topics" className="hover:text-green hover:underline">
           Topics
         </Link>
-        <span aria-hidden>/</span>
+        <span aria-hidden>›</span>
         <span>{track?.title}</span>
       </nav>
 
-      <header className="mt-4">
-        <h1 className="readout text-3xl leading-tight">{topic.title}</h1>
-        <p className="mt-2 text-[0.9375rem] text-muted">{topic.blurb}</p>
+      <h1 className="mt-2 text-xl font-semibold">{topic.title}</h1>
+      <p className="mt-1 text-sm text-text-2">{topic.blurb}</p>
 
-        <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-4 border-y border-rule py-4">
-          <div>
-            <p className="label">Questions</p>
-            <p className="readout mt-0.5 text-xl">{questions.length}</p>
-          </div>
-          <TopicProgress topicId={topic.id} />
-        </div>
-      </header>
-
-      <div className="mt-7">
-        <LessonProse text={topic.lesson} />
+      <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm">
+        <span className="flex items-center gap-1.5">
+          <span className="text-text-2">Questions</span>
+          <span className="font-mono tabular-nums">{questions.length}</span>
+        </span>
+        <span className="flex items-center gap-1.5" title="Easy / Medium / Hard">
+          <span className="text-text-2">E/M/H</span>
+          <DifficultySpread
+            difficulties={questions.map((question) => question.difficulty)}
+          />
+        </span>
+        <TopicProgress topicId={topic.id} />
       </div>
 
-      {topic.resources && topic.resources.length > 0 ? (
-        <section className="mt-8 border-t border-rule pt-5">
-          <p className="label">Go deeper</p>
-          <ul className="mt-3 space-y-2">
-            {topic.resources.map((resource) => (
-              <li key={resource.url}>
-                <a
-                  href={resource.url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="text-[0.9375rem] text-amber underline underline-offset-2"
-                >
-                  {resource.label} ↗
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+      <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
+        <LessonProse text={topic.lesson} />
 
-      <Link
-        href="/drill"
-        className="mt-8 block rounded-xl bg-amber px-5 py-4 text-center text-[#0f1720]"
-      >
-        <span className="readout text-lg">Start today&apos;s drill</span>
-      </Link>
+        <aside className="space-y-3 lg:sticky lg:top-16">
+          {topic.resources && topic.resources.length > 0 ? (
+            <div className="rounded-xl border border-border p-4">
+              <h2 className="text-sm font-semibold">Go deeper</h2>
+              <ul className="mt-2 space-y-1.5">
+                {topic.resources.map((resource) => (
+                  <li key={resource.url}>
+                    <a
+                      href={resource.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="text-sm text-text-2 underline underline-offset-2 hover:text-green"
+                    >
+                      {resource.label} ↗
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          <Link
+            href="/drill"
+            className="key key-green block px-4 py-3 text-center text-base"
+          >
+            Start drill
+          </Link>
+        </aside>
+      </div>
     </article>
   );
 }

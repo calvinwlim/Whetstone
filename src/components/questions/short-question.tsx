@@ -11,43 +11,46 @@ export function ShortInput({
   locked,
 }: QuestionInputProps<ShortQuestion>) {
   const text = value?.type === "short" ? value.text : "";
-  const correct = locked && gradeResponse(question, { type: "short", text }).correct;
+  const correct =
+    locked && gradeResponse(question, { type: "short", text }).correct;
 
   return (
     <div>
-      <label htmlFor="short-answer" className="label">
+      <label htmlFor="short-answer" className="text-sm font-medium text-text-2">
         Your answer
       </label>
       <input
         id="short-answer"
         type="text"
         value={text}
-        onChange={(event) => onChange({ type: "short", text: event.target.value })}
+        onChange={(event) =>
+          onChange({ type: "short", text: event.target.value })
+        }
         disabled={locked}
         autoComplete="off"
         autoCapitalize="off"
         spellCheck={false}
         placeholder="Type your answer"
-        className={`mt-2 w-full rounded-lg border bg-raised px-4 py-3 text-[0.9375rem] outline-none transition-colors placeholder:text-faint disabled:cursor-default ${
+        className={`mt-1.5 w-full rounded-lg border-[1.5px] px-3.5 py-3 text-[0.9375rem] outline-none transition-colors placeholder:text-text-2 disabled:cursor-default ${
           !locked
-            ? "border-rule focus:border-amber"
+            ? "border-border bg-bg focus:border-green"
             : correct
-              ? "border-verdigris bg-verdigris-wash"
-              : "border-rust bg-rust-wash"
+              ? "border-green bg-green-wash"
+              : "border-red bg-red-wash"
         }`}
       />
 
       {locked && !correct ? (
-        <p className="mt-3 text-sm text-muted">
+        <p className="mt-2 text-sm text-text-2">
           Accepted:{" "}
-          <span className="font-mono text-text">{question.answers[0]}</span>
-          {question.answers.length > 1 ? (
-            <span className="text-faint">
-              {" "}
-              (and {question.answers.length - 1} other{" "}
-              {question.answers.length === 2 ? "wording" : "wordings"})
-            </span>
-          ) : null}
+          <span className="font-mono font-medium text-text">
+            {question.answers[0]}
+          </span>
+          {question.answers.length > 1
+            ? ` (and ${question.answers.length - 1} other ${
+                question.answers.length === 2 ? "wording" : "wordings"
+              })`
+            : ""}
         </p>
       ) : null}
     </div>
