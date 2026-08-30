@@ -3,7 +3,7 @@ import type { Question, Topic } from "@/content/types";
 export const topics: Topic[] = [
   {
     id: "ai-systems",
-    track: "system-design",
+    track: "ai-engineering",
     title: "AI & LLM Systems",
     blurb: "Retrieval, serving, and evaluation — the 2026 addition to the design loop.",
     lesson: `LLM features now show up in design interviews as their own question. The good news is that most of it is ordinary systems work with unfamiliar names.
@@ -36,7 +36,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-001",
     type: "mcq",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 3,
     context:
@@ -59,7 +59,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-002",
     type: "mcq",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 4,
     context:
@@ -82,7 +82,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-003",
     type: "mcq",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 4,
     prompt: "What does the KV cache do during LLM generation?",
@@ -103,7 +103,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-004",
     type: "matching",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 4,
     prompt: "Match each RAG component to its job.",
@@ -121,7 +121,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-005",
     type: "mcq",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 4,
     context:
@@ -144,7 +144,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-006",
     type: "mcq",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 3,
     context:
@@ -167,7 +167,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-007",
     type: "multi",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 4,
     prompt:
@@ -187,7 +187,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-008",
     type: "short",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 4,
     context:
@@ -202,7 +202,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-009",
     type: "mcq",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 5,
     context:
@@ -225,7 +225,7 @@ export const questions: Question[] = [
   {
     id: "sd-ai-010",
     type: "mcq",
-    track: "system-design",
+    track: "ai-engineering",
     topic: "ai-systems",
     difficulty: 2,
     prompt: "What does retrieval-augmented generation do?",

@@ -1,5 +1,6 @@
 import type { Question, Topic, Track, TrackId } from "@/content/types";
 import * as systemDesign from "./tracks/system-design";
+import * as aiEngineering from "./tracks/ai-engineering";
 import * as communication from "./tracks/communication";
 import * as dsaConcepts from "./tracks/dsa-concepts";
 import * as workplace from "./tracks/workplace";
@@ -12,6 +13,7 @@ import * as depthSkills from "./tracks/depth-skills";
  *  so rendering a question costs zero network round trips. */
 export const TRACKS: Track[] = [
   systemDesign.track,
+  aiEngineering.track,
   communication.track,
   dsaConcepts.track,
   workplace.track,
@@ -19,6 +21,7 @@ export const TRACKS: Track[] = [
 
 export const ALL_QUESTIONS: Question[] = [
   ...systemDesign.questions,
+  ...aiEngineering.questions,
   ...communication.questions,
   ...dsaConcepts.questions,
   ...workplace.questions,

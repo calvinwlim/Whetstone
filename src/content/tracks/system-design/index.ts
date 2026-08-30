@@ -5,7 +5,6 @@ import * as services from "./services";
 import * as network from "./network";
 import * as reliability from "./reliability";
 import * as securityArch from "./security-arch";
-import * as aiSystems from "./ai-systems";
 
 export const questions: Question[] = [
   ...traffic.questions,
@@ -14,14 +13,13 @@ export const questions: Question[] = [
   ...network.questions,
   ...reliability.questions,
   ...securityArch.questions,
-  ...aiSystems.questions,
 ];
 
 export const track: Track = {
   id: "system-design",
   title: "System Design",
   blurb:
-    "The full design surface: traffic, data, services, networking, reliability, security, and AI systems.",
+    "The full design surface: traffic, data, services, networking, reliability, and security.",
   topics: [
     ...traffic.topics,
     ...data.topics,
@@ -29,6 +27,5 @@ export const track: Track = {
     ...network.topics,
     ...reliability.topics,
     ...securityArch.topics,
-    ...aiSystems.topics,
   ],
 };
