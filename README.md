@@ -1,4 +1,4 @@
-# Drill
+# Whetstone
 
 A daily practice app for software engineering interviews and day-to-day work:
 system design, technical communication, DSA concepts, and workplace craft.

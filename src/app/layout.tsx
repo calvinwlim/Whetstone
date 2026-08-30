@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Drill — daily practice for engineers",
+  title: "Whetstone — daily practice for engineers",
   description:
     "A daily drill for system design, technical communication, DSA concepts, and workplace craft.",
 };

@@ -18,7 +18,7 @@ export async function generateMetadata({
   const { topicId } = await params;
   const topic = getTopic(topicId);
   if (!topic) return { title: "Topic not found" };
-  return { title: `${topic.title} — Drill`, description: topic.blurb };
+  return { title: `${topic.title} — Whetstone`, description: topic.blurb };
 }
 
 export default async function TopicPage({

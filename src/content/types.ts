@@ -3,6 +3,10 @@
 
 export type TrackId =
   | "system-design"
+  | "ai-engineering"
+  | "api-integration"
+  | "data-enterprise"
+  | "frontend"
   | "communication"
   | "dsa-concepts"
   | "workplace";
@@ -106,6 +110,10 @@ export interface Track {
 
 export const TRACK_IDS: TrackId[] = [
   "system-design",
+  "ai-engineering",
+  "api-integration",
+  "data-enterprise",
+  "frontend",
   "communication",
   "dsa-concepts",
   "workplace",

@@ -55,9 +55,9 @@ export function NavBar() {
               aria-hidden
               className="grid h-7 w-7 place-items-center rounded-lg bg-green text-sm font-bold text-white"
             >
-              D
+              W
             </span>
-            <span className="text-base font-semibold">Drill</span>
+            <span className="text-base font-semibold">Whetstone</span>
           </Link>
 
           <nav className="hidden flex-1 gap-0.5 sm:flex">
