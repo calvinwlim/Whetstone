@@ -303,7 +303,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A test breaks every time the implementation is refactored, though the behaviour is unchanged.",
-    prompt: "What is wrong with it?",
+    prompt:
+      "What is wrong with a test that breaks on every refactor of unchanged behaviour?",
     options: [
       {
         id: "a",
@@ -415,7 +416,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A pipeline rebuilds the application separately for staging and for production.",
-    prompt: "Why is that a problem?",
+    prompt:
+      "Why is it a problem to rebuild an application separately for each environment?",
     options: [
       {
         id: "a",

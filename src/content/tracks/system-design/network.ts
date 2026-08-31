@@ -154,7 +154,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A team uses DNS failover to move traffic away from an unhealthy region. Users keep hitting the bad region for several minutes after the change.",
-    prompt: "Why?",
+    prompt:
+      "Why does DNS failover keep sending users to an unhealthy region after the change?",
     options: [
       {
         id: "a",

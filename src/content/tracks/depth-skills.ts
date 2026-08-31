@@ -37,7 +37,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "You are onboarding an engineer to a service you own. You have one hour.",
-    prompt: "What should you cover first?",
+    prompt:
+      "What should you cover first when onboarding an engineer to your service?",
     options: [
       {
         id: "a",
@@ -216,7 +217,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "Ten minutes into a design interview you realise the problem is far broader than the time allows.",
-    prompt: "What is the right move?",
+    prompt:
+      "What is the right move when a design problem is broader than the time allows?",
     options: [
       {
         id: "a",
@@ -280,7 +282,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "You are twenty minutes into a design and realise you are deep in a detail that is not the most important part left.",
-    prompt: "What should you do?",
+    prompt:
+      "What should you do on realising you are deep in a low-priority detail?",
     options: [
       {
         id: "a",
@@ -327,7 +330,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "An interviewer interrupts your explanation with a question about something you planned to cover later.",
-    prompt: "What is the best response?",
+    prompt:
+      "How should you respond when an interviewer jumps ahead to a later topic?",
     options: [
       {
         id: "a",
@@ -377,7 +381,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "An interviewer says: \"That will not scale.\" You believe it will, at the scale you established earlier.",
-    prompt: "What is the best response?",
+    prompt:
+      "How should you answer 'that will not scale' when you believe it will?",
     options: [
       {
         id: "a",
@@ -533,7 +538,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "You must detect whether a linked list contains a cycle, using constant extra space.",
-    prompt: "Which technique applies?",
+    prompt:
+      "Which technique detects a cycle in a linked list using constant space?",
     options: [
       {
         id: "a",
@@ -603,7 +609,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A design doc lists three alternatives, each dismissed in one line as 'does not scale'.",
-    prompt: "What is the problem?",
+    prompt:
+      "What is the problem with alternatives each dismissed in a single line?",
     options: [
       {
         id: "a",
@@ -675,7 +682,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "An incident is ongoing and stakeholders keep interrupting the responders to ask for status.",
-    prompt: "What is the fix?",
+    prompt:
+      "How do you keep stakeholder status requests from interrupting incident responders?",
     options: [
       {
         id: "a",
@@ -720,7 +728,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "During an incident you notice a second, unrelated bug.",
-    prompt: "What should you do with it?",
+    prompt:
+      "What should you do with an unrelated bug you notice during an incident?",
     options: [
       {
         id: "a",

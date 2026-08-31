@@ -374,7 +374,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A team adds Vary: User-Agent to a cacheable HTML response. CDN hit rate collapses.",
-    prompt: "Why?",
+    prompt:
+      "Why does adding Vary: User-Agent to a cacheable response collapse CDN hit rate?",
     options: [
       {
         id: "a",
@@ -422,7 +423,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "An API should allow short bursts — a client syncing 50 records at once is legitimate — while capping sustained throughput.",
-    prompt: "Which algorithm fits?",
+    prompt:
+      "Which rate limiting algorithm allows short bursts while capping sustained throughput?",
     options: [
       { id: "a", text: "Token bucket" },
       { id: "b", text: "Leaky bucket" },

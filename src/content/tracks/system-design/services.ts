@@ -257,7 +257,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "A feed endpoint uses offset pagination. Users report seeing duplicate items while scrolling, and page 500 is very slow.",
-    prompt: "What is the fix?",
+    prompt:
+      "How do you fix duplicate items and slow deep pages in offset pagination?",
     options: [
       {
         id: "a",
@@ -321,7 +322,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "Two services read and write the same database table directly.",
-    prompt: "What is the problem?",
+    prompt:
+      "What is the problem with two services reading and writing the same table?",
     options: [
       {
         id: "a",
@@ -432,7 +434,7 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A document clearly containing the word 'running' is not returned when a user searches for 'run'.",
-    prompt: "What is the most likely cause?",
+    prompt: "Why would a search for 'run' miss a document containing 'running'?",
     options: [
       {
         id: "a",
@@ -523,7 +525,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "An engineer adds user_id as a label on a request-count metric. The monitoring bill increases sharply.",
-    prompt: "Why?",
+    prompt:
+      "Why does adding user_id as a metric label make the monitoring bill jump?",
     options: [
       {
         id: "a",

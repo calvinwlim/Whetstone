@@ -117,7 +117,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "An access audit finds several former employees still have working accounts in a connected application.",
-    prompt: "What was missing?",
+    prompt:
+      "What process is missing when former employees still have working accounts?",
     options: [
       {
         id: "a",

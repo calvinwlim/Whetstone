@@ -88,7 +88,8 @@ export const questions: Question[] = [
     difficulty: 2,
     context:
       "An app writes uploaded files to local disk. It works on one instance, then breaks when a second is added.",
-    prompt: "What principle was violated?",
+    prompt:
+      "Which principle is violated by writing uploaded files to local disk?",
     options: [
       {
         id: "a",
@@ -157,7 +158,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A serverless endpoint is fast under steady traffic but occasionally takes over a second for no obvious reason.",
-    prompt: "What is the most likely cause?",
+    prompt:
+      "Why would a serverless endpoint occasionally take a second under steady traffic?",
     options: [
       {
         id: "a",
@@ -340,7 +342,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "Two developers install the same project a week apart and get different behaviour. The lockfile is in .gitignore.",
-    prompt: "What is happening?",
+    prompt:
+      "Why would two installs of the same project a week apart behave differently?",
     options: [
       {
         id: "a",

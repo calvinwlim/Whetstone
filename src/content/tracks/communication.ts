@@ -389,7 +389,8 @@ const questions: Question[] = [
     difficulty: 4,
     context:
       "The team chooses an approach you argued against. You still think it is the wrong call, but it is reversible.",
-    prompt: "What is the right move?",
+    prompt:
+      "What is the right move after the team picks the approach you argued against?",
     options: [
       {
         id: "a",

@@ -164,7 +164,8 @@ export const questions: Question[] = [
     difficulty: 5,
     context:
       "A resource server validates a JWT's signature, issuer, and expiry, then serves the request. Tokens minted for a different service in the same organisation are accepted.",
-    prompt: "Which check is missing?",
+    prompt:
+      "Which JWT check is missing when tokens minted for another service are accepted?",
     options: [
       {
         id: "a",
@@ -280,7 +281,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "An endpoint returns the full user record including email, phone, and internal flags. The web UI displays only the name.",
-    prompt: "Is this a problem?",
+    prompt:
+      "Is it a problem for an endpoint to return more fields than the UI displays?",
     options: [
       {
         id: "a",

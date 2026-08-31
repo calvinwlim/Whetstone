@@ -141,7 +141,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A handler awaits ten independent API calls one after another in a loop. Each takes 200ms.",
-    prompt: "What is the problem?",
+    prompt:
+      "What is the problem with awaiting ten independent API calls in a loop?",
     options: [
       {
         id: "a",
@@ -250,7 +251,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "An HTTP client retries three times, the service wrapping it retries three times, and the job runner retries three times.",
-    prompt: "What is the effect?",
+    prompt:
+      "What is the effect of three retry layers stacked on top of one another?",
     options: [
       {
         id: "a",
@@ -342,7 +344,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "The recommendations service is down. The product page returns a 500.",
-    prompt: "What should have happened?",
+    prompt:
+      "What should a product page do when the recommendations service is down?",
     options: [
       {
         id: "a",
@@ -438,7 +441,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "\"Customer\" in billing needs payment terms and a VAT number. \"Customer\" in support needs contact history and a satisfaction score. They share one class with every field on it.",
-    prompt: "What is the problem?",
+    prompt:
+      "What is the problem with one Customer class serving both billing and support?",
     options: [
       {
         id: "a",

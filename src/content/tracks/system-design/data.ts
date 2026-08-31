@@ -217,7 +217,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "An events table is sharded by a range partition on timestamp. Writes are overwhelming a single shard while others sit idle.",
-    prompt: "What is happening?",
+    prompt:
+      "Why does range-sharding an events table on timestamp overload a single shard?",
     options: [
       {
         id: "a",

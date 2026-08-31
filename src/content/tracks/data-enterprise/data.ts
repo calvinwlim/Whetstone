@@ -228,7 +228,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A migration runs a single UPDATE across 40 million rows to populate a new column.",
-    prompt: "What goes wrong?",
+    prompt:
+      "What goes wrong with a migration that runs one UPDATE across 40 million rows?",
     options: [
       {
         id: "a",
@@ -252,7 +253,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "You need to add an index to a large, busy Postgres table.",
-    prompt: "What should you be careful about?",
+    prompt:
+      "What should you be careful about when adding an index to a large, busy table?",
     options: [
       {
         id: "a",

@@ -115,7 +115,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "An acceptance criterion reads: \"Search should be fast and return relevant results.\"",
-    prompt: "What is wrong with it?",
+    prompt:
+      "What is wrong with the acceptance criterion 'search should be fast and relevant'?",
     options: [
       {
         id: "a",
@@ -203,7 +204,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "A method contains a long if/else chain selecting between shipping cost calculations, and a new carrier is added every few months.",
-    prompt: "Which pattern applies?",
+    prompt:
+      "Which pattern replaces an if/else chain that grows with every new carrier?",
     options: [
       {
         id: "a",

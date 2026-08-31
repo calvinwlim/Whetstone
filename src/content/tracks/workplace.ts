@@ -249,7 +249,8 @@ const questions: Question[] = [
     difficulty: 3,
     context:
       "A regression appeared somewhere in the last 200 commits. Each check takes a few minutes.",
-    prompt: "What is the efficient approach?",
+    prompt:
+      "What is the efficient way to locate a regression across 200 commits?",
     options: [
       {
         id: "a",

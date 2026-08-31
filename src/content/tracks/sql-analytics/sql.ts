@@ -152,7 +152,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE o.status = 'paid'. Users with no orders have disappeared from the results.",
-    prompt: "Why, and what is the fix?",
+    prompt:
+      "Why does filtering the right table in WHERE turn a LEFT JOIN into an inner join?",
     options: [
       {
         id: "a",
@@ -176,7 +177,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "Orders are joined to line items, then SUM(orders.total) is computed. Revenue comes out several times too high.",
-    prompt: "What happened?",
+    prompt:
+      "Why does summing an order total across a one-to-many join inflate revenue?",
     options: [
       {
         id: "a",
@@ -218,7 +220,7 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "You need customers who have never placed an order. A colleague writes WHERE customer_id NOT IN (SELECT customer_id FROM orders). It returns nothing, though such customers exist.",
-    prompt: "Why?",
+    prompt: "Why does NOT IN with a subquery return no rows at all?",
     options: [
       {
         id: "a",
@@ -426,7 +428,8 @@ export const questions: Question[] = [
     difficulty: 5,
     context:
       "SUM(amount) OVER (ORDER BY order_date) is used for a running total. On days with several orders, every row on that day shows the same value — the whole day's total.",
-    prompt: "Why?",
+    prompt:
+      "Why does a running total with ORDER BY show the same value for tied rows?",
     options: [
       {
         id: "a",
@@ -450,7 +453,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "You add WHERE rn = 1 to filter on a ROW_NUMBER() column and get an error.",
-    prompt: "Why, and what is the fix?",
+    prompt:
+      "Why can you not filter on a ROW_NUMBER() column in the same WHERE clause?",
     options: [
       {
         id: "a",

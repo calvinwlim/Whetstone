@@ -35,7 +35,8 @@ export const questions: Question[] = [
     difficulty: 5,
     context:
       "A sharded system must move a large tenant to a different shard while continuing to serve reads and writes with no downtime.",
-    prompt: "Which sequence is safest?",
+    prompt:
+      "Which sequence safely moves a tenant between shards with no downtime?",
     options: [
       {
         id: "a",

@@ -201,7 +201,8 @@ const questions: Question[] = [
     difficulty: 3,
     context:
       "You need to repeatedly retrieve the smallest element from a changing collection, but never need the collection fully sorted.",
-    prompt: "Which structure fits?",
+    prompt:
+      "Which structure repeatedly returns the smallest element without a full sort?",
     options: [
       { id: "a", text: "A min-heap" },
       { id: "b", text: "A sorted array" },
@@ -262,7 +263,8 @@ const questions: Question[] = [
     difficulty: 4,
     context:
       "You must find the top 10 items from a stream of 100 million values.",
-    prompt: "What is the efficient approach?",
+    prompt:
+      "What is the efficient way to find the top 10 of 100 million streamed values?",
     options: [
       {
         id: "a",
@@ -286,7 +288,8 @@ const questions: Question[] = [
     difficulty: 3,
     context:
       "Find the longest contiguous substring containing at most k distinct characters.",
-    prompt: "Which pattern applies?",
+    prompt:
+      "Which pattern solves the longest substring with at most k distinct characters?",
     options: [
       { id: "a", text: "Sliding window" },
       { id: "b", text: "Binary search" },
@@ -307,7 +310,8 @@ const questions: Question[] = [
     difficulty: 4,
     context:
       "Find the minimum capacity such that a shipment can be delivered within d days. Larger capacities always work if a smaller one does.",
-    prompt: "Which pattern applies?",
+    prompt:
+      "Which pattern finds the smallest workable capacity when larger values always work?",
     options: [
       {
         id: "a",
@@ -375,7 +379,7 @@ const questions: Question[] = [
     difficulty: 2,
     context:
       "Finding whether any two numbers in an array sum to a target, by storing seen values in a hash set.",
-    prompt: "What trade is being made?",
+    prompt: "What trade does a hash set of seen values make in a two-sum scan?",
     options: [
       {
         id: "a",

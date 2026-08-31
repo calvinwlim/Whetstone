@@ -99,7 +99,8 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "A churn model performs superbly in testing. A feature is `support_tickets_last_30d`, counted at the time of analysis rather than at the time of prediction.",
-    prompt: "What is wrong?",
+    prompt:
+      "What is wrong with a feature counted at analysis time rather than prediction time?",
     options: [
       {
         id: "a",

@@ -133,7 +133,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "The hero image is the largest element in the viewport and has loading=\"lazy\".",
-    prompt: "What is the effect?",
+    prompt:
+      "What is the effect of lazy-loading the largest image in the viewport?",
     options: [
       {
         id: "a",
@@ -240,7 +241,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A server-rendered page appears almost instantly, but clicks do nothing for a further second.",
-    prompt: "What is happening?",
+    prompt:
+      "Why would a server-rendered page appear instantly but ignore clicks for a second?",
     options: [
       {
         id: "a",

@@ -31,7 +31,8 @@ export const questions: Question[] = [
     topic: "cdn",
     difficulty: 2,
     context: "A CSS file is updated but users keep seeing the old version.",
-    prompt: "What is the most likely cause?",
+    prompt:
+      "Why do users keep seeing an old CSS file after it has been updated?",
     options: [
       { id: "a", text: "A cached copy has not expired yet at the edge or in the browser" },
       { id: "b", text: "The CDN failed to receive the deploy" },
@@ -368,7 +369,7 @@ export const questions: Question[] = [
     topic: "ai-coding-security",
     difficulty: 2,
     context: "You paste a stack trace containing a live API key into an AI tool.",
-    prompt: "What should you do?",
+    prompt: "What should you do after pasting a live API key into an AI tool?",
     options: [
       { id: "a", text: "Rotate the key — it must be treated as compromised" },
       { id: "b", text: "Delete the conversation" },

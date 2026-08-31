@@ -128,7 +128,7 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A dependency has a brief 10-second blip. Every client retries immediately and keeps retrying. The dependency stays down for 20 minutes.",
-    prompt: "What happened?",
+    prompt: "Why does a 10-second dependency blip turn into a 20-minute outage?",
     options: [
       {
         id: "a",
@@ -247,7 +247,7 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "Demand exceeds capacity and you must drop some requests. Traffic includes health checks, paying customers, and background cache refreshes.",
-    prompt: "What is the right approach?",
+    prompt: "When you must shed load, which traffic should you drop first?",
     options: [
       {
         id: "a",

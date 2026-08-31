@@ -99,7 +99,7 @@ export const questions: Question[] = [
     difficulty: 3,
     context:
       "You are asked to report daily active users. Two teams already publish different DAU figures.",
-    prompt: "What is the most likely cause?",
+    prompt: "Why would two teams publish different daily active user figures?",
     options: [
       {
         id: "a",
@@ -297,7 +297,8 @@ export const questions: Question[] = [
     difficulty: 5,
     context:
       "A treatment shows a higher recovery rate than the control in both mild and severe patient groups, yet a lower rate overall.",
-    prompt: "What is happening?",
+    prompt:
+      "What is happening when a treatment wins in every subgroup but loses overall?",
     options: [
       {
         id: "a",
@@ -339,7 +340,8 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A team checks the dashboard daily and stops the test the moment p drops below 0.05.",
-    prompt: "What is wrong with this?",
+    prompt:
+      "What is wrong with stopping an A/B test the moment p drops below 0.05?",
     options: [
       {
         id: "a",
@@ -363,7 +365,7 @@ export const questions: Question[] = [
     difficulty: 4,
     context:
       "A 50/50 split delivers 51.8% of users to treatment and 48.2% to control across a large sample.",
-    prompt: "What should you do?",
+    prompt: "What should you do about a 51.8/48.2 split in a 50/50 experiment?",
     options: [
       {
         id: "a",
