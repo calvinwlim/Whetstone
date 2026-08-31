@@ -4,10 +4,12 @@ import * as aiEngineering from "./tracks/ai-engineering";
 import * as apiIntegration from "./tracks/api-integration";
 import * as dataEnterprise from "./tracks/data-enterprise";
 import * as frontendTrack from "./tracks/frontend";
+import * as sqlAnalytics from "./tracks/sql-analytics";
 import * as communication from "./tracks/communication";
 import * as dsaConcepts from "./tracks/dsa-concepts";
 import * as workplace from "./tracks/workplace";
 import * as foundations from "./tracks/foundations";
+import * as fundamentals from "./tracks/fundamentals";
 import * as advanced from "./tracks/advanced";
 import * as depthSystemDesign from "./tracks/depth-system-design";
 import * as depthSkills from "./tracks/depth-skills";
@@ -20,6 +22,7 @@ export const TRACKS: Track[] = [
   apiIntegration.track,
   dataEnterprise.track,
   frontendTrack.track,
+  sqlAnalytics.track,
   communication.track,
   dsaConcepts.track,
   workplace.track,
@@ -31,12 +34,14 @@ export const ALL_QUESTIONS: Question[] = [
   ...apiIntegration.questions,
   ...dataEnterprise.questions,
   ...frontendTrack.questions,
+  ...sqlAnalytics.questions,
   ...communication.questions,
   ...dsaConcepts.questions,
   ...workplace.questions,
   // Difficulty 1 and 5 sets live apart from the per-topic files so the easiest
   // and hardest bands stay easy to see, audit, and extend.
   ...foundations.questions,
+  ...fundamentals.questions,
   ...advanced.questions,
   // Depth added to topics that were thin after the first authoring pass.
   ...depthSystemDesign.questions,

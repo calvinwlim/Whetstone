@@ -7,6 +7,7 @@ export type TrackId =
   | "api-integration"
   | "data-enterprise"
   | "frontend"
+  | "sql-analytics"
   | "communication"
   | "dsa-concepts"
   | "workplace";
@@ -114,6 +115,7 @@ export const TRACK_IDS: TrackId[] = [
   "api-integration",
   "data-enterprise",
   "frontend",
+  "sql-analytics",
   "communication",
   "dsa-concepts",
   "workplace",
