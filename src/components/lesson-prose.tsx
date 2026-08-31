@@ -12,6 +12,9 @@ export function LessonProse({ text }: { text: string }) {
             if (segment.type === "italic") {
               return <em key={segmentIndex}>{segment.value}</em>;
             }
+            if (segment.type === "code") {
+              return <code key={segmentIndex}>{segment.value}</code>;
+            }
             return <span key={segmentIndex}>{segment.value}</span>;
           })}
         </p>

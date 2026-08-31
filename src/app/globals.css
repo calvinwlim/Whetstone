@@ -233,6 +233,19 @@ body {
   font-weight: 600;
 }
 
+/* Inline code: monospace on a tinted chip, the way chat clients set it off
+   from prose. Wraps rather than overflowing, since SQL snippets get long. */
+.lesson code,
+.inline-code {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.875em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.34em;
+  overflow-wrap: break-word;
+}
+
 .lesson em {
   font-style: normal;
   font-weight: 500;

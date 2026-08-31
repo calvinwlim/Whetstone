@@ -62,3 +62,55 @@ describe("parseInline", () => {
     expect(parseInline("")).toEqual([]);
   });
 });
+
+describe("parseInline code spans", () => {
+  test("parses a backtick-delimited code span", () => {
+    expect(parseInline("use `SELECT *` here")).toEqual([
+      { type: "text", value: "use " },
+      { type: "code", value: "SELECT *" },
+      { type: "text", value: " here" },
+    ]);
+  });
+
+  test("parses a code span at the start of a line", () => {
+    expect(parseInline("`WHERE` filters rows")).toEqual([
+      { type: "code", value: "WHERE" },
+      { type: "text", value: " filters rows" },
+    ]);
+  });
+
+  test("parses several code spans in one line", () => {
+    expect(parseInline("`ON` versus `WHERE`")).toEqual([
+      { type: "code", value: "ON" },
+      { type: "text", value: " versus " },
+      { type: "code", value: "WHERE" },
+    ]);
+  });
+
+  test("does not treat asterisks inside code as emphasis", () => {
+    expect(parseInline("`COUNT(*)`")).toEqual([
+      { type: "code", value: "COUNT(*)" },
+    ]);
+  });
+
+  test("leaves an unmatched backtick as literal text", () => {
+    expect(parseInline("a ` b")).toEqual([{ type: "text", value: "a ` b" }]);
+  });
+
+  test("mixes code with bold and italic", () => {
+    expect(parseInline("**Note** the `NULL` in *this* case")).toEqual([
+      { type: "bold", value: "Note" },
+      { type: "text", value: " the " },
+      { type: "code", value: "NULL" },
+      { type: "text", value: " in " },
+      { type: "italic", value: "this" },
+      { type: "text", value: " case" },
+    ]);
+  });
+
+  test("does not span across a newline", () => {
+    expect(parseInline("a `b\nc` d")).toEqual([
+      { type: "text", value: "a `b\nc` d" },
+    ]);
+  });
+});

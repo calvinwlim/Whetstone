@@ -14,13 +14,13 @@ export const topics: Topic[] = [
 
 **Mistake one: filtering a left-joined table in WHERE.** This is the single most common SQL bug in interviews.
 
-FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE o.status = 'paid'
+\`FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE o.status = 'paid'\`
 
-Users with no orders get NULL for o.status, and NULL = 'paid' is not true, so those rows are discarded — the LEFT JOIN has silently become an INNER JOIN. If the condition describes *which rows to join*, it belongs in ON. If it describes *which results to keep*, it belongs in WHERE.
+Users with no orders get NULL for \`o.status\`, and \`NULL = 'paid'\` is not true, so those rows are discarded — the LEFT JOIN has silently become an INNER JOIN. If the condition describes *which rows to join*, it belongs in ON. If it describes *which results to keep*, it belongs in WHERE.
 
-**Mistake two: fan-out.** Joining one-to-many multiplies rows. Join orders to line items and each order appears once per item, so SUM(orders.total) now counts that total several times. The result looks like a plausible revenue figure and is wrong. Aggregate the many side first — in a CTE or subquery — then join the single row back.
+**Mistake two: fan-out.** Joining one-to-many multiplies rows. Join orders to line items and each order appears once per item, so \`SUM(orders.total)\` now counts that total several times. The result looks like a plausible revenue figure and is wrong. Aggregate the many side first — in a CTE or subquery — then join the single row back.
 
-**Anti-joins** find rows with no match: LEFT JOIN ... WHERE right.id IS NULL, or NOT EXISTS. Prefer NOT EXISTS over NOT IN, because NOT IN against a set containing a single NULL returns no rows at all — a trap that produces an empty result set with no error.`,
+**Anti-joins** find rows with no match: \`LEFT JOIN ... WHERE right.id IS NULL\`, or \`NOT EXISTS\`. Prefer \`NOT EXISTS\` over \`NOT IN\`, because \`NOT IN\` against a set containing a single NULL returns no rows at all — a trap that produces an empty result set with no error.`,
     resources: [
       {
         label: "PostgreSQL — Table joins",
@@ -37,13 +37,13 @@ Users with no orders get NULL for o.status, and NULL = 'paid' is not true, so th
 
 Because SELECT runs after WHERE, you cannot filter on a column alias in WHERE — the alias does not exist yet. You *can* use it in ORDER BY, which runs later. That one ordering answers a lot of "why doesn't this work".
 
-**WHERE filters rows; HAVING filters groups.** WHERE runs before grouping and cannot see aggregates. HAVING runs after and can. "Customers who placed more than five orders" is HAVING COUNT(*) > 5; "orders placed this year" is WHERE. Putting a row condition in HAVING usually still works and is slower, because you grouped rows you were about to discard.
+**WHERE filters rows; HAVING filters groups.** WHERE runs before grouping and cannot see aggregates. HAVING runs after and can. "Customers who placed more than five orders" is \`HAVING COUNT(*) > 5\`; "orders placed this year" is WHERE. Putting a row condition in HAVING usually still works and is slower, because you grouped rows you were about to discard.
 
-**COUNT(\\*) and COUNT(column) are different.** COUNT(*) counts rows. COUNT(column) counts non-NULL values in that column. COUNT(DISTINCT column) counts distinct non-NULL values. Reaching for the wrong one is how "how many users have a phone number" becomes "how many users".
+**COUNT(\\*) and \`COUNT(column)\` are different.** \`COUNT(*)\` counts rows. \`COUNT(column)\` counts non-NULL values in that column. \`COUNT(DISTINCT column)\` counts distinct non-NULL values. Reaching for the wrong one is how "how many users have a phone number" becomes "how many users".
 
-**NULL is unknown, not zero and not empty.** NULL = NULL is not true — it is unknown — so comparisons need IS NULL. Aggregates skip NULLs, which means AVG(score) over ten rows with three NULLs divides by seven, not ten. Whether that is right depends entirely on whether a missing score means "no score" or "zero", and only you know.
+**NULL is unknown, not zero and not empty.** \`NULL = NULL\` is not true — it is unknown — so comparisons need \`IS NULL\`. Aggregates skip NULLs, which means \`AVG(score)\` over ten rows with three NULLs divides by seven, not ten. Whether that is right depends entirely on whether a missing score means "no score" or "zero", and only you know.
 
-**Aggregating with no rows returns NULL, not 0,** for SUM. COALESCE(SUM(x), 0) is usually what a report wants.
+**Aggregating with no rows returns NULL, not 0,** for SUM. \`COALESCE(SUM(x), 0)\` is usually what a report wants.
 
 **GROUP BY groups by every non-aggregated column you select.** Most databases require them to be listed; the ones that do not will happily return an arbitrary row's value for the rest.`,
     resources: [
@@ -60,21 +60,21 @@ Because SELECT runs after WHERE, you cannot filter on a column alias in WHERE �
     blurb: "Ranking, running totals, and comparing a row to its neighbours.",
     lesson: `A window function computes across a set of rows related to the current row **without collapsing them**. That is the difference from GROUP BY: aggregation returns one row per group, a window function returns every row plus the computed value.
 
-**PARTITION BY divides the rows into groups; ORDER BY orders within each.** AVG(salary) OVER (PARTITION BY department) puts each employee's departmental average on their own row, which GROUP BY cannot do without a join back.
+**PARTITION BY divides the rows into groups; ORDER BY orders within each.** \`AVG(salary) OVER (PARTITION BY department)\` puts each employee's departmental average on their own row, which GROUP BY cannot do without a join back.
 
 **The three ranking functions differ only in ties,** and the distinction is asked constantly. Given scores 100, 90, 90, 80:
 
-- ROW_NUMBER → 1, 2, 3, 4. Always distinct; tied rows get an arbitrary order.
+- \`ROW_NUMBER\` → 1, 2, 3, 4. Always distinct; tied rows get an arbitrary order.
 - RANK → 1, 2, 2, 4. Ties share a rank and the next value skips.
-- DENSE_RANK → 1, 2, 2, 3. Ties share a rank and nothing is skipped.
+- \`DENSE_RANK\` → 1, 2, 2, 3. Ties share a rank and nothing is skipped.
 
-"Top 3 salaries per department" almost always means DENSE_RANK, because two people on the same salary should both count as third.
+"Top 3 salaries per department" almost always means \`DENSE_RANK\`, because two people on the same salary should both count as third.
 
 **LAG and LEAD** reach into the previous and next row — month-over-month change, time between a user's consecutive events, detecting gaps in a sequence. Before window functions this required a self join on n = n - 1, which is why older SQL looks the way it does.
 
-**Running totals** come from a frame: SUM(amount) OVER (ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW).
+**Running totals** come from a frame: \`SUM(amount) OVER (ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\`.
 
-**The frame default is a genuine trap.** With ORDER BY and no explicit frame, the default is RANGE UNBOUNDED PRECEDING AND CURRENT ROW, and RANGE includes *all peer rows with the same ORDER BY value*. With duplicate dates, every row on that date gets the same running total — the full day's sum. Specify ROWS when you want row-by-row.
+**The frame default is a genuine trap.** With ORDER BY and no explicit frame, the default is \`RANGE UNBOUNDED PRECEDING AND CURRENT ROW\`, and RANGE includes *all peer rows with the same ORDER BY value*. With duplicate dates, every row on that date gets the same running total — the full day's sum. Specify ROWS when you want row-by-row.
 
 **Window functions run after WHERE,** so you cannot filter on one directly. Wrap it in a CTE and filter outside.`,
     resources: [
@@ -97,7 +97,7 @@ Because SELECT runs after WHERE, you cannot filter on a column alias in WHERE �
 
 **EXISTS, IN, and JOIN for existence checks.** EXISTS short-circuits on the first match and handles NULLs correctly. IN is fine over a small, NULL-free list. A JOIN will duplicate outer rows if the inner side matches more than once, so it is the wrong tool for "does a match exist" unless you deduplicate.
 
-**\NOT IN\ with NULLs is the classic trap.** If the subquery returns any NULL, NOT IN yields no rows — because "is this value not equal to NULL" is unknown, never true. NOT EXISTS behaves the way you meant.
+**\`NOT IN\` with NULLs is the classic trap.** If the subquery returns any NULL, \`NOT IN\` yields no rows — because "is this value not equal to NULL" is unknown, never true. \`NOT EXISTS\` behaves the way you meant.
 
 **Prefer a CTE to a repeated subquery.** Writing the same subquery twice invites them to drift apart when someone edits one.
 
@@ -114,9 +114,9 @@ Because SELECT runs after WHERE, you cannot filter on a column alias in WHERE �
     track: "sql-analytics",
     title: "Query Performance",
     blurb: "Why a query is slow, and the small rewrites that fix it.",
-    lesson: `**Read the plan before changing anything.** EXPLAIN shows what the database intends to do; EXPLAIN ANALYZE runs it and shows what actually happened, including where the row estimates were wrong. Guessing at optimisations without a plan is how people add indexes that go unused.
+    lesson: `**Read the plan before changing anything.** \`EXPLAIN\` shows what the database intends to do; \`EXPLAIN ANALYZE\` runs it and shows what actually happened, including where the row estimates were wrong. Guessing at optimisations without a plan is how people add indexes that go unused.
 
-**Sargability** is the property that lets an index be used. Wrapping an indexed column in a function destroys it: WHERE YEAR(created_at) = 2026 must compute YEAR() for every row, so it scans. WHERE created_at >= '2026-01-01' AND created_at < '2027-01-01' expresses the same thing as a range the index can seek. The same applies to leading wildcards — LIKE '%term' cannot use a B-tree, because there is no prefix to seek on.
+**Sargability** is the property that lets an index be used. Wrapping an indexed column in a function destroys it: \`WHERE YEAR(created_at) = 2026\` must compute YEAR() for every row, so it scans. WHERE \`created_at >= '2026-01-01' AND created_at < '2027-01-01'\` expresses the same thing as a range the index can seek. The same applies to leading wildcards — \`LIKE '%term'\` cannot use a B-tree, because there is no prefix to seek on.
 
 **Leftmost prefix.** A composite index on (a, b) serves queries filtering on a, or on a and b — but not b alone, because the index is sorted by a first. Column order in a composite index is a design decision, not a formality.
 
