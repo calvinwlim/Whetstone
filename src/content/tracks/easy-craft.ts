@@ -1,0 +1,713 @@
+import type { Question } from "@/content/types";
+
+/** Band 1 and 2 for the frontend, delivery, code craft, SQL, and skills
+ *  topics that were authored mid-to-advanced. Topics that previously had no
+ *  easy questions at all get two. */
+export const questions: Question[] = [
+  // ================================ Frontend ==============================
+  {
+    id: "ez-fesec-001",
+    type: "mcq",
+    track: "frontend",
+    topic: "frontend-security",
+    difficulty: 2,
+    prompt: "What is the same-origin policy?",
+    options: [
+      {
+        id: "a",
+        text: "A browser rule stopping a page reading data from a different origin",
+      },
+      { id: "b", text: "A server rule rejecting requests from other domains" },
+      { id: "c", text: "A requirement that all assets load from one domain" },
+      { id: "d", text: "A rule that cookies expire when the origin changes" },
+    ],
+    answer: "a",
+    explanation:
+      "It is the foundation of browser security: without it, any site you visit could read your email in another tab. CORS exists to relax it deliberately for cases where sharing is intended.",
+    concepts: ["Same-origin policy", "Origin", "Cross-Origin Resource Sharing"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-feperf-001",
+    type: "mcq",
+    track: "frontend",
+    topic: "frontend-performance",
+    difficulty: 2,
+    prompt: "Why should images carry explicit width and height attributes?",
+    options: [
+      {
+        id: "a",
+        text: "So the browser reserves space and content does not jump when they load",
+      },
+      { id: "b", text: "So the browser can compress them further" },
+      { id: "c", text: "Because CSS cannot size images otherwise" },
+      { id: "d", text: "So they load before the rest of the page" },
+    ],
+    answer: "a",
+    explanation:
+      "Without dimensions the browser does not know how much room to leave, so everything below shifts when the image arrives — the single most common cause of layout shift, and the most annoying, because it moves the thing you were about to tap.",
+    concepts: ["Cumulative Layout Shift", "Layout reservation", "Aspect ratio"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-fearch-001",
+    type: "mcq",
+    track: "frontend",
+    topic: "frontend-architecture",
+    difficulty: 2,
+    prompt: "What is the difference between server state and client state?",
+    options: [
+      {
+        id: "a",
+        text: "Server state is a local cache of data owned elsewhere; client state is owned by the UI",
+      },
+      { id: "b", text: "Server state lives on the server and never reaches the browser" },
+      { id: "c", text: "Client state is anything stored in localStorage" },
+      { id: "d", text: "They are the same thing at different layers" },
+    ],
+    answer: "a",
+    explanation:
+      "Which tab is open is client state. A list of orders fetched from an API is a cache of something the server owns — with staleness, revalidation, and invalidation to handle. Treating the second like the first is where most frontend state complexity comes from.",
+    concepts: ["Server state", "Client state", "Cache invalidation"],
+    tags: ["fundamentals"],
+  },
+
+  // ================================ Delivery ==============================
+  {
+    id: "ez-ci-001",
+    type: "mcq",
+    track: "delivery",
+    topic: "ci-cd",
+    difficulty: 1,
+    prompt: "What is continuous integration?",
+    options: [
+      {
+        id: "a",
+        text: "Merging to a shared branch frequently, with an automated build verifying each merge",
+      },
+      { id: "b", text: "Deploying to production automatically on every commit" },
+      { id: "c", text: "Running tests once before each release" },
+      { id: "d", text: "Keeping every developer on their own long-lived branch" },
+    ],
+    answer: "a",
+    explanation:
+      "The word doing the work is *frequently*. Integrating daily keeps conflicts small, and the automated build is what makes integrating that often safe. Deploying automatically is continuous deployment, which is a separate step.",
+    concepts: ["Continuous integration", "Automated build", "Merge conflict"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-flag-001",
+    type: "mcq",
+    track: "delivery",
+    topic: "feature-flags",
+    difficulty: 1,
+    prompt: "What is a kill switch?",
+    options: [
+      {
+        id: "a",
+        text: "A flag that disables a risky or expensive feature without a deploy",
+      },
+      { id: "b", text: "A command that stops all running instances" },
+      { id: "c", text: "A rollback to the previous release" },
+      { id: "d", text: "A rate limit applied during an incident" },
+    ],
+    answer: "a",
+    explanation:
+      "It turns a deploy-and-wait into a switch you flip in seconds during an incident. That is why operational toggles legitimately live as long as the subsystem they protect, unlike release toggles, which are debt once the feature is fully on.",
+    concepts: ["Kill switch", "Operational toggle", "Feature flag"],
+    tags: ["fundamentals"],
+  },
+
+  // ============================== Code Craft ==============================
+  {
+    id: "ez-spec-001",
+    type: "mcq",
+    track: "code-craft",
+    topic: "spec-driven-development",
+    difficulty: 1,
+    prompt: "What are acceptance criteria?",
+    options: [
+      {
+        id: "a",
+        text: "Checkable statements that decide whether the work is done",
+      },
+      { id: "b", text: "The tests a reviewer must run before approving" },
+      { id: "c", text: "The performance targets a feature must hit" },
+      { id: "d", text: "The list of files a change is allowed to touch" },
+    ],
+    answer: "a",
+    explanation:
+      "The essential property is that someone else can check them. \"Search should feel fast\" cannot be verified and will be argued about; \"results return within 200ms for a catalogue of 10,000\" can.",
+    concepts: ["Acceptance criteria", "Definition of done", "Given-When-Then"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-pat-001",
+    type: "mcq",
+    track: "code-craft",
+    topic: "design-patterns",
+    difficulty: 1,
+    prompt: "What is the main value of knowing design patterns by name?",
+    options: [
+      {
+        id: "a",
+        text: "Shared vocabulary — one word communicates a whole design to another engineer",
+      },
+      { id: "b", text: "Patterns make code run faster" },
+      { id: "c", text: "They guarantee the design is correct" },
+      { id: "d", text: "They reduce the number of files needed" },
+    ],
+    answer: "a",
+    explanation:
+      "\"Let's make that a Strategy\" carries a structure, a rationale, and a set of tradeoffs in three words. The failure mode is treating them as goals rather than vocabulary, and applying them to problems you do not yet have.",
+    concepts: ["Design pattern", "Shared vocabulary", "Over-engineering"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-qual-001",
+    type: "mcq",
+    track: "code-craft",
+    topic: "code-quality",
+    difficulty: 1,
+    prompt: "What does coupling measure?",
+    options: [
+      { id: "a", text: "How much one part of the code depends on another" },
+      { id: "b", text: "How many lines a function contains" },
+      { id: "c", text: "How often two files change on the same day" },
+      { id: "d", text: "How many developers work on a module" },
+    ],
+    answer: "a",
+    explanation:
+      "Tight coupling means changing one thing forces changes elsewhere, which is what makes a codebase feel resistant. Its partner is cohesion — how related the contents of a module are — and you want low coupling with high cohesion.",
+    concepts: ["Coupling", "Cohesion", "Modularity"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-qual-002",
+    type: "mcq",
+    track: "code-craft",
+    topic: "code-quality",
+    difficulty: 2,
+    prompt: "What is technical debt?",
+    options: [
+      {
+        id: "a",
+        text: "Accepting a quicker solution now in exchange for more work later",
+      },
+      { id: "b", text: "Any code that contains bugs" },
+      { id: "c", text: "Code written by someone who has left the team" },
+      { id: "d", text: "Dependencies that are out of date" },
+    ],
+    answer: "a",
+    explanation:
+      "The metaphor matters: debt can be a sensible choice, and it accrues interest — every later change costs more until you pay it down. Debt taken deliberately and recorded is very different from mess nobody chose.",
+    concepts: ["Technical debt", "Refactoring", "Trade-off"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-conc-001",
+    type: "mcq",
+    track: "code-craft",
+    topic: "concurrency",
+    difficulty: 1,
+    prompt: "What is a race condition?",
+    options: [
+      { id: "a", text: "A bug where the result depends on the timing of concurrent operations" },
+      { id: "b", text: "Two processes competing for CPU time" },
+      { id: "c", text: "A request that times out under load" },
+      { id: "d", text: "A deadlock between two threads" },
+    ],
+    answer: "a",
+    explanation:
+      "The defining feature is that it usually works. It depends on interleaving, so it passes tests, passes review, and shows up in production under load — and nothing crashes, the data is just quietly wrong.",
+    concepts: ["Race condition", "Concurrency", "Non-determinism"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-conc-002",
+    type: "mcq",
+    track: "code-craft",
+    topic: "concurrency",
+    difficulty: 2,
+    prompt: "What does a mutex do?",
+    options: [
+      { id: "a", text: "Ensures only one thread at a time enters a section of code" },
+      { id: "b", text: "Runs two operations in parallel safely" },
+      { id: "c", text: "Prevents a thread from being interrupted" },
+      { id: "d", text: "Copies data so threads do not share it" },
+    ],
+    answer: "a",
+    explanation:
+      "Mutual exclusion — one holder at a time. A semaphore generalises it to N holders, which is how connection pools cap concurrency. The cheapest alternative to both is immutable data, which needs no coordination at all.",
+    concepts: ["Mutex", "Critical section", "Mutual exclusion"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-err-001",
+    type: "mcq",
+    track: "code-craft",
+    topic: "error-handling",
+    difficulty: 1,
+    prompt: "What does 'fail fast' mean?",
+    options: [
+      {
+        id: "a",
+        text: "Detect an invalid state immediately and stop, rather than continuing with bad data",
+      },
+      { id: "b", text: "Return an error response as quickly as possible" },
+      { id: "c", text: "Retry a failed operation without delay" },
+      { id: "d", text: "Time out requests aggressively" },
+    ],
+    answer: "a",
+    explanation:
+      "Continuing past a broken assumption produces a failure far from its cause, so the stack trace points at a symptom. Stopping at the point of detection is what makes the error tell you where the bug is.",
+    concepts: ["Fail fast", "Invariant", "Defensive programming"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-dom-001",
+    type: "mcq",
+    track: "code-craft",
+    topic: "domain-modelling",
+    difficulty: 1,
+    prompt: "What is an invariant?",
+    options: [
+      { id: "a", text: "A rule about the data that must always hold true" },
+      { id: "b", text: "A value that never changes once set" },
+      { id: "c", text: "A constant defined at the top of a file" },
+      { id: "d", text: "A function with no side effects" },
+    ],
+    answer: "a",
+    explanation:
+      "\"An order always has a customer\", \"a balance is never negative\". The design question is where it is enforced: a rule the constructor requires cannot be violated, while one checked by a validator depends on everyone remembering to call it.",
+    concepts: ["Invariant", "Encapsulation", "Domain model"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-dom-002",
+    type: "mcq",
+    track: "code-craft",
+    topic: "domain-modelling",
+    difficulty: 2,
+    prompt: "Why does it matter that code uses the same words as the people who understand the business?",
+    options: [
+      {
+        id: "a",
+        text: "It removes a translation step from every conversation, and translation is where misunderstandings enter",
+      },
+      { id: "b", text: "It makes the code shorter" },
+      { id: "c", text: "It is required for automated documentation" },
+      { id: "d", text: "It improves compiler optimisation" },
+    ],
+    answer: "a",
+    explanation:
+      "This is what ubiquitous language means. If the business says \"policy\" and the code says \"contract\", every requirement gets translated on the way in and every bug report on the way out — and eventually somebody maps them wrongly.",
+    concepts: ["Ubiquitous language", "Domain-driven design", "Bounded context"],
+    tags: ["fundamentals"],
+  },
+
+  // ============================ SQL & Analytics ===========================
+  {
+    id: "ez-win-001",
+    type: "mcq",
+    track: "sql-analytics",
+    topic: "sql-window-functions",
+    difficulty: 2,
+    prompt: "What does PARTITION BY do in a window function?",
+    options: [
+      { id: "a", text: "Divides rows into groups, with the calculation restarting per group" },
+      { id: "b", text: "Splits the table across storage partitions" },
+      { id: "c", text: "Removes duplicate rows before calculating" },
+      { id: "d", text: "Limits how many rows the function returns" },
+    ],
+    answer: "a",
+    explanation:
+      "It is the window equivalent of GROUP BY, except the rows survive. Ranking salaries PARTITION BY department restarts the ranking in each department while still returning every employee.",
+    concepts: ["PARTITION BY", "Window function", "GROUP BY"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-cte-001",
+    type: "mcq",
+    track: "sql-analytics",
+    topic: "sql-subqueries",
+    difficulty: 2,
+    prompt: "What is a subquery?",
+    options: [
+      { id: "a", text: "A query nested inside another, whose result the outer query uses" },
+      { id: "b", text: "A query that runs after the main one completes" },
+      { id: "c", text: "A saved query stored in the database" },
+      { id: "d", text: "A query limited to a single table" },
+    ],
+    answer: "a",
+    explanation:
+      "Useful and easy to overdo — four levels of nesting is unreadable. A CTE expresses the same logic as named steps, which is why complex analytical SQL is usually written as a chain of them.",
+    concepts: ["Subquery", "Common table expression", "Query readability"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-sqlperf-001",
+    type: "mcq",
+    track: "sql-analytics",
+    topic: "sql-performance",
+    difficulty: 2,
+    prompt: "Why is SELECT * discouraged in application queries?",
+    options: [
+      {
+        id: "a",
+        text: "It transfers columns you do not need and breaks silently when the schema changes",
+      },
+      { id: "b", text: "It prevents the query from using any index" },
+      { id: "c", text: "It locks the table while reading" },
+      { id: "d", text: "It is not supported by all databases" },
+    ],
+    answer: "a",
+    explanation:
+      "You pay for every column in transfer and memory, and adding a large column later quietly slows every query that used it. It also blocks index-only scans, since the index rarely holds every column.",
+    concepts: ["SELECT *", "Projection", "Covering index"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-metric-001",
+    type: "mcq",
+    track: "sql-analytics",
+    topic: "product-metrics",
+    difficulty: 2,
+    prompt: "What does a conversion funnel measure?",
+    options: [
+      { id: "a", text: "How many users continue from each step to the next" },
+      { id: "b", text: "How much revenue each user generates" },
+      { id: "c", text: "How long users spend on each page" },
+      { id: "d", text: "Which marketing channel a user came from" },
+    ],
+    answer: "a",
+    explanation:
+      "The overall rate is rarely the useful number. What matters is which step has the steepest drop, and whether that drop is the same for every segment — an average can hide one broken path entirely.",
+    concepts: ["Conversion funnel", "Drop-off rate", "Segmentation"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-stat-001",
+    type: "mcq",
+    track: "sql-analytics",
+    topic: "statistics-basics",
+    difficulty: 2,
+    prompt: "What is a sample, and why does how you choose it matter?",
+    options: [
+      {
+        id: "a",
+        text: "A subset used to infer something about the whole — a biased choice makes the inference wrong",
+      },
+      { id: "b", text: "Any dataset smaller than a million rows" },
+      { id: "c", text: "The most recent portion of the data" },
+      { id: "d", text: "A random selection, which is always representative" },
+    ],
+    answer: "a",
+    explanation:
+      "Surveying only users who completed signup tells you nothing about those who abandoned it. Random selection helps precisely because it removes your choices from the process — but only if the population you sample from is the one you want to describe.",
+    concepts: ["Sampling", "Selection bias", "Population"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-ab-001",
+    type: "mcq",
+    track: "sql-analytics",
+    topic: "ab-testing",
+    difficulty: 2,
+    prompt: "What is the control group for?",
+    options: [
+      {
+        id: "a",
+        text: "A baseline experiencing no change, so any difference can be attributed to the treatment",
+      },
+      { id: "b", text: "A safety net in case the new version breaks" },
+      { id: "c", text: "A smaller group used to test before full rollout" },
+      { id: "d", text: "Users who opted out of experiments" },
+    ],
+    answer: "a",
+    explanation:
+      "Without it you cannot separate your change from everything else happening that week — seasonality, a marketing push, an outage. The control is what makes the comparison mean anything.",
+    concepts: ["Control group", "Treatment group", "Counterfactual"],
+    tags: ["fundamentals"],
+  },
+
+  // ========================= Technical Communication ======================
+  {
+    id: "ez-trade-001",
+    type: "mcq",
+    track: "communication",
+    topic: "tradeoffs",
+    difficulty: 1,
+    prompt: "Why name the downside of your own design before anyone asks?",
+    options: [
+      {
+        id: "a",
+        text: "It shows you understand what the choice costs, which is what separates a decision from a guess",
+      },
+      { id: "b", text: "It prevents the interviewer from asking about it" },
+      { id: "c", text: "It makes the design sound more modest" },
+      { id: "d", text: "It shortens the explanation" },
+    ],
+    answer: "a",
+    explanation:
+      "Every design gives something up. Saying what, unprompted, demonstrates you evaluated alternatives rather than reaching for a default — and it is the single clearest seniority signal available in a design discussion.",
+    concepts: ["Trade-off", "Design rationale", "Seniority signal"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-trade-002",
+    type: "mcq",
+    track: "communication",
+    topic: "tradeoffs",
+    difficulty: 2,
+    prompt: "You do not know a number your estimate depends on. What is the best move?",
+    options: [
+      {
+        id: "a",
+        text: "Say so, state the assumption you are using, and say how you would verify it",
+      },
+      { id: "b", text: "Give your best guess with confidence" },
+      { id: "c", text: "Avoid the area and design around it" },
+      { id: "d", text: "Ask the interviewer for the number" },
+    ],
+    answer: "a",
+    explanation:
+      "A stated assumption is correctable and lets the conversation continue; confident wrongness is far more damaging than an admitted gap, because everything built on it silently inherits the error.",
+    concepts: ["Stated assumption", "Calibration", "Intellectual honesty"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-aud-001",
+    type: "mcq",
+    track: "communication",
+    topic: "audience",
+    difficulty: 2,
+    prompt: "What decides how technical your explanation should be?",
+    options: [
+      { id: "a", text: "The decision your listener actually has to make" },
+      { id: "b", text: "How senior they are" },
+      { id: "c", text: "How much time you have" },
+      { id: "d", text: "How complex the system is" },
+    ],
+    answer: "a",
+    explanation:
+      "An engineer who will maintain it needs interfaces and invariants; an executive approving the time needs risk and cost. Seniority is a poor proxy — a technical founder and a non-technical one need different explanations at the same level.",
+    concepts: ["Audience adaptation", "Abstraction level", "Technical translation"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-dis-001",
+    type: "mcq",
+    track: "communication",
+    topic: "disagreement",
+    difficulty: 1,
+    prompt: "Why restate someone's proposal before objecting to it?",
+    options: [
+      {
+        id: "a",
+        text: "It proves you understood it, which is what earns your objection a hearing",
+      },
+      { id: "b", text: "It gives you time to think of an argument" },
+      { id: "c", text: "It is considered polite in most workplaces" },
+      { id: "d", text: "It ensures the objection is recorded accurately" },
+    ],
+    answer: "a",
+    explanation:
+      "An objection from someone who clearly has not read the proposal gets dismissed, however correct it is. Steelmanning first turns it into a technical conversation rather than a defensive one.",
+    concepts: ["Steelmanning", "Constructive disagreement", "Active listening"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-dis-002",
+    type: "mcq",
+    track: "communication",
+    topic: "disagreement",
+    difficulty: 2,
+    prompt: "The team chooses an approach you argued against. What now?",
+    options: [
+      {
+        id: "a",
+        text: "Support it properly, and name the signal that should make everyone revisit",
+      },
+      { id: "b", text: "Implement it while making your objection visible in comments" },
+      { id: "c", text: "Ask a more senior person to overturn it" },
+      { id: "d", text: "Implement it exactly as specified so the flaw becomes obvious" },
+    ],
+    answer: "a",
+    explanation:
+      "Disagree and commit, with a tripwire. Half-hearted support poisons the work for everyone, and letting something fail to prove a point costs the team real time to win an argument.",
+    concepts: ["Disagree and commit", "Tripwire", "Team trust"],
+    tags: ["fundamentals"],
+  },
+
+  // ============================== DSA Concepts ============================
+  {
+    id: "ez-struct-001",
+    type: "mcq",
+    track: "dsa-concepts",
+    topic: "structure-choice",
+    difficulty: 2,
+    prompt: "What question should you answer before picking a data structure?",
+    options: [
+      { id: "a", text: "Which operation has to be fast" },
+      { id: "b", text: "How much data there will be" },
+      { id: "c", text: "Which structures the language provides" },
+      { id: "d", text: "How the data will be serialised" },
+    ],
+    answer: "a",
+    explanation:
+      "Every structure is fast at some operations and slow at others, so the access pattern picks the structure. \"I need the minimum repeatedly and never the full ordering, so a heap\" is worth more in an interview than naming the heap alone.",
+    concepts: ["Access pattern", "Data structure selection", "Time complexity"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-pat-002",
+    type: "mcq",
+    track: "dsa-concepts",
+    topic: "patterns",
+    difficulty: 1,
+    prompt: "Why is recognising the pattern in a problem worth so much?",
+    options: [
+      {
+        id: "a",
+        text: "It gives you a known approach and complexity before writing any code",
+      },
+      { id: "b", text: "Patterns always produce the shortest solution" },
+      { id: "c", text: "Interviewers award marks for naming them" },
+      { id: "d", text: "It removes the need to handle edge cases" },
+    ],
+    answer: "a",
+    explanation:
+      "Most interview problems are variations on a small set of shapes. Spotting \"this is a sliding window\" gives you the structure and the complexity immediately, and saying it out loud is the signal actually being measured.",
+    concepts: ["Pattern recognition", "Sliding window", "Problem shape"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-pat-003",
+    type: "mcq",
+    track: "dsa-concepts",
+    topic: "patterns",
+    difficulty: 2,
+    prompt: "A problem asks for the longest contiguous run satisfying a condition. Which pattern does 'contiguous' point at?",
+    options: [
+      { id: "a", text: "Sliding window" },
+      { id: "b", text: "Dynamic programming" },
+      { id: "c", text: "Depth-first search" },
+      { id: "d", text: "Binary search" },
+    ],
+    answer: "a",
+    explanation:
+      "Contiguous plus a condition that can be broken and repaired is the sliding window tell: grow the right edge, shrink from the left when the condition fails. Each element enters and leaves once, giving O(n).",
+    concepts: ["Sliding window", "Contiguous subarray", "Two pointers"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-st-001",
+    type: "mcq",
+    track: "dsa-concepts",
+    topic: "space-time",
+    difficulty: 1,
+    prompt: "What does 'trading space for time' mean?",
+    options: [
+      { id: "a", text: "Using more memory to store results so you compute less" },
+      { id: "b", text: "Running an algorithm on more machines" },
+      { id: "c", text: "Compressing data so it processes faster" },
+      { id: "d", text: "Delaying work until it is needed" },
+    ],
+    answer: "a",
+    explanation:
+      "A hash set of seen values turns a quadratic scan into a linear one, and costs memory proportional to the input. Caches, indexes, and memoisation are all the same bargain at different scales.",
+    concepts: ["Space-time trade-off", "Memoisation", "Hash set"],
+    tags: ["fundamentals"],
+  },
+
+  // ============================ Workplace Craft ===========================
+  {
+    id: "ez-doc-001",
+    type: "mcq",
+    track: "workplace",
+    topic: "design-docs",
+    difficulty: 1,
+    prompt: "What is a design doc for?",
+    options: [
+      {
+        id: "a",
+        text: "Getting disagreement to happen early, while changing course is still cheap",
+      },
+      { id: "b", text: "Documenting a system after it has been built" },
+      { id: "c", text: "Recording who approved which decision" },
+      { id: "d", text: "Explaining the code to future maintainers" },
+    ],
+    answer: "a",
+    explanation:
+      "Its value is measured in the arguments it causes before implementation rather than after. A document nobody could possibly object to probably is not saying anything load-bearing.",
+    concepts: ["Design document", "Early feedback", "Cost of change"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-doc-002",
+    type: "mcq",
+    track: "workplace",
+    topic: "design-docs",
+    difficulty: 2,
+    prompt: "Why open a design doc with the problem rather than the solution?",
+    options: [
+      {
+        id: "a",
+        text: "Readers cannot judge an approach without knowing what it is meant to solve",
+      },
+      { id: "b", text: "It makes the document shorter" },
+      { id: "c", text: "Solutions change more often than problems" },
+      { id: "d", text: "It is the required format in most companies" },
+    ],
+    answer: "a",
+    explanation:
+      "Presented with a solution first, reviewers evaluate it against whatever problem they imagine, and half the discussion is people arguing about different problems. Stating it plus why it matters now aligns everyone before the debate starts.",
+    concepts: ["Problem statement", "Design document", "Reviewability"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-inc-001",
+    type: "mcq",
+    track: "workplace",
+    topic: "incidents",
+    difficulty: 2,
+    prompt: "Why write down a timeline while an incident is still running?",
+    options: [
+      {
+        id: "a",
+        text: "Memory reconstructs incidents wrongly and confidently, so the review needs contemporaneous notes",
+      },
+      { id: "b", text: "It is required for compliance in most organisations" },
+      { id: "c", text: "It helps identify who caused the problem" },
+      { id: "d", text: "It replaces the need for a postmortem" },
+    ],
+    answer: "a",
+    explanation:
+      "Afterwards everyone is certain about an order of events that did not happen. Timestamps of what was observed and what was changed are what make the postmortem accurate rather than a shared reconstruction.",
+    concepts: ["Incident timeline", "Postmortem", "Hindsight bias"],
+    tags: ["fundamentals"],
+  },
+  {
+    id: "ez-est-001",
+    type: "mcq",
+    track: "workplace",
+    topic: "estimation",
+    difficulty: 2,
+    prompt: "Why break work down before estimating it?",
+    options: [
+      {
+        id: "a",
+        text: "Small familiar pieces can be estimated; a large unfamiliar one can only be guessed",
+      },
+      { id: "b", text: "Smaller tasks are always completed faster" },
+      { id: "c", text: "It makes the total estimate smaller" },
+      { id: "d", text: "Managers prefer detailed breakdowns" },
+    ],
+    answer: "a",
+    explanation:
+      "Decomposition converts guessing into recall — you have done something like each piece before. It also surfaces work you would otherwise forget, and anything you cannot break down is a signal you do not yet understand it.",
+    concepts: ["Decomposition", "Estimation", "Hidden work"],
+    tags: ["fundamentals"],
+  },
+];

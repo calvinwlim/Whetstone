@@ -15,6 +15,8 @@ import * as fundamentals from "./tracks/fundamentals";
 import * as advanced from "./tracks/advanced";
 import * as depthSystemDesign from "./tracks/depth-system-design";
 import * as depthSkills from "./tracks/depth-skills";
+import * as easySystems from "./tracks/easy-systems";
+import * as easyCraft from "./tracks/easy-craft";
 
 /** The whole bank, bundled at build time. Nothing here touches a database,
  *  so rendering a question costs zero network round trips. */
@@ -52,6 +54,10 @@ export const ALL_QUESTIONS: Question[] = [
   // Depth added to topics that were thin after the first authoring pass.
   ...depthSystemDesign.questions,
   ...depthSkills.questions,
+  // Band 1 and 2 backfill for topics authored mid-to-advanced, so a learner
+  // dropped into the easy band has a real pool to draw from.
+  ...easySystems.questions,
+  ...easyCraft.questions,
 ];
 
 /** Topic ids marked as specialist depth, for the session composer and the UI. */
