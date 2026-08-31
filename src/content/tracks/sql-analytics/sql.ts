@@ -165,6 +165,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Unmatched users get NULL for o.status, and NULL = 'paid' is not true, so WHERE removes them. If the condition decides *which rows to join*, it belongs in ON. If it decides *which results to keep*, it belongs in WHERE. This is the most common SQL interview bug there is.",
+    concepts: ["LEFT JOIN", "ON versus WHERE", "INNER JOIN"],
     tags: ["left-join", "where-vs-on"],
   },
   {
@@ -188,6 +189,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "An order with four line items appears four times, so its total is added four times. The dangerous part is that the number looks plausible. Aggregate the many side first in a CTE, then join one row back — or sum a column that belongs to the line items rather than the order.",
+    concepts: ["Join fan-out", "Row multiplication", "Aggregate correctness"],
     tags: ["fan-out", "aggregation"],
   },
   {
@@ -205,6 +207,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "RIGHT JOIN is deliberately absent — it is the mirror of LEFT and is rarely used, because swapping the table order reads more clearly. CROSS JOIN is occasionally exactly right, such as generating a complete date spine to join sparse data onto.",
+    concepts: ["INNER JOIN", "LEFT JOIN", "FULL OUTER JOIN", "CROSS JOIN"],
     tags: ["join-types"],
   },
   {
@@ -228,6 +231,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "NOT IN expands to a chain of \"not equal\" comparisons, and comparing anything to NULL is unknown rather than true — so no row qualifies. It fails silently with an empty result and no error. NOT EXISTS handles NULLs correctly and is the safer default.",
+    concepts: ["NOT IN", "NOT EXISTS", "Three-valued logic"],
     tags: ["not-in", "nulls", "anti-join"],
   },
   {
@@ -243,6 +247,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A self join — the table joined to itself under two aliases. Use a LEFT JOIN if some employees have no manager, or the person at the top of the org chart vanishes from your results.",
+    concepts: ["Self join", "Table alias"],
     tags: ["self-join"],
   },
 
@@ -257,6 +262,7 @@ export const questions: Question[] = [
     items: ["FROM", "WHERE", "GROUP BY", "HAVING", "SELECT", "ORDER BY", "LIMIT"],
     explanation:
       "This order explains most confusing SQL behaviour. Because SELECT runs after WHERE, a column alias defined in SELECT is not available in WHERE — but it is available in ORDER BY, which runs later. It also explains why WHERE cannot see aggregates and HAVING can.",
+    concepts: ["Logical query processing order", "GROUP BY", "HAVING"],
     tags: ["execution-order"],
   },
   {
@@ -278,6 +284,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "\"Orders placed this year\" is a row condition and belongs in WHERE. \"Customers with more than five orders\" is a group condition and needs HAVING. Putting a row condition in HAVING usually still returns the right answer, more slowly, because you grouped rows you were about to throw away.",
+    concepts: ["WHERE clause", "HAVING clause", "Aggregate function"],
     tags: ["having", "where"],
   },
   {
@@ -301,6 +308,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "COUNT(*) counts rows; COUNT(column) counts non-NULL values; aggregates skip NULLs entirely. So AVG divides by 7, not 10. Whether that is correct depends on whether a missing score means \"not recorded\" or \"scored zero\" — the database cannot know, so you must decide.",
+    concepts: ["COUNT(*)", "NULL semantics", "AVG"],
     tags: ["nulls", "count"],
   },
   {
@@ -324,6 +332,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "SUM of an empty set is NULL rather than zero, which is arguably correct — the sum of nothing is undefined — and almost never what a report wants. Note this only covers months that appear in the results; months with no rows at all need a date spine joined in.",
+    concepts: ["COALESCE", "NULL semantics", "Aggregate function"],
     tags: ["nulls", "coalesce"],
   },
   {
@@ -339,6 +348,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "COUNT(DISTINCT country). Note it also ignores NULLs, so a country recorded as NULL is not counted as its own category — if \"unknown\" should be a bucket, you need to handle it explicitly.",
+    concepts: ["COUNT DISTINCT", "Cardinality"],
     tags: ["distinct"],
   },
 
@@ -358,6 +368,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "They differ only in how ties are handled. ROW_NUMBER forces distinct values and orders ties arbitrarily. RANK shares a rank then skips. DENSE_RANK shares and does not skip. \"Top 3 salaries per department\" nearly always means DENSE_RANK, since two people on the same salary should both count.",
+    concepts: ["ROW_NUMBER", "RANK", "DENSE_RANK"],
     tags: ["ranking"],
   },
   {
@@ -380,6 +391,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "GROUP BY collapses each group to one row. A window function leaves the rows intact and adds the computed value alongside — so you can show every employee with their departmental average, which otherwise needs an aggregate subquery joined back.",
+    concepts: ["Window function", "PARTITION BY", "GROUP BY"],
     tags: ["fundamentals"],
   },
   {
@@ -403,6 +415,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "LAG reaches back to the previous row within the partition, so subtracting gives the gap directly. Before window functions this needed a self join matching row n to row n-1, which is why so much older analytics SQL is written that way.",
+    concepts: ["LAG", "LEAD", "Window frame"],
     tags: ["lag-lead"],
   },
   {
@@ -426,6 +439,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "With ORDER BY and no explicit frame, the default is RANGE UNBOUNDED PRECEDING AND CURRENT ROW, and RANGE treats all rows with the same ORDER BY value as peers included together. Specifying ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW gives the row-by-row accumulation people expect.",
+    concepts: ["Window frame", "RANGE versus ROWS", "Running total"],
     tags: ["frames", "range-vs-rows"],
   },
   {
@@ -449,6 +463,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Window functions run after WHERE and even after HAVING, so the column does not exist yet at filter time. Computing it in a CTE and filtering in the outer query is the standard shape — and it is the idiom behind almost every \"latest row per group\" query.",
+    concepts: ["Common table expression", "Logical query processing order", "Window function"],
     tags: ["execution-order"],
   },
 
@@ -472,6 +487,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The benefit is comprehension, not speed — and in an interview, a chain of named steps lets you explain your reasoning as you build it. Performance depends on the engine: some optimise across the CTE boundary, some materialise each one, so a CTE used three times may be computed once or three times.",
+    concepts: ["Common table expression", "Query readability", "CTE materialisation"],
     tags: ["cte", "readability"],
   },
   {
@@ -494,6 +510,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A join that matches several inner rows repeats the outer row, so \"customers who have ordered\" silently becomes \"customers, once per order\" unless you deduplicate. EXISTS answers yes or no and stops looking, which is both correct and usually cheaper.",
+    concepts: ["EXISTS", "Semi-join", "Row duplication"],
     tags: ["exists", "join"],
   },
   {
@@ -517,6 +534,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Recursive CTEs traverse hierarchies of unknown depth — org charts, category trees, dependency graphs. Repeated self joins work only if you know the depth in advance and need one join per level, which is why that approach breaks the moment someone adds a layer of management.",
+    concepts: ["Recursive CTE", "Hierarchical query"],
     tags: ["recursive-cte"],
   },
   {
@@ -540,6 +558,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The correlated subquery runs per outer row; the window function computes each partition once and attaches the value to every row. It is shorter, clearer, and usually much faster — and it is one of the most common \"can you modernise this query\" prompts.",
+    concepts: ["Correlated subquery", "Window function", "PARTITION BY"],
     tags: ["correlated-subquery", "window"],
   },
 
@@ -565,6 +584,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The index stores raw values, not YEAR() of them, so the function must be computed for every row and the index is unusable. Expressing the same condition as a range lets the index seek. This property is called sargability, and it is one of the highest-value rewrites there is.",
+    concepts: ["Sargable predicate", "Index seek", "Full table scan"],
     tags: ["sargability", "indexes"],
   },
   {
@@ -586,6 +606,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The gap between estimated and actual rows is the most useful thing on the page — if the planner expected 10 rows and found 100,000, it likely chose the wrong join strategy, and the fix is usually fresher statistics. Note ANALYZE actually executes, so be careful with writes.",
+    concepts: ["EXPLAIN", "EXPLAIN ANALYZE", "Query planner statistics"],
     tags: ["explain"],
   },
   {
@@ -606,6 +627,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Each defeats the ordered structure the index relies on — a function changes the value, a leading wildcard removes the prefix to seek on, a composite index is sorted by its first column, and a type conversion is a function in disguise. Selecting fewer columns is harmless and can enable an index-only scan.",
+    concepts: ["Sargable predicate", "Leftmost prefix rule", "Implicit type conversion"],
     tags: ["indexes", "sargability"],
   },
   {
@@ -629,6 +651,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "OFFSET 9000 means fetching and throwing away 9,000 rows before returning anything. Keyset pagination — WHERE sort_key > :last_seen ORDER BY sort_key LIMIT n — seeks straight to the position and stays constant-time at any depth. It also stays correct when rows are inserted mid-traversal.",
+    concepts: ["Keyset pagination", "OFFSET", "Deep pagination"],
     tags: ["pagination", "offset"],
   },
 ];

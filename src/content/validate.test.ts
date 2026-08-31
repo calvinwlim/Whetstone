@@ -27,6 +27,7 @@ function mcq(over: Partial<Question> = {}): Question {
     difficulty: 2,
     prompt: "p",
     explanation: "e",
+    concepts: ["Example concept"],
     options: [
       { id: "a", text: "a" },
       { id: "b", text: "b" },
@@ -122,6 +123,7 @@ describe("multi checks", () => {
       difficulty: 2,
       prompt: "p",
       explanation: "e",
+    concepts: ["Example concept"],
       options: [
         { id: "a", text: "a" },
         { id: "b", text: "b" },
@@ -161,6 +163,7 @@ describe("short answer checks", () => {
       difficulty: 2,
       prompt: "p",
       explanation: "e",
+    concepts: ["Example concept"],
       answers: ["ttl"],
       ...over,
     }) as Question;
@@ -190,6 +193,7 @@ describe("matching checks", () => {
       difficulty: 2,
       prompt: "p",
       explanation: "e",
+    concepts: ["Example concept"],
       pairs: [
         { left: "A", right: "1" },
         { left: "B", right: "2" },
@@ -250,6 +254,7 @@ describe("ordering checks", () => {
       difficulty: 2,
       prompt: "p",
       explanation: "e",
+    concepts: ["Example concept"],
       items: ["one", "two", "three"],
       ...over,
     }) as Question;
@@ -338,21 +343,7 @@ describe("concept checks", () => {
     expect(errors.join(" ")).toMatch(/concept/i);
   });
 
-  test("rejects a concept written as a slug rather than a name", () => {
-    const errors = validateContent([track], [mcq({ concepts: ["n+1-query"] })]);
-    expect(errors.join(" ")).toMatch(/slug|hyphen/i);
-  });
+
 });
 
-describe("concept slug detection exceptions", () => {
-  test("accepts a command flag, which is a real searchable term", () => {
-    expect(
-      validateContent([track], [mcq({ concepts: ["--force-with-lease"] })]),
-    ).toEqual([]);
-  });
 
-  test("still rejects an ordinary lowercase slug", () => {
-    const errors = validateContent([track], [mcq({ concepts: ["cache-aside-pattern"] })]);
-    expect(errors.join(" ")).toMatch(/slug/i);
-  });
-});

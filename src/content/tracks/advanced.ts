@@ -24,6 +24,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Last-write-wins is a conflict resolution strategy that always produces a winner and therefore always loses data — here, a customer holds a confirmed booking that no longer exists. Tighter clocks do not help, because the problem is not ordering but that the invariant 'one seat, one booking' cannot be enforced by any strategy that lets two leaders accept writes independently. Inventory needs single-writer serialisation, or reservations with explicit conflict handling.",
+    concepts: ["Last-write-wins", "Conflict resolution", "Multi-leader replication"],
     tags: ["conflict-resolution", "invariants"],
   },
   {
@@ -47,6 +48,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The dual-write and backfill pattern keeps both copies live so you can verify they agree before anything depends on the new one, and every step is individually reversible. Copying then switching loses writes that landed during the copy; switching first sends reads to data that is not there yet; and a write lock is downtime by another name, which the requirement rules out.",
+    concepts: ["Dual write", "Resharding", "Zero-downtime migration"],
     tags: ["resharding", "migration"],
   },
   {
@@ -69,6 +71,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Timeouts bound the damage, circuit breakers stop paying the cost once failure is established, and bulkheads keep one sick dependency from consuming every connection the service has. Aggressive retries add load to something already struggling, and a bigger thread pool just means more threads stuck waiting — it delays the collapse rather than preventing it.",
+    concepts: ["Timeout", "Circuit breaker", "Bulkhead pattern"],
     tags: ["resilience", "cascading-failure"],
   },
   {
@@ -92,6 +95,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Write skew is the subtle one: both transactions read a shared premise, then write to disjoint rows, so nothing conflicts and both commit — while together they violate an invariant neither broke alone. Repeatable read does not stop it, because no row was read and then modified by the other transaction. You need serializable isolation, or you must materialise the conflict by locking the rows the decision was based on.",
+    concepts: ["Write skew", "Serializable isolation", "Materialising conflicts"],
     tags: ["write-skew", "isolation"],
   },
   {
@@ -115,6 +119,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Catching your own error and scoping its blast radius is a senior signal, not a failure — it is exactly what you would need to do in a real design review. Pressing on knowingly is worse than the original mistake, and quietly patching around it leaves an inconsistency the interviewer will find. Handing the decision to the interviewer avoids making the judgement call being assessed.",
+    concepts: ["Self-correction", "Blast radius", "Design review"],
     tags: ["self-correction"],
   },
   {
@@ -138,6 +143,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A spike converts an unknown into a known for a bounded cost, and a conditional estimate gives the planner something to act on now. Padding hides the risk inside a number people will treat as a commitment; refusing to estimate pushes the uncertainty onto someone with less information; and an optimistic date defers the bad news to the point where it is most expensive.",
+    concepts: ["Spike", "Conditional estimate", "Timebox"],
     tags: ["uncertainty", "spikes"],
   },
 ];

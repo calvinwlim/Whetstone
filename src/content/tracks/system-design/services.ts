@@ -154,6 +154,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "At-least-once means duplicates are certain over a long enough window, so correctness has to live in the consumer. Exactly-once delivery is not achievable across a network; exactly-once processing is, and it is built from at-least-once delivery plus idempotency. Acknowledging early converts duplicates into lost messages, which is worse for payments.",
+    concepts: ["At-least-once delivery", "Idempotent consumer", "Exactly-once processing"],
     tags: ["idempotency", "delivery"],
   },
   {
@@ -175,6 +176,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A dead letter queue. After a configured number of attempts the message is moved aside so the main queue keeps flowing, and a human can inspect what went wrong. Without one, a single poison message can stall an entire pipeline.",
+    concepts: ["Dead letter queue", "Poison message"],
     tags: ["dlq", "failure-handling"],
   },
   {
@@ -198,6 +200,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A queue deletes a message once it is acknowledged, so fan-out means the producer duplicating it and replay is impossible. A log retains an ordered record that independent consumer groups read at their own offsets, which gives you both fan-out and replay for free.",
+    concepts: ["Event log", "Consumer group", "Message replay"],
     tags: ["kafka", "fan-out"],
   },
   {
@@ -218,6 +221,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Backoff reduces pressure over time; jitter de-synchronises clients that all failed at the same instant and would otherwise retry at the same instant. Together they stop a retry storm. Neither guarantees success, and retries are slower by construction — that is the point.",
+    concepts: ["Exponential backoff", "Jitter", "Retry storm"],
     tags: ["retries", "backoff"],
   },
   {
@@ -241,6 +245,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The client supplies a unique key with the request; the server records it with the result and returns that same result for any retry carrying the key. Without it, the client must choose between risking a double charge and risking no charge at all. Switching to PUT does not help, because the resource id is server-generated.",
+    concepts: ["Idempotency key", "Idempotent operation"],
     tags: ["idempotency"],
   },
   {
@@ -264,6 +269,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Both symptoms are inherent to offsets. New rows inserted during scrolling shift everything down, so items repeat, and OFFSET 10000 still requires the database to walk and discard 10,000 rows. A cursor encodes where you actually stopped, so it stays correct under concurrent writes and fast at any depth.",
+    concepts: ["Cursor pagination", "Offset pagination"],
     tags: ["pagination"],
   },
   {
@@ -284,6 +290,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Additive changes are safe because existing callers keep working unchanged. Renaming a field breaks anyone reading it, and making an optional field required breaks every caller who omitted it. The practical rule: you can add, you cannot take away or rename.",
+    concepts: ["Backwards compatibility", "Breaking change", "API versioning"],
     tags: ["versioning", "compatibility"],
   },
   {
@@ -302,6 +309,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The 401/403 distinction is the one interviews probe: 401 means we do not know who you are, 403 means we know and you still cannot. Some APIs deliberately return 404 instead of 403 to avoid revealing that a resource exists at all.",
+    concepts: ["HTTP 401 Unauthorized", "HTTP 403 Forbidden", "HTTP 409 Conflict"],
     tags: ["http", "status-codes"],
   },
   {
@@ -325,6 +333,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A shared table is a shared contract. Neither team can alter the schema without coordinating with the other, so you have the deployment overhead and network latency of separate services with none of the independence they are supposed to buy. Each service should own its data and expose access through an API.",
+    concepts: ["Shared database antipattern", "Service boundary", "Coupling"],
     tags: ["boundaries", "coupling"],
   },
   {
@@ -348,6 +357,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A circuit breaker trips after repeated failures and fails fast instead of holding threads open, which both protects the caller and gives the struggling dependency room to recover. Longer timeouts and more retries make it strictly worse — they hold resources longer and add load to the thing already drowning.",
+    concepts: ["Circuit breaker", "Cascading failure", "Fail fast"],
     tags: ["circuit-breaker", "resilience"],
   },
   {
@@ -363,6 +373,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "The saga pattern. Each step is a local transaction, and each has a compensating action that semantically undoes it — you cannot roll back a committed transaction, so you issue a refund rather than un-charging. It trades atomicity for availability, deliberately.",
+    concepts: ["Saga pattern", "Compensating transaction"],
     tags: ["saga", "transactions"],
   },
   {
@@ -386,6 +397,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The outbox makes the event part of the same atomic database transaction as the data change, so they succeed or fail together. A separate relay reads the outbox and publishes with at-least-once delivery. Publishing first creates the opposite bug, and a finally block still fails if the process dies.",
+    concepts: ["Outbox pattern", "Dual write problem", "Change data capture"],
     tags: ["outbox", "consistency"],
   },
   {
@@ -408,6 +420,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A B-tree sorts by the start of the value, so it can seek efficiently for 'term%' but a leading wildcard could match anywhere and forces a scan. Substring and relevance search need an inverted index, which maps each term to the documents that contain it.",
+    concepts: ["Inverted index", "B-tree index", "Full-text search"],
     tags: ["inverted-index"],
   },
   {
@@ -431,6 +444,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Stemming reduces words to a common root so morphological variants match. Without it, the index holds 'running' and the query asks for 'run', and they simply do not match. The same analyzer must run at index time and query time — a mismatch there is the classic cause of a search that finds nothing.",
+    concepts: ["Stemming", "Text analysis", "Analyzer"],
     tags: ["analysis", "stemming"],
   },
   {
@@ -453,6 +467,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Embeddings capture meaning, which is what makes semantic search work — and meaning is exactly the wrong tool for a part number. A user typing an exact SKU wants that item, not something conceptually similar. Hybrid search runs both and fuses the rankings.",
+    concepts: ["Hybrid search", "Vector search", "Semantic search"],
     tags: ["vector-search", "hybrid"],
   },
   {
@@ -475,6 +490,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Averages are dominated by the common case and say nothing about the tail. With p50 at 40ms and p99 at 4s, one in a hundred requests is dreadful — and a page issuing 100 backend calls will hit that tail on nearly every load. Alert on p95 and p99.",
+    concepts: ["p99 latency", "Tail latency", "Percentile"],
     tags: ["percentiles", "latency"],
   },
   {
@@ -495,6 +511,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Latency, traffic, errors, and saturation — from Google's SRE book. Together they cover almost everything a service dashboard needs. Deployment frequency is a DORA delivery metric: useful, but it measures your team rather than your running system.",
+    concepts: ["Four golden signals", "Saturation", "Service monitoring"],
     tags: ["golden-signals"],
   },
   {
@@ -518,6 +535,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Metrics systems store one time series per unique label combination, so a user id label multiplies your series count by your user count. High-cardinality dimensions belong in logs and traces, which are designed to be queried rather than pre-aggregated.",
+    concepts: ["Cardinality explosion", "Time series", "Metric labels"],
     tags: ["cardinality", "cost"],
   },
   {
@@ -540,6 +558,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "High CPU on a healthy, well-utilised service is fine — and it is entirely possible to be at 40% CPU while failing every request. Alerting on symptoms ties every page to real user impact. Cause metrics are for diagnosis once you are already investigating, and paging on them trains people to ignore pages.",
+    concepts: ["Symptom-based alerting", "Alert fatigue", "Service level objective"],
     tags: ["alerting", "symptoms"],
   },
 ];

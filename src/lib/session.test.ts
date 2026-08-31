@@ -19,6 +19,7 @@ function q(
     difficulty: opts.difficulty ?? 3,
     prompt: id,
     explanation: "e",
+    concepts: ["Example concept"],
     options: [
       { id: "a", text: "a" },
       { id: "b", text: "b" },

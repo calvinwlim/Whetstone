@@ -54,6 +54,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "If the right chunk was not retrieved, no amount of prompting or model capability recovers it — the information simply was not there. RAG quality is dominated by retrieval, which is why you measure retrieval recall separately from answer quality: it tells you which half of the system to fix.",
+    concepts: ["Retrieval-augmented generation", "Retrieval recall", "Grounding"],
     tags: ["rag", "retrieval"],
   },
   {
@@ -77,6 +78,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Embeddings capture meaning, and a SKU has no meaning to capture — it is an identifier. That is the one thing keyword search does perfectly. Hybrid retrieval runs both and fuses the results, which is why production search over catalogues, code, and error codes is almost never pure vector.",
+    concepts: ["Hybrid search", "Vector embedding", "Keyword search"],
     tags: ["hybrid-search", "vector"],
   },
   {
@@ -98,6 +100,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Without it, generating token N would reprocess all N-1 previous tokens, making long outputs quadratic. It is also why long prompts are expensive in GPU *memory* rather than just compute, and why KV cache size often limits how many requests you can serve concurrently. Caching whole responses is a separate, useful trick.",
+    concepts: ["KV cache", "Attention mechanism", "Inference optimisation"],
     tags: ["serving", "kv-cache"],
   },
   {
@@ -116,6 +119,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The two-stage shape is deliberate: a fast approximate search casts a wide net, then an expensive re-ranker fixes the ordering over a small candidate set. Running the accurate model over the whole corpus would be correct and unaffordable.",
+    concepts: ["Chunking", "Embedding model", "Vector index", "Re-ranking"],
     tags: ["rag", "architecture"],
   },
   {
@@ -139,6 +143,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A chunk gets one embedding, so a long chunk's vector is an average over many topics and matches queries less sharply. It also spends context window on text that does not help. Chunk size is a genuine tuning parameter with a real optimum, not a bigger-is-better dial.",
+    concepts: ["Chunking", "Embedding", "Context dilution"],
     tags: ["chunking", "rag"],
   },
   {
@@ -162,6 +167,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Streaming changes nothing about total time and everything about perceived latency — the user starts reading immediately instead of watching a spinner. Time to first token is the metric that tracks the felt experience; larger batches usually make individual latency slightly worse while raising aggregate throughput.",
+    concepts: ["Time to first token", "Token streaming", "Perceived latency"],
     tags: ["streaming", "latency"],
   },
   {
@@ -182,6 +188,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Separating retrieval from generation tells you which half to fix; a reference set makes changes comparable; reading real outputs catches what automated judging misses; and groundedness is the direct measure of whether the system is inventing things. Parameter count predicts nothing about your task.",
+    concepts: ["Retrieval recall", "Groundedness", "Reference dataset"],
     tags: ["evaluation"],
   },
   {
@@ -197,6 +204,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Prefill, followed by decode. They have genuinely different bottlenecks, which is why serving stacks schedule them separately — and why a long prompt with a short answer has a completely different cost profile from a short prompt with a long answer.",
+    concepts: ["Prefill", "Decode", "Memory bandwidth"],
     tags: ["serving", "prefill-decode"],
   },
   {
@@ -220,6 +228,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "If retrieval found nothing, the model has nothing to ground an answer in, and asking it nicely not to invent one is not a control. Thresholding on retrieval score and routing to a refusal or a human is an actual system behaviour you can test. Temperature zero makes output deterministic, not correct.",
+    concepts: ["Hallucination", "Guardrail", "Retrieval threshold"],
     tags: ["guardrails", "hallucination"],
   },
   {
@@ -241,6 +250,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "RAG grounds the model in your data at request time, without changing the model. That is its main advantage over fine-tuning: your knowledge base can change every minute, and updating it is an indexing job rather than a training run.",
+    concepts: ["Retrieval-augmented generation", "Fine-tuning"],
     tags: ["rag", "fundamentals"],
   },
 ];

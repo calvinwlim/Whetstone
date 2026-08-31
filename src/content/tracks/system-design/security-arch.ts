@@ -88,6 +88,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Identity first, permissions second. The HTTP codes follow: 401 means we cannot tell who you are, 403 means we can and you still may not do this. Some APIs deliberately return 404 rather than 403 so they do not reveal that a resource exists.",
+    concepts: ["Authentication", "Authorisation", "HTTP 401 Unauthorized"],
     tags: ["authn-authz", "fundamentals"],
   },
   {
@@ -109,6 +110,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Speed is the flaw. General-purpose hashes are built to be fast, which is exactly what an offline attacker wants. bcrypt, scrypt, and Argon2 are deliberately slow and memory-hard, with a tunable cost you raise as hardware improves. SHA-256 can be salted; being salted does not fix being fast.",
+    concepts: ["bcrypt", "Argon2", "Password hashing", "Salt"],
     tags: ["passwords", "hashing"],
   },
   {
@@ -130,6 +132,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Parameterisation separates code from data structurally, so input cannot change the shape of the query no matter what it contains. Manual escaping and keyword blocklists are both games of catch-up you eventually lose. A least-privilege database user limits the damage but does not prevent the injection.",
+    concepts: ["SQL injection", "Parameterised query", "Prepared statement"],
     tags: ["injection"],
   },
   {
@@ -147,6 +150,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Each defence works at the point where trust is actually violated. Note that XSS is fixed on output, not input — the same string is harmless in a database and dangerous in an HTML attribute, so encoding belongs where the context is known.",
+    concepts: ["Cross-site scripting", "Cross-site request forgery", "Credential stuffing", "SameSite cookie"],
     tags: ["owasp"],
   },
   {
@@ -170,6 +174,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Statelessness is the whole feature and the whole limitation: a valid signature is sufficient, so nothing consults a database to ask whether the token is still allowed. Rotating the signing key revokes every token at once, which is a blunt instrument. The standard compromise is short-lived access tokens with a revocable refresh token.",
+    concepts: ["JSON Web Token", "Token revocation", "Refresh token"],
     tags: ["jwt", "sessions"],
   },
   {
@@ -185,6 +190,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "The valet key pattern — a presigned upload URL is the everyday example. The client gets exactly one narrow permission for a short window, and your API stays out of the bandwidth path entirely.",
+    concepts: ["Valet key pattern", "Presigned URL"],
     tags: ["valet-key", "patterns"],
   },
   {
@@ -204,6 +210,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Keep them out, scope them tight, rotate them. Committing them encrypted still puts them in every clone and every backup forever, and one shared high-privilege credential means any single compromise is total and you cannot tell which service leaked it.",
+    concepts: ["Secrets management", "Least privilege", "Secret rotation"],
     tags: ["secrets", "least-privilege"],
   },
 
@@ -229,6 +236,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Different shapes and volumes on each side is the exact signal for CQRS: model each for its own job rather than compromising on one schema. The cost is real — you now maintain a projection and accept a window where the read side lags. Applying CQRS where reads and writes look alike is a classic over-correction.",
+    concepts: ["CQRS", "Read model", "Eventual consistency"],
     tags: ["cqrs"],
   },
   {
@@ -251,6 +259,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Because state is derived by replaying history, every event format you have ever written must remain interpretable — you cannot migrate the past away. And replay time grows with history, so you add periodic snapshots. In exchange you get a genuine audit trail and the ability to reconstruct any past state.",
+    concepts: ["Event sourcing", "Snapshot", "Schema evolution"],
     tags: ["event-sourcing"],
   },
   {
@@ -269,6 +278,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "These come up by name, so recognising them is worth more than deriving them live. Strangler fig in particular is the answer to almost any \"how would you migrate off this?\" question, because it makes every step small and reversible.",
+    concepts: ["Strangler fig pattern", "Sidecar pattern", "Backend for frontend", "Anti-corruption layer"],
     tags: ["catalogue"],
   },
   {
@@ -292,6 +302,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Big-bang rewrites fail because the risk all lands on one date, and the old system keeps changing while you build. Strangler fig moves traffic incrementally, so each slice is independently verifiable and independently revertible, and you are delivering value long before the last piece is done.",
+    concepts: ["Strangler fig pattern", "Incremental migration"],
     tags: ["strangler-fig", "migration"],
   },
   {
@@ -314,6 +325,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It is precomputation, so it is the same bargain as any cache: you trade freshness and a refresh obligation for read speed. The question that decides whether it is worth it is how stale the data may be and how expensive the refresh is relative to the query you avoided.",
+    concepts: ["Materialised view", "Precomputation", "Cache invalidation"],
     tags: ["materialised-view"],
   },
   {
@@ -329,6 +341,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Leader election: nodes coordinate to pick one to hold the role, and only that node runs the job. Implementations lean on a consensus store or a lease with a TTL — and the subtle part is fencing, so a leader that pauses and wakes up after losing its lease cannot still act as leader.",
+    concepts: ["Leader election", "Distributed lock", "Fencing token"],
     tags: ["leader-election"],
   },
 ];

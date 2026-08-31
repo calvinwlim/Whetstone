@@ -124,6 +124,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Sequential steps add, and the sum is dominated by the largest term: O(n log n) + O(n) = O(n log n). A useful habit is that once a sort appears, it is almost always the bound unless something heavier follows.",
+    concepts: ["Big-O notation", "Asymptotic dominance", "Comparison sort"],
     tags: ["big-o", "dominance"],
   },
   {
@@ -146,6 +147,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Amortised analysis averages cost across a sequence of operations and is a worst-case guarantee for that sequence — no adversary can make a run of appends expensive. That is different from 'average case', which is about input distribution and is what hash table lookup gives you.",
+    concepts: ["Amortised analysis", "Dynamic array", "Worst-case complexity"],
     tags: ["amortised"],
   },
   {
@@ -164,6 +166,7 @@ const questions: Question[] = [
     ],
     explanation:
       "Worth remembering that hash map lookup is O(1) on average and O(n) in the worst case when collisions degrade the bucket to a list. Comparison sorts cannot beat O(n log n); counting and radix sorts do, by not comparing.",
+    concepts: ["Big-O notation", "Binary search", "Hash table"],
     tags: ["big-o", "reference"],
   },
   {
@@ -187,6 +190,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Recursion depth is space. A million frames will exhaust a typical stack long before memory runs out, which is why the iterative version is not merely a stylistic preference here. Languages with guaranteed tail-call elimination avoid this; most mainstream ones do not.",
+    concepts: ["Space complexity", "Call stack", "Stack overflow"],
     tags: ["space", "recursion"],
   },
   {
@@ -207,6 +211,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "A heap gives O(1) access to the extreme element and O(log n) insert and extract, which is exactly the operation set required. Keeping a sorted array costs O(n) per insertion to maintain order you never actually use, and a hash map has no ordering at all.",
+    concepts: ["Heap", "Priority queue", "Sorted array"],
     tags: ["heap"],
   },
   {
@@ -230,6 +235,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Hashing deliberately destroys ordering — that is how it distributes keys evenly. A balanced tree keeps keys sorted, so a range query is a seek plus an in-order walk. You pay O(log n) instead of O(1) for point lookups, which is the price of the ordering.",
+    concepts: ["Balanced tree", "Range query", "Hash table"],
     tags: ["trees", "range-queries"],
   },
   {
@@ -245,6 +251,7 @@ const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A trie (prefix tree). Each node is one character, so walking the prefix takes time proportional to its length regardless of how many words are stored, and everything below that node shares the prefix. A radix tree compresses single-child chains to save memory.",
+    concepts: ["Trie", "Prefix tree", "Radix tree"],
     tags: ["trie", "prefix"],
   },
   {
@@ -268,6 +275,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "A bounded heap of size k holds only the current best 10: compare each incoming value to the smallest, replace if larger. That is O(n log k) time and O(k) space — critically, it never needs to hold the full stream, which sorting does.",
+    concepts: ["Top-k selection", "Min-heap", "Streaming algorithm"],
     tags: ["top-k", "streaming"],
   },
   {
@@ -288,6 +296,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "The tells are *contiguous* and a constraint that can be violated and repaired: grow the window on the right, shrink from the left when distinct characters exceed k. Each character enters and leaves at most once, giving O(n) rather than the O(n²) of checking every substring.",
+    concepts: ["Sliding window", "Two pointers", "Contiguous subarray"],
     tags: ["sliding-window"],
   },
   {
@@ -311,6 +320,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "The tell is 'minimum X such that a condition holds', with the condition monotonic — if capacity c works, every capacity above it works. You binary search the answer space rather than an array, testing feasibility at each midpoint. This is one of the highest-value patterns to recognise on sight.",
+    concepts: ["Binary search on the answer", "Monotonic predicate", "Search space"],
     tags: ["binary-search"],
   },
   {
@@ -333,6 +343,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "BFS explores level by level, so the first time it reaches a node it has done so in the fewest edges — that property is what makes it correct for unweighted shortest paths. Both handle cycles with a visited set, and BFS typically uses *more* memory, since a frontier can be much wider than a path is deep. Weighted graphs need Dijkstra.",
+    concepts: ["Breadth-first search", "Depth-first search", "Shortest path"],
     tags: ["bfs-dfs", "graphs"],
   },
   {
@@ -353,6 +364,7 @@ const questions: Question[] = [
     answers: ["a", "b"],
     explanation:
       "Overlapping subproblems is what makes caching pay off — without it, you are doing plain divide and conquer. Optimal substructure means an optimal solution is built from optimal solutions to subproblems, which is what makes the recurrence valid. Sorting and input size are irrelevant to whether DP applies.",
+    concepts: ["Dynamic programming", "Overlapping subproblems", "Optimal substructure"],
     tags: ["dynamic-programming"],
   },
   {
@@ -376,6 +388,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "The nested-loop version uses no extra memory and takes quadratic time. The hash set version remembers what it has already seen, so each element needs one O(1) lookup instead of a scan. Saying the trade out loud — 'I'll spend O(n) space to get O(n) time' — is the part interviewers listen for.",
+    concepts: ["Space-time trade-off", "Hash set", "Memoisation"],
     tags: ["hashing", "tradeoff"],
   },
   {
@@ -399,6 +412,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "A Bloom filter answers 'definitely not present' or 'probably present' using a bit array and several hash functions, in orders of magnitude less memory than storing the values. The tolerance for false positives is exactly what buys the space saving — and it never produces a false negative, which is why crawlers use it.",
+    concepts: ["Bloom filter", "Probabilistic data structure", "False positive"],
     tags: ["bloom-filter", "approximation"],
   },
   {
@@ -421,6 +435,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Precompute cumulative sums once, then any range sum is one subtraction. It is worth it when queries are frequent and the data is static — and it actively hurts when the underlying values change often, because every update invalidates the prefixes after it. That is the same reasoning behind a materialised view.",
+    concepts: ["Prefix sum", "Precomputation", "Range query"],
     tags: ["precomputation", "prefix-sum"],
   },
 ];

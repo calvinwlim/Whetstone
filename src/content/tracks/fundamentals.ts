@@ -22,6 +22,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Time to live is a caching instruction. A long TTL means fewer lookups and slower changes; a short one means the opposite. It is why DNS changes appear to take effect gradually — you are waiting for other people's caches to expire.",
+    concepts: ["TTL", "DNS caching"],
     tags: ["fundamentals", "ttl"],
   },
   {
@@ -43,6 +44,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "TCP retransmits what is lost and delivers in order, which costs a handshake and waiting. UDP skips all of it, which is why live video and games prefer it — a dropped frame beats a pause. Neither provides encryption on its own.",
+    concepts: ["TCP", "UDP", "Reliable delivery"],
     tags: ["fundamentals", "tcp-udp"],
   },
   {
@@ -61,6 +63,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Availability is uptime as a fraction, usually quoted in nines. Throughput and latency are separate properties — a service can be fully available and unusably slow, which is why you measure all three.",
+    concepts: ["Availability", "Uptime", "Nines"],
     tags: ["fundamentals"],
   },
   {
@@ -80,6 +83,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "This is the N+1 query problem. Each query may be quick, but a hundred of them is a hundred round trips. It hides in development where the list has three items and appears in production where it has three hundred.",
+    concepts: ["N+1 query problem", "Round-trip latency"],
     tags: ["fundamentals", "n+1"],
   },
   {
@@ -98,6 +102,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Idempotency is what makes retrying safe. It matters because a client that times out cannot tell whether the request landed, so retrying is its only option — and that must not create a second order or a second charge.",
+    concepts: ["Idempotency", "Retry safety"],
     tags: ["fundamentals", "idempotency"],
   },
   {
@@ -119,6 +124,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Anything committed lives in every clone and every backup forever, even after you delete it. And anything in a frontend bundle is public by definition — it is shipped to the browser, where anyone can read it.",
+    concepts: ["Secrets management", "Environment variable", "Source control hygiene"],
     tags: ["fundamentals", "secrets"],
   },
   {
@@ -140,6 +146,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Named after the electrical device: it trips to protect what is behind it. Continuing to call something that is already failing wastes your resources and adds load to a struggling service, so failing fast is better for both sides.",
+    concepts: ["Circuit breaker", "Fail fast", "Cascading failure"],
     tags: ["fundamentals", "circuit-breaker"],
   },
 
@@ -163,6 +170,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Scoring a model on data it trained on measures memorisation, not learning. Held-out data is the only way to estimate how it will behave on the new inputs it will actually face.",
+    concepts: ["Training set", "Test set", "Generalisation"],
     tags: ["fundamentals", "splits"],
   },
   {
@@ -184,6 +192,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Everything the model can see — instructions, conversation history, retrieved documents, and its own output — must fit inside it. Models have no memory between requests; a chat feels continuous only because the history is re-sent each turn.",
+    concepts: ["Context window", "Token", "Statelessness"],
     tags: ["fundamentals", "context"],
   },
   {
@@ -205,6 +214,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The loop is the whole idea, and the source of every hard problem: it can take many steps, and without limits on iterations, cost, and permissions it can take many wrong ones.",
+    concepts: ["Agent loop", "Tool use"],
     tags: ["fundamentals", "agents"],
   },
   {
@@ -226,6 +236,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It is an integration standard, not a model host. Write a server once and any MCP-capable client can use its capabilities, instead of every assistant needing a bespoke integration with every tool.",
+    concepts: ["Model Context Protocol", "Integration standard"],
     tags: ["fundamentals", "mcp"],
   },
   {
@@ -244,6 +255,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Merging is the act of taking ownership. If you cannot explain it in review, you cannot maintain it or debug it later — which makes it a merge blocker rather than a technicality.",
+    concepts: ["Code ownership", "Code review"],
     tags: ["fundamentals", "ownership"],
   },
   {
@@ -266,6 +278,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Models sometimes invent package names, and attackers register the commonly invented ones. Installing can execute scripts, so verification has to happen before installation rather than after.",
+    concepts: ["Package hallucination", "Supply chain security", "Install script"],
     tags: ["fundamentals", "dependencies"],
   },
 
@@ -286,6 +299,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "REST models things rather than actions: the URL names a resource and the HTTP method says what to do with it. That is why you rarely see verbs in a well-designed REST path.",
+    concepts: ["REST", "Resource", "HTTP method"],
     tags: ["fundamentals", "rest"],
   },
   {
@@ -307,6 +321,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It is the promise you are making about the interface. Written in a machine-readable form such as OpenAPI it can generate clients, validate requests, and be diffed for breaking changes — which is what makes it enforceable rather than aspirational.",
+    concepts: ["API contract", "OpenAPI", "Interface agreement"],
     tags: ["fundamentals", "contracts"],
   },
   {
@@ -328,6 +343,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It inverts the integration: instead of you asking repeatedly whether anything changed, they tell you when it does. That removes polling latency and wasted requests, and makes you responsible for an endpoint anyone on the internet can call.",
+    concepts: ["Webhook", "Polling", "Event notification"],
     tags: ["fundamentals", "webhooks"],
   },
   {
@@ -349,6 +365,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Before delegated authorisation, letting one service access another meant handing over your password. OAuth2 replaces that with a scoped, revocable token — which is why 'sign in with' flows never ask the third party for your credentials.",
+    concepts: ["OAuth 2.0", "Delegated authorisation", "Access token"],
     tags: ["fundamentals", "oauth"],
   },
   {
@@ -369,6 +386,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Authentication establishes who is calling; authorisation decides what they may touch. Without the ownership check, changing the id in the URL walks through everyone else's data — the most common serious API flaw there is.",
+    concepts: ["Broken Object Level Authorization", "Authorisation check", "IDOR"],
     tags: ["fundamentals", "bola"],
   },
   {
@@ -387,6 +405,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Additive changes are safe because existing clients simply ignore what they do not know about. The other three all break someone — and 'nobody on your team uses it' says nothing about the consumers you do not control.",
+    concepts: ["Backwards compatibility", "Additive change", "Breaking change"],
     tags: ["fundamentals", "compatibility"],
   },
 
@@ -410,6 +429,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It is a referential integrity constraint: the database refuses writes that would point at nothing. That guarantee holds for every writer, including migration scripts and manual fixes, which is what application-level checking cannot promise.",
+    concepts: ["Foreign key", "Referential integrity", "Database constraint"],
     tags: ["fundamentals", "constraints"],
   },
   {
@@ -431,6 +451,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A schema applied by hand exists only where someone remembered to apply it. Versioned migrations mean any environment can be rebuilt to a known state, and you can see which code change a schema change belonged to.",
+    concepts: ["Database migration", "Version control", "Reproducible environment"],
     tags: ["fundamentals", "migrations"],
   },
   {
@@ -452,6 +473,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Least privilege bounds the blast radius. An application that can read and write rows but not drop tables turns a potentially catastrophic bug into a contained one.",
+    concepts: ["Least privilege", "Database role", "Blast radius"],
     tags: ["fundamentals", "least-privilege"],
   },
   {
@@ -473,6 +495,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The 'combined with other data' part is what surprises people: a postcode, a birth date, and a gender together identify a large share of a population, even though none of them is a name.",
+    concepts: ["Personally identifiable information", "Re-identification", "Data privacy"],
     tags: ["fundamentals", "pii"],
   },
   {
@@ -494,6 +517,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Users authenticate once with the identity provider, and applications trust that. The operational win is bigger than the convenience: when someone leaves, access can be removed in one place rather than in thirty.",
+    concepts: ["Single sign-on", "Identity provider", "Deprovisioning"],
     tags: ["fundamentals", "sso"],
   },
   {
@@ -516,6 +540,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Transactional workloads are many small operations; analytical ones scan enormous ranges. Running both on the same machine means they fight over memory and I/O, and users feel it as unexplained slowness.",
+    concepts: ["OLTP", "OLAP", "Read replica"],
     tags: ["fundamentals", "oltp-olap"],
   },
   {
@@ -537,6 +562,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The whole design problem is how much tenants share. Sharing more is cheaper and denser; sharing less isolates them more strongly. Whatever you choose, keeping one customer's data away from another is the requirement that cannot be relaxed.",
+    concepts: ["Multi-tenancy", "Tenant isolation"],
     tags: ["fundamentals", "tenancy"],
   },
 
@@ -560,6 +586,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The attacker's code runs in your origin with your user's session, so it can do anything that user could. It is why untrusted content must be escaped on output rather than merely trusted on input.",
+    concepts: ["Cross-site scripting", "Same-origin policy", "Output encoding"],
     tags: ["fundamentals", "xss"],
   },
   {
@@ -581,6 +608,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It should carry purpose rather than describe pixels. A decorative image takes an empty alt so screen readers skip it — omitting the attribute entirely is different and worse, since some readers then announce the filename.",
+    concepts: ["Alt text", "Screen reader", "Decorative image"],
     tags: ["fundamentals", "alt-text"],
   },
   {
@@ -602,6 +630,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Unlike an image, script has to be parsed and run on the main thread — the same thread handling user input. That is why bundle size shows up in responsiveness, and why a page can look finished while ignoring clicks.",
+    concepts: ["Bundle size", "Main thread", "Time to Interactive"],
     tags: ["fundamentals", "bundle-size"],
   },
   {
@@ -624,6 +653,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Server rendering gets content on screen sooner and is indexable; client rendering is simpler to host and can feel snappier once loaded. Most real applications mix them per route rather than choosing one for everything.",
+    concepts: ["Server-side rendering", "Client-side rendering", "Hydration"],
     tags: ["fundamentals", "rendering"],
   },
 
@@ -644,6 +674,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Unmatched rows are dropped from both sides. If you need to keep rows that have no match — customers who have never ordered, for instance — you want a LEFT JOIN instead.",
+    concepts: ["INNER JOIN", "LEFT JOIN"],
     tags: ["fundamentals", "joins"],
   },
   {
@@ -665,6 +696,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It turns many rows into one per group, which is what lets COUNT, SUM, and AVG mean something. Sorting is ORDER BY, deduplicating is DISTINCT, and filtering is WHERE — all commonly confused with it.",
+    concepts: ["GROUP BY", "Aggregate function", "ORDER BY"],
     tags: ["fundamentals", "group-by"],
   },
   {
@@ -686,6 +718,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "SQL uses three-valued logic: true, false, and unknown. Since NULL represents an unknown value, asking whether it equals anything — including another NULL — yields unknown, and WHERE keeps only rows that are true.",
+    concepts: ["NULL semantics", "IS NULL", "Three-valued logic"],
     tags: ["fundamentals", "nulls"],
   },
   {
@@ -705,6 +738,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "GROUP BY collapses rows; a window function does not. That is why you can show each employee next to their department's average without joining an aggregate back to the original table.",
+    concepts: ["Window function", "GROUP BY", "PARTITION BY"],
     tags: ["fundamentals", "window"],
   },
   {
@@ -723,6 +757,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It is a name for a step, and it exists only for the duration of the query. The benefit is readability — four named steps are reviewable where four nested subqueries are not — rather than speed.",
+    concepts: ["Common table expression", "Query readability"],
     tags: ["fundamentals", "cte"],
   },
   {
@@ -744,6 +779,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "An index is a sorted structure supporting fast lookup. It costs storage and slows writes, since every change must maintain it — so an index nothing queries is pure overhead.",
+    concepts: ["Database index", "Table scan", "Write amplification"],
     tags: ["fundamentals", "indexes"],
   },
   {
@@ -762,6 +798,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Retention is the honest metric because acquisition can be bought and retention cannot. A product with excellent signups and poor retention is filling a leaking bucket, and totals will hide that for a surprisingly long time.",
+    concepts: ["Retention", "Acquisition", "Churn"],
     tags: ["fundamentals", "retention"],
   },
   {
@@ -784,6 +821,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Temperature is a confounder: it drives both independently, producing a real correlation with no causal link between them. Reverse causation and selection effects are the other two standard reasons correlation fails to imply causation.",
+    concepts: ["Correlation versus causation", "Confounding variable"],
     tags: ["fundamentals", "correlation"],
   },
   {
@@ -805,6 +843,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Randomisation is what makes the comparison valid. Splitting by anything correlated with behaviour — signup date, region, device — means you are measuring that characteristic rather than your change.",
+    concepts: ["Randomisation", "A/B testing", "Control group"],
     tags: ["fundamentals", "randomisation"],
   },
 ];

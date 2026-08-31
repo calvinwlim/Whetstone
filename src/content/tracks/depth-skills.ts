@@ -26,6 +26,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "An executive is deciding whether to fund and when to expect it, so lead with outcome and risk. The technical breakdown is your evidence, not your argument — offer it, do not open with it. Alternatives matter to reviewers of the design, not to the person approving the time.",
+    concepts: ["Executive communication", "Risk framing", "Abstraction level"],
     tags: ["executives"],
   },
   {
@@ -49,6 +50,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A new engineer's first real risk is breaking something they did not know mattered. Invariants and sharp edges are the highest-value hour. They can read the file layout themselves; they cannot infer which assumptions the code silently depends on.",
+    concepts: ["Onboarding", "System invariants", "Knowledge transfer"],
     tags: ["onboarding"],
   },
   {
@@ -69,6 +71,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Consequence first earns attention, analogy limits prevent confident misunderstanding, and checking in prevents the whole conversation missing. Insisting on internal vocabulary and exhaustive edge cases is precision aimed at yourself rather than the listener — it feels rigorous and transfers nothing.",
+    concepts: ["Technical translation", "Analogy", "Jargon"],
     tags: ["translation"],
   },
   {
@@ -92,6 +95,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Support's job is to set expectations for people who do not know your service names. Symptoms and advice are directly usable; root cause and error rates require translation they should not have to do mid-conversation. Pointing them at the incident channel outsources the translation entirely.",
+    concepts: ["Incident communication", "User-visible impact", "Support enablement"],
     tags: ["support", "incidents"],
   },
   {
@@ -108,6 +112,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Its limits. An analogy builds a mental model fast and the listener will keep extending it after you stop talking. Saying where it breaks — \"like a queue, except the same person can be served twice\" — pre-empts exactly the confident wrong conclusion.",
+    concepts: ["Analogy", "Abstraction leak"],
     tags: ["analogies"],
   },
 
@@ -128,6 +133,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Steelmanning first earns the right to object. A concrete failure scenario is checkable where a general worry is not. Stating confidence lets others weight your input, and naming your own falsifier turns a standoff into something the team can actually resolve.",
+    concepts: ["Steelmanning", "Falsifiable claim", "Confidence calibration"],
     tags: ["structure"],
   },
   {
@@ -151,6 +157,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A specific question is hard to wave away and easy to answer if they have already thought about it. It also distinguishes the two possibilities: they may have context you lack, or they may not have considered it. Deferring loses the information, and volume does not add evidence.",
+    concepts: ["Specific questioning", "Constructive disagreement"],
     tags: ["seniority", "pushback"],
   },
   {
@@ -172,6 +179,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Escalation spends credibility, so save it for decisions where being wrong is expensive and difficult to undo. Reversible decisions are usually better settled by trying one and watching. Refusing to ever escalate is its own failure — some calls genuinely need a wider view.",
+    concepts: ["Escalation", "Reversible decision", "Credibility"],
     tags: ["escalation"],
   },
   {
@@ -195,6 +203,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Circular arguments are usually preference arguments with no resolution path. Finding a checkable requirement — does it need cross-table transactions, what is the write volume — converts it into a question with an answer. Voting settles it without anyone learning why.",
+    concepts: ["Preference versus evidence", "Decision criteria"],
     tags: ["resolution"],
   },
 
@@ -220,6 +229,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Showing you can see the whole problem and then deliberately bound it is the signal being tested — that is what scoping is. Shallow breadth demonstrates nothing in depth, and silently designing your favourite part looks like you missed the rest. Handing the choice over skips the judgement call.",
+    concepts: ["Scoping", "Depth over breadth", "Design interview framework"],
     tags: ["scoping", "interviews"],
   },
   {
@@ -236,6 +246,7 @@ export const questions: Question[] = [
     typoTolerance: false,
     explanation:
       "About 46 — there are 86,400 seconds in a day, so a useful shortcut is that one million per day is roughly 12 per second. Peak is typically two to three times the average, so plan for well over a hundred.",
+    concepts: ["Back-of-the-envelope estimation", "Requests per second", "Peak load"],
     tags: ["estimation"],
   },
   {
@@ -256,6 +267,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Latency forces precomputation or caching, read-your-writes forces routing decisions, retention drives storage tiering and cost, and availability drives redundancy and failover. Language choice changes what the code looks like, not the shape of the system.",
+    concepts: ["Non-functional requirements", "Latency budget", "Data retention"],
     tags: ["requirements"],
   },
 
@@ -281,6 +293,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Managing your own time out loud is a positive signal, and flagging what you are deferring shows you are choosing rather than forgetting. Moving silently reads as losing your thread, and finishing a low-value detail because you started it is the sunk cost fallacy in real time.",
+    concepts: ["Timeboxing", "Signposting", "Time management"],
     tags: ["timeboxing"],
   },
   {
@@ -303,6 +316,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The close is the last thing the interviewer hears and often what they write down. A summary plus a named tradeoff plus a next step demonstrates you know what you built and what it cost. Trailing off, or listing what you did not reach, wastes the strongest moment you have.",
+    concepts: ["Summarising", "Trade-off articulation", "Closing"],
     tags: ["closing"],
   },
   {
@@ -326,6 +340,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "An interruption is usually a signal about what they care about, so ignoring it is a mistake — but so is abandoning your structure every time one arrives. A short answer plus a commitment to return respects both their question and your plan, and keeps you in control of the time.",
+    concepts: ["Interruption handling", "Signposting"],
     tags: ["interruptions"],
   },
 
@@ -351,6 +366,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Naming what you gave up is what makes a choice read as reasoned rather than defaulted into. Adding the condition that would flip the decision — cost at scale, a capability the service lacks — shows you know the boundary of your own answer, which is the thing actually being probed.",
+    concepts: ["Build versus buy", "Trade-off analysis", "Decision boundary"],
     tags: ["build-vs-buy"],
   },
   {
@@ -374,6 +390,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "You already agreed the requirements, so the productive move is to make your reasoning checkable and find out whether they are testing your arithmetic or introducing a new constraint. Redesigning immediately abandons the requirements you scoped; agreeing without engaging discards your own analysis.",
+    concepts: ["Capacity estimation", "Requirements grounding", "Defending a design"],
     tags: ["defending"],
   },
   {
@@ -394,6 +411,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "All three show you understand the shape of your own decision rather than having recalled a default. Appealing to industry standard skips the reasoning entirely, and waiting to read the room avoids demonstrating judgement, which is the only thing the question is measuring.",
+    concepts: ["Confidence calibration", "Decision boundary", "Intellectual honesty"],
     tags: ["judgement"],
   },
 
@@ -419,6 +437,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Memoisation stores one entry per distinct input, so the memory cost scales with the input space rather than the call count. It is only valid for pure functions, and unbounded caches are a slow memory leak — which is why production versions have an eviction policy.",
+    concepts: ["Memoisation", "Pure function", "Cache eviction"],
     tags: ["memoisation"],
   },
   {
@@ -442,6 +461,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "HyperLogLog estimates cardinality in a fixed, tiny amount of memory with a known error rate, and merges across shards cleanly. A hash set is exact and grows with the data. A Bloom filter answers membership, not cardinality — it cannot produce a count.",
+    concepts: ["HyperLogLog", "Cardinality estimation", "Probabilistic data structure"],
     tags: ["hyperloglog", "approximation"],
   },
   {
@@ -465,6 +485,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Precomputation assumes the inputs hold still. Once writes are frequent, the O(n) rebuild per update dominates. A Fenwick (binary indexed) tree or segment tree balances both sides at O(log n), which is the standard answer whenever a range-query problem adds updates.",
+    concepts: ["Fenwick tree", "Segment tree", "Prefix sum"],
     tags: ["precomputation", "fenwick"],
   },
   {
@@ -480,6 +501,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A Bloom filter. It never produces a false negative, which is what makes it safe as a pre-check in front of an expensive lookup — a negative is definitive, and a positive just means you do the real query.",
+    concepts: ["Bloom filter", "False positive", "Probabilistic data structure"],
     tags: ["bloom-filter"],
   },
 
@@ -500,6 +522,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Naming the pattern out loud is most of the signal in a phone screen — it shows you recognised the shape before writing anything. The tells are quite reliable: contiguous suggests a window, sorted-and-pairwise suggests pointers, monotonic feasibility suggests binary search.",
+    concepts: ["Sliding window", "Two pointers", "Binary search on the answer"],
     tags: ["recognition"],
   },
   {
@@ -523,6 +546,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Two pointers moving at different speeds must eventually meet if the list loops, and the fast one reaches the end if it does not — all in O(1) space. A hash set solves it in O(n) time too, but uses O(n) memory, which the constraint rules out.",
+    concepts: ["Fast and slow pointers", "Cycle detection", "Floyd cycle detection"],
     tags: ["fast-slow-pointers"],
   },
   {
@@ -546,6 +570,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Enumerating actual solutions rather than counting them is the backtracking signal, and pruning invalid partial candidates early is what keeps it tractable. DP is the right tool when you need a count or an optimum but not the solutions themselves, and greedy fails whenever a locally best choice can rule out a valid combination.",
+    concepts: ["Backtracking", "Pruning", "Combinatorial search"],
     tags: ["backtracking"],
   },
 
@@ -567,6 +592,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Readers cannot evaluate an approach before they know the problem and the constraints, and they cannot trust it without seeing the alternatives. Ending with open questions and a deadline is what turns a document into a decision rather than a broadcast.",
+    concepts: ["Design document", "Non-goals", "Alternatives considered"],
     tags: ["structure"],
   },
   {
@@ -590,6 +616,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The alternatives section exists to prove the decision was made rather than defaulted into. A one-line dismissal proves the opposite, and it invites exactly the reviewer who will reopen the option you thought you had closed. Each rejection needs a specific, checkable reason.",
+    concepts: ["Strawman argument", "Alternatives considered", "Design review"],
     tags: ["alternatives"],
   },
   {
@@ -611,6 +638,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Without non-goals, review meetings expand to fill every adjacent concern anyone can think of. Writing \"this does not address multi-region failover\" closes that thread before it opens. It is about scope, not a backlog of deferred features.",
+    concepts: ["Non-goals", "Scope creep"],
     tags: ["non-goals", "scope"],
   },
   {
@@ -634,6 +662,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The conclusion alone ages badly, because the reader cannot tell whether it is still right. Recording the constraints makes the decision re-evaluable: if they have changed, reverting may be correct, and if they have not, the question is settled without relitigating it.",
+    concepts: ["Architecture decision record", "Design rationale", "Constraints"],
     tags: ["decision-records"],
   },
 
@@ -659,6 +688,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "People interrupt because they do not know when they will next hear something. A predictable cadence — even \"still investigating, next update in 15 minutes\" — removes the reason to ask. Silence generates more interruptions than any update, and answering ad hoc consumes a responder.",
+    concepts: ["Incident communication", "Status cadence", "Stakeholder management"],
     tags: ["communication"],
   },
   {
@@ -679,6 +709,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Owner, date, and visibility in the normal backlog are what turn an intention into work. A long list dilutes attention until none of it happens, and \"be more careful\" is not an action — it is a wish with no completion criterion.",
+    concepts: ["Postmortem action item", "Ownership", "Follow-through"],
     tags: ["postmortem", "follow-up"],
   },
   {
@@ -702,6 +733,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Every change during an incident is a variable, and an unrelated fix makes it harder to tell what actually resolved things — and can cause a second incident inside the first. Capture it and move on. Ignoring it entirely loses information you will not recover later.",
+    concepts: ["Incident discipline", "Change control", "Scope containment"],
     tags: ["discipline", "scope"],
   },
 ];

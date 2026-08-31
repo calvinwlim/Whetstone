@@ -113,6 +113,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "OAuth2 answers \"may this app do this on the user's behalf\" and deliberately says nothing about who the user is. OIDC adds that: an ID token carrying verified claims, plus discovery and a userinfo endpoint. Using bare OAuth2 as a login mechanism is a classic error — an access token proves someone granted access, not who is holding it.",
+    concepts: ["OAuth 2.0", "OpenID Connect", "ID token"],
     tags: ["oidc", "fundamentals"],
   },
   {
@@ -130,6 +131,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Authorisation Code with PKCE is now the recommendation for public and confidential clients alike. Implicit and the password grant are both deprecated — implicit leaked tokens into browser history and logs, and the password grant required the app to handle real credentials, which is precisely what OAuth exists to avoid.",
+    concepts: ["Authorization Code flow", "Client Credentials flow", "Device Authorization flow", "Implicit flow"],
     tags: ["flows"],
   },
   {
@@ -151,6 +153,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The client generates a secret verifier, sends its hash when starting the flow, and presents the original when redeeming the code. An attacker who captures the code cannot exchange it without the verifier. This mattered most for mobile apps, where redirect interception was practical — and it is now recommended everywhere.",
+    concepts: ["PKCE", "Authorization code interception"],
     tags: ["pkce"],
   },
   {
@@ -174,6 +177,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Same issuer and a valid signature mean the token is genuine, not that it was meant for you. Without an audience check, a token a user granted to a low-privilege internal tool is replayable against a sensitive service. It is the most commonly skipped validation step.",
+    concepts: ["Audience claim", "JSON Web Token", "Token validation"],
     tags: ["jwt", "audience", "validation"],
   },
   {
@@ -194,6 +198,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Signature, issuer, audience, expiry. The last option is an actual historical vulnerability: trusting the token's own `alg` header let attackers set it to `none` or downgrade the algorithm. The server must decide which algorithms it accepts, never the token.",
+    concepts: ["JWT signature verification", "alg=none attack", "Issuer claim"],
     tags: ["jwt", "validation"],
   },
   {
@@ -214,6 +219,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "The Client Credentials grant — the service authenticates with its own id and secret and receives a token representing itself. There is no user, so there is nothing to consent and no redirect.",
+    concepts: ["Client Credentials flow", "Machine-to-machine authentication"],
     tags: ["flows"],
   },
 
@@ -239,6 +245,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "BOLA, also called IDOR, and the most common serious API flaw. Authentication established who is calling; nothing established that they may see this particular object. The check must happen on every object access — and switching to UUIDs is obscurity, not a fix.",
+    concepts: ["Broken Object Level Authorization", "IDOR", "Object-level authorisation"],
     tags: ["bola", "idor"],
   },
   {
@@ -262,6 +269,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Automatic binding is convenient precisely because it accepts whatever arrives, including fields the client should never control. Denylisting sensitive fields fails the moment someone adds a new one, so bind to an explicit allowlist — or a dedicated request type containing only what may change.",
+    concepts: ["Mass assignment", "Allowlist binding", "Over-posting"],
     tags: ["mass-assignment"],
   },
   {
@@ -285,6 +293,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Excessive data exposure. Anyone can open developer tools or call the endpoint directly, so client-side filtering is presentation, not protection. Return only what the caller is entitled to, shaped by their permissions rather than by what one screen happens to need.",
+    concepts: ["Excessive data exposure", "Response filtering"],
     tags: ["data-exposure"],
   },
   {
@@ -303,6 +312,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Authorisation failures dominate this list because APIs expose objects and operations directly, so each one must independently decide whether this caller may proceed. Inventory management is the sleeper — you cannot patch or protect an endpoint nobody remembers exists.",
+    concepts: ["Broken Object Level Authorization", "Broken Function Level Authorization", "Mass assignment", "Improper inventory management"],
     tags: ["owasp", "catalogue"],
   },
   {
@@ -323,6 +333,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Each bounds what a single caller can consume. The last is actively harmful: reporting success while doing nothing means clients cannot distinguish \"no results\" from \"we refused\", so they neither retry nor alert — a silent failure is worse than a 429.",
+    concepts: ["Unrestricted resource consumption", "Rate limiting", "Query cost limit"],
     tags: ["resource-consumption"],
   },
   {
@@ -338,6 +349,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Improper inventory management. It is unglamorous and routinely how breaches happen: the current version is well defended while a forgotten one next to it is not. Maintaining a catalogue of every API, version, owner, and consumer is a genuine security control.",
+    concepts: ["Improper inventory management", "Shadow API", "API inventory"],
     tags: ["inventory"],
   },
 
@@ -363,6 +375,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Additive change is free; the rename is the only breaking part, and supporting both names costs far less than a parallel version. Every version you publish is one you maintain, document, patch, and eventually run a migration for. Renaming in place breaks everyone immediately.",
+    concepts: ["API evolution", "Backwards compatibility", "Field alias"],
     tags: ["versioning", "evolution"],
   },
   {
@@ -381,6 +394,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The step teams skip is instrumentation, and it is the one that prevents the incident. A date and an announcement tell you nothing about who is actually still calling — turning something off on schedule without checking is causing an outage deliberately.",
+    concepts: ["Deprecation policy", "Sunset header", "Consumer instrumentation"],
     tags: ["deprecation"],
   },
   {
@@ -403,6 +417,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Conventions enforced by people drift with reviewer, mood, and deadline, and inconsistency across an estate is exactly what makes a set of APIs unpleasant to consume. Linting frees review to focus on the thing a machine cannot judge: whether the interface is well designed.",
+    concepts: ["API style guide", "Spectral linting", "API governance"],
     tags: ["style-guide", "consistency"],
   },
   {
@@ -425,6 +440,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "You can see the version in a log line, route it at the load balancer, cache it without a Vary header, and reproduce a call by pasting a URL. Header versioning keeps URLs stable and is theoretically cleaner, and most public APIs still choose the URL because operability wins.",
+    concepts: ["URL versioning", "Header versioning", "API versioning"],
     tags: ["versioning"],
   },
   {
@@ -445,6 +461,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Those four answer the questions that block every change and every incident: what exists, who owns it, who would break, and whether it is reachable from outside. Implementation size tells you nothing about risk or blast radius.",
+    concepts: ["API inventory", "Service ownership", "Consumer mapping"],
     tags: ["inventory", "governance"],
   },
 ];

@@ -88,6 +88,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "With severe class imbalance, accuracy just reports the size of the majority class. You need precision and recall on the minority class, and the confusion matrix behind them. This is the single most common way an ML result is oversold.",
+    concepts: ["Class imbalance", "Accuracy paradox", "Confusion matrix"],
     tags: ["metrics", "imbalance"],
   },
   {
@@ -111,6 +112,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Customers about to churn raise tickets, so the feature partly encodes the outcome. In production the model would not have that information at prediction time, so performance collapses. The test is always: would this value have been available, with this value, at the moment we need to predict?",
+    concepts: ["Data leakage", "Target leakage", "Feature engineering"],
     tags: ["leakage"],
   },
   {
@@ -128,6 +130,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Which one you optimise is a product decision, not a technical one. Screening for a serious disease wants recall — a missed case is far worse than a false alarm. A spam filter wants precision, because deleting real mail is worse than letting spam through.",
+    concepts: ["Precision", "Recall", "F1 score"],
     tags: ["metrics"],
   },
   {
@@ -151,6 +154,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A large train-to-validation gap is the signature of overfitting. Underfitting looks different — poor scores on both. The usual responses are more or better data, regularisation, a simpler model, or early stopping.",
+    concepts: ["Overfitting", "Underfitting", "Regularisation"],
     tags: ["overfitting"],
   },
   {
@@ -172,6 +176,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Every decision made after looking at the test set is a small fit to that set. Do it enough times and your reported number describes how well you tuned to those specific rows rather than how the model will behave on new data. That is what the validation set is for.",
+    concepts: ["Test set", "Validation set", "Data leakage"],
     tags: ["evaluation", "splits"],
   },
   {
@@ -187,6 +192,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Overfitting. Its opposite is underfitting, where the model is too simple to capture the pattern and does poorly everywhere. The gap between training and validation scores is how you tell them apart.",
+    concepts: ["Overfitting", "Generalisation"],
     tags: ["overfitting", "fundamentals"],
   },
   {
@@ -207,6 +213,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Resampling and class weighting address training; changing the metric addresses evaluation, and you need both. More data of the same distribution keeps the same imbalance, and dropping the minority class deletes the only thing you were trying to detect.",
+    concepts: ["Class imbalance", "Resampling", "Class weighting"],
     tags: ["imbalance"],
   },
 
@@ -232,6 +239,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Changing knowledge plus a citation requirement points squarely at retrieval. Fine-tuned facts go stale immediately, cannot be cited, and require a training run per update. Stuffing everything into the prompt does not scale past the context window and pays for the whole base on every request.",
+    concepts: ["Retrieval-augmented generation", "Fine-tuning", "Grounding"],
     tags: ["rag", "fine-tuning"],
   },
   {
@@ -253,6 +261,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Fine-tuning shifts behaviour: output format, tone, domain conventions, a narrow task done consistently. It is a poor knowledge store — facts baked into weights cannot be updated, audited, or cited. The classic mistake is fine-tuning to inject a knowledge base that retrieval should serve.",
+    concepts: ["Fine-tuning", "Retrieval-augmented generation"],
     tags: ["fine-tuning"],
   },
   {
@@ -276,6 +285,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Turn N sends roughly N turns of history, so total tokens across a conversation grow with the square of its length. The mitigations are summarising older turns, truncating with a sliding window, or prompt caching where the provider supports it.",
+    concepts: ["Context window", "Token", "Prompt caching"],
     tags: ["context", "cost"],
   },
   {
@@ -299,6 +309,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Schema-constrained output removes the failure mode rather than handling it. Asking nicely for JSON works most of the time, and most of the time is a bad guarantee for a parser. Temperature zero makes output stable, not structurally valid.",
+    concepts: ["Structured output", "JSON Schema", "Constrained decoding"],
     tags: ["structured-output"],
   },
   {
@@ -320,6 +331,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Low temperature makes the model consistently pick its highest-probability continuation, which is what you want for extraction and classification. It reproduces the same answer, including the same wrong answer. Determinism is a debugging convenience, not a correctness guarantee.",
+    concepts: ["Temperature", "Sampling", "Determinism"],
     tags: ["temperature", "sampling"],
   },
   {
@@ -335,6 +347,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Tokens. Everything that matters operationally is denominated in them, which is why prompt size is an engineering concern rather than a stylistic one.",
+    concepts: ["Token", "Tokenisation", "Context window"],
     tags: ["tokens", "fundamentals"],
   },
   {
@@ -354,6 +367,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Work down this list, not up. Most problems that get escalated to fine-tuning are solved by a clearer prompt or better retrieval, and each step down adds infrastructure, a data pipeline, and a thing that goes stale.",
+    concepts: ["Prompt engineering", "Few-shot learning", "Retrieval-augmented generation", "Fine-tuning"],
     tags: ["cost", "approach"],
   },
 ];

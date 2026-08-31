@@ -146,17 +146,15 @@ function validateByType(question: Question, at: string): string[] {
 }
 
 /** Concepts are the terms a learner goes and looks up, so they have to read as
- *  names rather than as internal tag slugs. */
-function validateConcepts(
-  concepts: string[] | undefined,
-  at: string,
-): string[] {
-  if (concepts === undefined) return [];
+ *  names. Blank, empty, and duplicate lists are rejected; the shape of a
+ *  term is left to authoring judgement, because canonical technical names
+ *  like stale-while-revalidate are indistinguishable from tag slugs. */
+function validateConcepts(concepts: string[], at: string): string[] {
 
   const errors: string[] = [];
 
   if (concepts.length === 0) {
-    errors.push(`${at} has an empty concepts list; omit the field instead`);
+    errors.push(`${at} has no concepts; every question must name at least one`);
   }
   if (concepts.some((concept) => concept.trim() === "")) {
     errors.push(`${at} has a blank concept`);
@@ -165,27 +163,6 @@ function validateConcepts(
   const seen = new Set(concepts.map((concept) => concept.trim().toLowerCase()));
   if (seen.size !== concepts.length) {
     errors.push(`${at} has duplicate concepts`);
-  }
-
-  for (const concept of concepts) {
-    // "n+1-query" is a slug; "N+1 query problem" is a name someone can search.
-    // Hyphenated names are fine when they carry a capital ("Cache-aside") or
-    // sit inside a longer phrase; an all-lowercase hyphenated token with no
-    // spaces is a tag that escaped into the wrong field.
-    const value = concept.trim();
-    // Command flags and options legitimately look like this (--force-with-lease,
-    // -Wall) and are exactly the term someone would search for.
-    const isFlag = value.startsWith("-");
-    const isSlug =
-      !isFlag &&
-      !value.includes(" ") &&
-      value.includes("-") &&
-      value === value.toLowerCase();
-    if (isSlug) {
-      errors.push(
-        `${at} concept "${concept}" looks like a slug; write it as a name`,
-      );
-    }
   }
 
   return errors;

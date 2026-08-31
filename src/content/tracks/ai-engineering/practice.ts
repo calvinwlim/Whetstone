@@ -138,6 +138,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Tool selection is driven by name, description, and parameter schema. Two tools that are frequently confused almost always have overlapping descriptions or unclear boundaries — that is an interface design problem. Often the right fix is merging them or making each description say explicitly when *not* to use it.",
+    concepts: ["Tool description", "Tool selection", "Function calling"],
     tags: ["tool-design"],
   },
   {
@@ -160,6 +161,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The model's entire view of the world is what tools return, so an error is just context with useful information in it. \"No user with that id — try search_users by email\" lets it recover in one turn. A stack trace wastes a turn, and an empty result is indistinguishable from a legitimate empty answer.",
+    concepts: ["Agent loop", "Error message design", "Tool result"],
     tags: ["error-handling"],
   },
   {
@@ -180,6 +182,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "The first four bound cost and blast radius while leaving the agent free to solve the problem. A fixed step sequence is not an agent at all — it is a workflow, which is often the better choice, but then you should build it as one rather than paying for a model to follow a script.",
+    concepts: ["Agent loop", "Iteration limit", "Human in the loop"],
     tags: ["safety", "loop-control"],
   },
   {
@@ -203,6 +206,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Prompt injection cannot be reliably solved inside the prompt, because the attacker writes text too. The durable defence is architectural: content read by a tool is data, and the agent should not hold credentials that make compliance possible. Phrase filters are trivially evaded, and temperature is unrelated.",
+    concepts: ["Prompt injection", "Untrusted input", "Least privilege"],
     tags: ["prompt-injection", "security"],
   },
   {
@@ -225,6 +229,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "An agent that succeeds after twelve flailing calls is fragile and expensive, and it looks identical to a clean two-call solution if you only score the output. Trajectory evaluation surfaces wasted calls, loops, and near-misses — which is where the improvements are.",
+    concepts: ["Trajectory evaluation", "Agent evaluation"],
     tags: ["evaluation"],
   },
 
@@ -248,6 +253,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Before a shared protocol, every assistant needed a bespoke integration with every tool — an N-times-M problem. MCP makes the connection reusable: write a server once, and any MCP-capable client can use it.",
+    concepts: ["Model Context Protocol", "Integration standard"],
     tags: ["fundamentals"],
   },
   {
@@ -264,6 +270,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The distinction is about who decides. Making everything a tool is a common design mistake: it forces the model to choose things the application already knows, spending reasoning and context on a decision that was never ambiguous.",
+    concepts: ["MCP tools", "MCP resources", "MCP prompts"],
     tags: ["primitives", "design"],
   },
   {
@@ -287,6 +294,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A REST API assumes a caller who already knows the workflow and will chain requests. A good MCP tool corresponds to something a user wants done, handles the chaining internally, and returns a result the model can act on directly. Dozens of thin endpoint wrappers also crowd tool selection and flood the context window.",
+    concepts: ["Tool design", "Task-oriented API", "Context window"],
     tags: ["design", "tools"],
   },
   {
@@ -307,6 +315,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "MCP is a transport and a contract, not a sandbox — it makes no judgement about whether a tool is safe to run. Everything about privilege, confirmation, and treating returned content as untrusted is the server author's responsibility.",
+    concepts: ["Prompt injection", "Least privilege", "MCP server security"],
     tags: ["security"],
   },
   {
@@ -329,6 +338,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A stdio server inherits the user's environment and identity, so \"who is calling\" is never in question. A remote server serves many callers over a network and must answer that question itself, plus everything else that comes with being an internet-facing service.",
+    concepts: ["stdio transport", "Streamable HTTP", "Multi-tenancy"],
     tags: ["transports"],
   },
   {
@@ -344,6 +354,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A tool — the model-invoked primitive. Resources are application-controlled context and prompts are user-invoked templates, so picking the right one is really a question of who should be making the decision.",
+    concepts: ["MCP tools", "Model-invoked action"],
     tags: ["primitives"],
   },
 
@@ -369,6 +380,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Underspecified requests get filled in with plausible assumptions, and plausible is exactly what makes the result hard to spot as wrong. The time you save by not writing the spec, you spend discovering the gap in review — usually with interest.",
+    concepts: ["Specification", "Prompt engineering", "Requirements"],
     tags: ["specification"],
   },
   {
@@ -392,6 +404,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Both artefacts came from one interpretation of the requirement. If that interpretation was wrong, the tests encode the same wrong behaviour and pass happily. This is the same reason tests written after implementation are weaker in general — they verify what the code does rather than what it should do.",
+    concepts: ["Confirmation bias", "Test-driven development", "Verification"],
     tags: ["testing", "verification"],
   },
   {
@@ -413,6 +426,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Your review is only as good as your ability to evaluate what you are reading. Unfamiliar territory is exactly where confident errors survive — and exactly where the pull to accept and move on is strongest. Configuration is also worth a second look: it changes behaviour dramatically for very few lines.",
+    concepts: ["Code review", "Risk assessment"],
     tags: ["review", "risk"],
   },
   {
@@ -433,6 +447,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "The first four keep you in a position to evaluate what you are merging. Accepting a large diff on green tests is the specific habit that produces codebases nobody understands — passing tests confirm the cases someone thought of, which may be the same someone who wrote the code.",
+    concepts: ["Incremental development", "Architectural drift", "Continuous verification"],
     tags: ["practice"],
   },
   {
@@ -456,6 +471,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Being unable to explain it means you cannot maintain it, debug it at 2am, or judge whether it is correct. That is a merge blocker. It does not follow that you must rewrite it by hand — understanding it is usually enough, and often faster.",
+    concepts: ["Code ownership", "Maintainability", "Code review"],
     tags: ["ownership", "review"],
   },
 
@@ -478,6 +494,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Slopsquatting, by analogy with typosquatting — the difference is that the name comes from model output rather than a user's typo, which makes it predictable and therefore farmable. Verify that any new dependency actually exists and is maintained before installing, since installation itself can execute code.",
+    concepts: ["Slopsquatting", "Typosquatting", "Package hallucination"],
     tags: ["supply-chain", "dependencies"],
   },
   {
@@ -501,6 +518,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Once a secret leaves your control you cannot un-send it, and deleting a conversation does not undo transmission. Rotation is the only response that restores the property you actually care about. This is the most common real leak in AI-assisted work and it is entirely avoidable with redaction.",
+    concepts: ["Secret rotation", "Data leakage", "Redaction"],
     tags: ["secrets"],
   },
   {
@@ -521,6 +539,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Training data is full of examples optimised to work in a tutorial, not to be safe in production — and those shortcuts are common precisely because they remove friction. The last option is the correct pattern, not a risk.",
+    concepts: ["Permissive CORS", "TLS verification", "SQL injection"],
     tags: ["insecure-defaults"],
   },
   {
@@ -544,6 +563,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Ordinary comparison returns as soon as bytes differ, so response time leaks how much of the token was correct, and a constant-time comparison is required. It is a good example of the general problem: plausible, idiomatic-looking security code with a subtle defect that ordinary review does not catch.",
+    concepts: ["Timing attack", "Constant-time comparison", "Cryptographic review"],
     tags: ["crypto", "review"],
   },
   {
@@ -567,6 +587,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The blast radius of any mistake — or any successful prompt injection — is exactly what the credential permits. Scoping to the task turns a potential organisation-wide incident into a contained one. What the agent is *asked* to do does not limit what it *can* do.",
+    concepts: ["Least privilege", "Blast radius", "Scoped token"],
     tags: ["least-privilege", "agents"],
   },
   {
@@ -586,6 +607,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Existence comes first because a hallucinated name is the one an attacker may have registered. Everything before installation matters because installing can execute scripts — by the time you are running tests, you have already trusted it.",
+    concepts: ["Supply chain security", "Package verification", "Transitive dependency"],
     tags: ["dependencies", "supply-chain"],
   },
 ];

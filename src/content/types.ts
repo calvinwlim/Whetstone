@@ -48,7 +48,7 @@ interface QuestionBase {
   /** Named, lookup-able terms this question teaches -- the CRUD or ETL a
    *  learner can go and read about afterwards. Surfaced after answering.
    *  Write them as proper names, not slugs: "N+1 query problem", not "n+1". */
-  concepts?: string[];
+  concepts: string[];
   resources?: Resource[];
   tags?: string[];
 }

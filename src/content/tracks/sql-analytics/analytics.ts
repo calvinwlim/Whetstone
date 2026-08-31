@@ -109,6 +109,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Any of these can happen, and differing definitions is overwhelmingly the usual one: does opening the app count, or must the user do something? Does a background sync count? Time zone is part of that same definitional problem. A metric without an agreed definition is not a metric.",
+    concepts: ["Daily active users", "Metric definition", "Stickiness"],
     tags: ["definitions", "dau"],
   },
   {
@@ -131,6 +132,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Rolling retention is always the higher number, sometimes dramatically, and is often more appropriate for products used weekly rather than daily. Because they can differ so much, quoting one while the audience assumes the other is a common way to mislead without saying anything untrue.",
+    concepts: ["N-day retention", "Rolling retention", "Cohort"],
     tags: ["retention"],
   },
   {
@@ -154,6 +156,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A flat aggregate frequently hides two moving populations. Splitting by join cohort separates \"the product changed\" from \"the mix of users changed\", which an overall average structurally cannot show. This is Simpson's paradox territory.",
+    concepts: ["Cohort analysis", "Simpson's paradox", "Segmentation"],
     tags: ["cohorts"],
   },
   {
@@ -174,6 +177,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Cumulative totals only go up, so they cannot signal a problem — they look like progress during a decline. Rates, ratios, and cohort measures can move in both directions, which is exactly what makes them useful for decisions.",
+    concepts: ["Vanity metric", "Actionable metric", "Cohort analysis"],
     tags: ["vanity-metrics"],
   },
   {
@@ -189,6 +193,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A guardrail metric — something you watch to ensure a win on the primary metric was not bought at an unacceptable cost. Unsubscribes, refunds, complaint volume, and latency are common ones. Any single metric optimised alone eventually gets gamed.",
+    concepts: ["Guardrail metric", "Goodhart's law", "Counter metric"],
     tags: ["guardrails"],
   },
 
@@ -212,6 +217,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The p-value is conditional *on the null being true* — it says nothing directly about the probability that the null is true, which would require a prior. This is the most commonly misstated idea in statistics, and stating it correctly is a strong signal in an interview.",
+    concepts: ["p-value", "Null hypothesis", "Statistical significance"],
     tags: ["p-value"],
   },
   {
@@ -235,6 +241,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "With right skew the mean sits above what most users experience, so quoting it as typical is misleading. The median is more representative — and reporting percentiles is better than either, because the shape of the distribution is usually the actual finding.",
+    concepts: ["Median", "Right-skewed distribution", "Percentile"],
     tags: ["mean-median", "skew"],
   },
   {
@@ -252,6 +259,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Type I is the false positive you control with your significance level; Type II is the false negative you control with sample size, since power is what extra data buys. Simpson's paradox is why checking segments is a habit rather than an optional extra.",
+    concepts: ["Type I error", "Type II error", "Statistical power", "Simpson's paradox"],
     tags: ["errors", "power"],
   },
   {
@@ -275,6 +283,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Selecting on the outcome means you cannot learn what distinguishes success from failure. If bold leadership is equally common among companies that collapsed, it predicts nothing. Any conclusion drawn only from survivors needs the comparison group to mean anything.",
+    concepts: ["Survivorship bias", "Selection bias"],
     tags: ["survivorship-bias"],
   },
   {
@@ -298,6 +307,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Both figures are arithmetically correct — the aggregate is a weighted average, and unequal group sizes can flip it. Here the subgroup results are the meaningful ones, because they compare like with like. It is the standard argument for always inspecting segments before reporting an aggregate.",
+    concepts: ["Simpson's paradox", "Confounding variable", "Weighted average"],
     tags: ["simpsons-paradox"],
   },
   {
@@ -313,6 +323,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A confounder. Ice cream sales and drowning deaths correlate because both rise with temperature. It is one of the three standard reasons correlation fails to imply causation, alongside reverse causation and selection effects.",
+    concepts: ["Confounding variable", "Correlation versus causation", "Reverse causation"],
     tags: ["confounding", "causation"],
   },
 
@@ -338,6 +349,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The 5% guarantee applies to a single test at a predetermined sample size. Testing repeatedly and stopping on the first success is optional stopping, and it can push the real false positive rate above 20%. Either commit to the planned duration or use a sequential method designed for it.",
+    concepts: ["Peeking problem", "Optional stopping", "Sequential testing"],
     tags: ["peeking", "stopping"],
   },
   {
@@ -361,6 +373,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "At large samples a split that far from 50/50 is very unlikely by chance, so it signals a bug: assignment filtering differently, one arm failing to log, or a redirect dropping users. Whatever caused it probably biased the population too, so reweighting papers over the real problem.",
+    concepts: ["Sample ratio mismatch", "Randomisation", "Experiment validity"],
     tags: ["srm", "validity"],
   },
   {
@@ -384,6 +397,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Novelty inflates early results on established products; primacy does the opposite, where users resist an unfamiliar change before adapting. Both are why a two-day test on a mature product is close to worthless — you must run long enough for the behaviour to settle.",
+    concepts: ["Novelty effect", "Primacy effect", "Experiment duration"],
     tags: ["novelty-effect"],
   },
   {
@@ -407,6 +421,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Buyer demand is finite, so visibility gained by treatment sellers is taken from control sellers. The control is no longer a clean counterfactual and the measured lift overstates the true effect — possibly to zero, if it is pure redistribution. Marketplaces and social products usually need cluster or geographic randomisation.",
+    concepts: ["Interference", "Network effect", "Cluster randomisation"],
     tags: ["interference", "network-effects"],
   },
   {
@@ -427,6 +442,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Everything that could be chosen to favour a conclusion must be fixed in advance. Segment analysis after the fact is fine as exploration and generates hypotheses — but presenting a segment discovered after seeing the data as a confirmed finding is exactly the multiple comparisons problem.",
+    concepts: ["Pre-registration", "Multiple comparisons problem", "Minimum detectable effect"],
     tags: ["design", "pre-registration"],
   },
   {
@@ -450,6 +466,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Significance says the effect is probably real; it says nothing about whether it is worth having. With a big enough sample, arbitrarily tiny effects become significant. The decision needs the effect size weighed against complexity, maintenance, and any guardrail cost.",
+    concepts: ["Practical significance", "Statistical significance", "Effect size"],
     tags: ["practical-significance"],
   },
 ];

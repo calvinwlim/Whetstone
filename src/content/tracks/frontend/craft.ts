@@ -79,6 +79,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Loading, responsiveness, and visual stability — three different user complaints, so three different sets of fixes. Diagnosing the wrong one is why teams optimise bundle size and see no change in a score driven by an unsized hero image.",
+    concepts: ["Largest Contentful Paint", "Interaction to Next Paint", "Cumulative Layout Shift"],
     tags: ["core-web-vitals"],
   },
   {
@@ -100,6 +101,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "FID ignored everything after the first interaction and stopped counting once the handler started, so an app that took a second to actually update the screen could still score well. INP measures the full interaction-to-paint duration across the whole visit, which is what users actually feel.",
+    concepts: ["Interaction to Next Paint", "First Input Delay", "Main thread blocking"],
     tags: ["inp", "metrics"],
   },
   {
@@ -120,6 +122,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "CLS is about space not being reserved before content arrives. Bundle size and server latency hurt other metrics — INP and LCP respectively — but do not move things around. Reserving space for anything that loads late is close to the whole fix.",
+    concepts: ["Cumulative Layout Shift", "Layout shift", "font-display"],
     tags: ["cls"],
   },
   {
@@ -143,6 +146,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Lazy loading is for content below the fold. Applying it to the LCP element delays discovery and download of exactly the thing being measured. That element should be eagerly loaded and often preloaded — and `loading=\"lazy\"` applies wherever you put it, not only below the fold.",
+    concepts: ["Largest Contentful Paint", "Lazy loading", "Resource preloading"],
     tags: ["lcp", "images"],
   },
   {
@@ -165,6 +169,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Both cost download, but an image is decoded off the main thread and then it is done. Script has to be parsed, compiled, and run where it competes with the user's input handling — which is why bundle size shows up in responsiveness metrics and image size mostly does not.",
+    concepts: ["Main thread", "Parse and compile time", "Bundle size"],
     tags: ["javascript", "main-thread"],
   },
   {
@@ -180,6 +185,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "font-display, usually set to swap. It trades a flash of unstyled text for text being readable immediately. Preloading the font shortens the swap window, and matching the fallback's metrics limits the reflow when the real font arrives.",
+    concepts: ["font-display", "Flash of invisible text", "Font preloading"],
     tags: ["fonts"],
   },
 
@@ -205,6 +211,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Data that lives on a server and is mirrored locally is a cache, with all the usual concerns — staleness, revalidation, deduplication, invalidation. Reimplementing that per resource is where a lot of frontend complexity comes from. Use a data-fetching library for server state and keep the store for state the UI genuinely owns.",
+    concepts: ["Server state", "Client state", "Cache invalidation"],
     tags: ["state-management"],
   },
   {
@@ -222,6 +229,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "These are per-route decisions. A single application will usually want static marketing pages, incrementally regenerated product pages, and a client-rendered dashboard — choosing one strategy for everything is what forces the compromise.",
+    concepts: ["Static site generation", "Server-side rendering", "Incremental static regeneration", "Client-side rendering"],
     tags: ["rendering"],
   },
   {
@@ -245,6 +253,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Server rendering separates looking ready from being ready, and users read an unresponsive page as broken rather than slow. The fixes all reduce or defer JavaScript: shipping none for static regions, splitting by route, and prioritising the code behind whatever users click first.",
+    concepts: ["Hydration", "Time to Interactive", "Server-side rendering"],
     tags: ["hydration"],
   },
   {
@@ -266,6 +275,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "State lifted higher than necessary re-renders everything beneath it and couples a component to an ancestor, so it cannot be reused or moved without dragging that ancestor along. Lift only when something above genuinely needs to read it.",
+    concepts: ["State colocation", "Prop drilling", "Re-render"],
     tags: ["state", "components"],
   },
   {
@@ -283,6 +293,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Static does the work once at build time. Incremental does it occasionally and serves the cached result in between. Server-side rendering does it for every request, which buys personalisation and freshness and costs compute that scales with traffic. Client-side rendering sits outside this axis — it moves the work to the user's device instead.",
+    concepts: ["Static site generation", "Incremental static regeneration", "Server-side rendering"],
     tags: ["rendering", "cost"],
   },
 ];

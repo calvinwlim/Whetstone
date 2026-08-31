@@ -103,6 +103,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Your app is the service provider. It never sees the password; it receives a signed assertion asserting who the user is and what groups they belong to. That is the security benefit, and it also means account lifecycle stays centrally controlled.",
+    concepts: ["Service provider", "Identity provider", "SAML assertion"],
     tags: ["sso", "saml"],
   },
   {
@@ -126,6 +127,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Deprovisioning is the half of identity management that fails, because it depends on someone remembering a manual step for a person who has already left. Orphaned accounts with valid credentials are a standard audit finding. MFA and password rules do nothing about an account that should not exist.",
+    concepts: ["SCIM", "Deprovisioning", "Orphaned account"],
     tags: ["scim", "deprovisioning"],
   },
   {
@@ -147,6 +149,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Every \"like a manager, but also able to X\" becomes a new role, and the set stops being comprehensible. ABAC handles those cases as policy over attributes instead — at the cost of it becoming much harder to answer \"who can do X?\", which is the question auditors actually ask.",
+    concepts: ["Role-based access control", "Role explosion", "Attribute-based access control"],
     tags: ["rbac", "abac"],
   },
   {
@@ -164,6 +167,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "They solve adjacent problems and are frequently deployed together: a directory holds the truth, SAML or OIDC conveys it at login, and SCIM keeps account existence in step with it. SAML persists because enterprises already run it, not because it is pleasant.",
+    concepts: ["SAML", "OpenID Connect", "LDAP", "SCIM"],
     tags: ["catalogue"],
   },
 
@@ -188,6 +192,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Connecting ten systems point-to-point is up to forty-five integrations; a hub reduces that dramatically. The failure mode is centralisation: routing, transformation, and eventually business rules collect in a component every team depends on and none owns. Modern designs keep the broker dumb and push logic to the edges.",
+    concepts: ["Enterprise service bus", "Point-to-point integration", "Event backbone"],
     tags: ["esb"],
   },
   {
@@ -209,6 +214,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "ETL transformed first because warehouse resources were expensive, and that discarded whatever the transformation dropped. ELT keeps the raw data, so when the business logic turns out to be wrong — and it does — you re-derive rather than re-ingest from systems that may no longer have it.",
+    concepts: ["ETL", "ELT", "Data warehouse"],
     tags: ["etl-elt"],
   },
   {
@@ -232,6 +238,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Transactional and analytical workloads want opposite things — small indexed lookups versus scanning many rows across few columns — and they fight over buffer cache and I/O. The answer is a replica or a warehouse, not another index.",
+    concepts: ["OLTP", "OLAP", "Read replica"],
     tags: ["oltp-olap"],
   },
   {
@@ -249,6 +256,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Schema-on-write versus schema-on-read is the real axis: pay the modelling cost up front and get governance, or defer it and get flexibility plus the risk of a swamp. MDM is separate and underrated — most integration pain is two systems both believing they own the customer.",
+    concepts: ["Data warehouse", "Data lake", "Lakehouse", "Master data management"],
     tags: ["platforms"],
   },
   {
@@ -264,6 +272,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A canonical data model. It turns an N-times-M translation problem into N translations. The cost is that the shared model is negotiated across teams, fits nobody exactly, and changes at committee speed.",
+    concepts: ["Canonical data model", "Schema translation"],
     tags: ["canonical-model"],
   },
 
@@ -282,6 +291,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "It is one axis: isolation versus cost and operational effort. Many products end up hybrid — shared by default, dedicated databases for large or regulated customers — which makes the model a property of the tenant rather than of the product.",
+    concepts: ["Shared schema multi-tenancy", "Schema per tenant", "Database per tenant"],
     tags: ["isolation"],
   },
   {
@@ -305,6 +315,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Restoring the database would roll back every tenant. You have to restore to a side copy and selectively extract one tenant's rows, respecting every foreign key. This is a real operational cost of the cheapest model, and a large part of why big customers end up on dedicated databases.",
+    concepts: ["Point-in-time recovery", "Tenant isolation", "Shared schema multi-tenancy"],
     tags: ["restore", "operations"],
   },
   {
@@ -328,6 +339,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The column is the easy part. The tenant dimension has to reach every query, every cache key, every scheduled job, every export and report, and every admin tool — and until each one is converted, it is a cross-tenant data path. This is why designing for tenancy early is worth so much.",
+    concepts: ["Multi-tenancy", "Tenant identifier", "Cache key design"],
     tags: ["migration", "retrofit"],
   },
   {
@@ -348,6 +360,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "The problem is a lack of isolation, so the answers are all forms of bounding or separating. Adding capacity buys time and the noisy tenant absorbs that too — it changes when the incident happens, not whether.",
+    concepts: ["Noisy neighbour", "Per-tenant rate limiting", "Resource isolation"],
     tags: ["noisy-neighbour"],
   },
 ];

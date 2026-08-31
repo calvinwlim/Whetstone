@@ -98,6 +98,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Each step is cached along the way, which is why only the first lookup is expensive. The recursive resolver does the walking — the client asks one question and waits for one answer.",
+    concepts: ["DNS resolution", "Recursive resolver", "Authoritative nameserver"],
     tags: ["resolution"],
   },
   {
@@ -121,6 +122,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Resolvers are already holding the old TTL, so lowering it at cutover changes nothing for anyone with a cached answer. Dropping it days ahead means every cache has re-fetched the short value by the time you switch. There is no such thing as propagation — you are only ever waiting for other people's caches to expire.",
+    concepts: ["TTL", "DNS propagation", "DNS migration"],
     tags: ["ttl", "migration"],
   },
   {
@@ -139,6 +141,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The one that bites people in practice is CNAME: it cannot exist at the zone apex alongside other records, which is why hosting providers offer ALIAS or ANAME so a bare domain can still point at a load balancer's hostname.",
+    concepts: ["A record", "CNAME record", "MX record", "NS record"],
     tags: ["records"],
   },
   {
@@ -162,6 +165,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "DNS is a caching system by design, and some clients ignore TTLs entirely. That makes DNS a coarse, minutes-scale routing tool. When you need seconds, move traffic at a layer you actually control — anycast, or a load balancer in front of both regions.",
+    concepts: ["DNS failover", "TTL", "DNS caching"],
     tags: ["failover", "ttl"],
   },
   {
@@ -177,6 +181,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "ALIAS (also sold as ANAME) behaves like a CNAME but resolves at the nameserver and returns an address record, so it is legal at the zone apex where a CNAME would conflict with the required SOA and NS records.",
+    concepts: ["ALIAS record", "Zone apex", "CNAME record"],
     tags: ["records", "apex"],
   },
   {
@@ -195,6 +200,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Name to address. It can be bent into coarse traffic routing through GeoDNS and failover records, but that is a side effect of returning different answers, not its purpose.",
+    concepts: ["Domain Name System", "Name resolution"],
     tags: ["fundamentals"],
   },
 
@@ -220,6 +226,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "TCP's guarantees are the problem here, not the benefit: retransmitting a lost packet means everything behind it waits. For real-time media the freshest data matters more than complete data, which is exactly the trade UDP makes.",
+    concepts: ["UDP", "TCP", "Head-of-line blocking"],
     tags: ["tcp-udp"],
   },
   {
@@ -242,6 +249,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "HTTP/2 removed head-of-line blocking at the HTTP layer but inherited it from TCP underneath. That is precisely why HTTP/3 moved to QUIC over UDP, where each stream recovers from loss independently.",
+    concepts: ["HTTP/2", "Head-of-line blocking", "Multiplexing"],
     tags: ["http2", "http3", "head-of-line"],
   },
   {
@@ -262,6 +270,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "SSE is one-directional server-to-client over ordinary HTTP, with reconnection and event ids built into the browser API. WebSockets buy full duplex you do not need here, and bring their own connection handling. Long polling is the fallback when SSE is unavailable.",
+    concepts: ["Server-Sent Events", "WebSocket", "Long polling"],
     tags: ["sse", "websockets", "push"],
   },
   {
@@ -279,6 +288,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Each strength has a matching cost: REST over-fetches, gRPC is awkward from a browser without a proxy, GraphQL makes HTTP caching hard and invites resolver N+1, and WebSockets add stateful connections that complicate scaling and deploys.",
+    concepts: ["REST", "gRPC", "GraphQL", "WebSocket"],
     tags: ["api-protocols"],
   },
   {
@@ -299,6 +309,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Caching, resolver N+1, and unbounded query cost are the three real operational burdens, which is why production GraphQL grows dataloaders, depth limits, and cost analysis. Over-fetching is the problem GraphQL exists to solve, and mutations are part of the spec.",
+    concepts: ["GraphQL", "N+1 query problem", "Query cost analysis"],
     tags: ["graphql", "tradeoffs"],
   },
   {
@@ -314,6 +325,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "QUIC, which runs over UDP and implements its own reliability, ordering, and congestion control per stream. It also folds the TLS handshake into the connection setup, cutting a round trip.",
+    concepts: ["QUIC", "HTTP/3", "UDP"],
     tags: ["http3", "quic"],
   },
 
@@ -336,6 +348,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "0.999 x 0.999 = 0.998. Every hard dependency you add makes you less available, which is why a chain of individually healthy services can add up to a number nobody is happy with. This calculation comes up constantly in interviews.",
+    concepts: ["Availability", "Nines", "Serial availability"],
     tags: ["nines", "sequence"],
   },
   {
@@ -355,6 +368,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "In parallel you multiply the failure probabilities, not the availabilities: 1 - (0.001)² gives six nines. Redundancy buys nines and dependencies spend them — that is the whole shape of availability arithmetic. Independence is the assumption to question: a shared rack, region, or deploy makes failures correlated.",
+    concepts: ["Redundancy", "Parallel availability", "Nines"],
     tags: ["nines", "parallel", "redundancy"],
   },
   {
@@ -372,6 +386,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Each additional nine cuts downtime tenfold and costs roughly an order of magnitude more engineering. Five nines is about five minutes a year — less than a single careless deploy, which is why the claim deserves scrutiny.",
+    concepts: ["Nines", "Downtime budget", "Service level agreement"],
     tags: ["nines"],
   },
   {
@@ -393,6 +408,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Active-passive is simpler but the failover window is genuine downtime and the standby sits idle. Active-active removes the cutover and distributes load, and now you own conflict resolution. The trap is capacity: if each side normally runs at 70%, losing one does not fail over, it overloads the survivor.",
+    concepts: ["Active-active", "Active-passive", "Failover"],
     tags: ["failover"],
   },
   {
@@ -416,6 +432,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The arithmetic is fine; the independence assumption usually is not. A bad config push, a poisoned deploy, an expired certificate, or a shared control plane takes both regions at once, and none of those show up in the per-region number. Correlated failure is what actually causes multi-region outages.",
+    concepts: ["Correlated failure", "Blast radius", "Single point of failure"],
     tags: ["correlated-failure", "nines"],
   },
   {
@@ -430,6 +447,7 @@ export const questions: Question[] = [
     typoTolerance: false,
     explanation:
       "About 8.76 hours — 0.1% of 8,760 hours in a year. Handy anchors: three nines is hours, four nines is under an hour, five nines is minutes.",
+    concepts: ["Nines", "Availability"],
     tags: ["nines"],
   },
 ];

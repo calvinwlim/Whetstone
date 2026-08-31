@@ -86,6 +86,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Default escaping covers the common path, so the remaining risk is where you opt out. A user-controlled href beginning javascript: is the one people forget, because it does not look like injecting HTML. If you must render user HTML, sanitise with a maintained library.",
+    concepts: ["Cross-site scripting", "dangerouslySetInnerHTML", "Output encoding"],
     tags: ["xss", "react"],
   },
   {
@@ -109,6 +110,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Injected XSS payloads are typically inline scripts, so allowing inline scripts defeats the point. It is an extremely common configuration because removing inline scripts is real work. Use nonces or hashes instead, and deploy in report-only mode first to find what breaks.",
+    concepts: ["Content Security Policy", "unsafe-inline", "CSP nonce"],
     tags: ["csp"],
   },
   {
@@ -130,6 +132,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "CORS is enforced by the browser, for browser-initiated requests, on behalf of the user. curl ignores it entirely. Loosening CORS does not expose your API — failing to authorise does. Treating a passing CORS check as authorisation is the dangerous misreading.",
+    concepts: ["Cross-Origin Resource Sharing", "Same-origin policy", "Preflight request"],
     tags: ["cors"],
   },
   {
@@ -152,6 +155,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Anything in localStorage is one XSS away from being stolen, and a stolen token is usable from anywhere until it expires. An httpOnly cookie is invisible to script, and in exchange is sent automatically — so you take on CSRF, which SameSite and anti-forgery tokens solve well.",
+    concepts: ["httpOnly cookie", "Token storage", "Cross-site scripting"],
     tags: ["token-storage"],
   },
   {
@@ -169,6 +173,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Each defence works where the trust is actually broken. Worth noting CSRF exists only because credentials are attached automatically — an app authenticating with an Authorization header is largely immune by construction.",
+    concepts: ["Cross-site scripting", "Cross-site request forgery", "Clickjacking", "Subresource integrity"],
     tags: ["catalogue"],
   },
   {
@@ -192,6 +197,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "CSRF depends on ambient authority — credentials the browser attaches without the page asking. A header set by your own JavaScript is not ambient, so the attacker's page cannot cause it to be sent. The trade is that the token now lives somewhere script can reach, which is the XSS exposure.",
+    concepts: ["Cross-site request forgery", "Ambient authority", "Bearer token"],
     tags: ["csrf", "tradeoffs"],
   },
   {
@@ -207,6 +213,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "DOM-based XSS. It is notable because server-side scanning and WAFs never see the payload — the vulnerability is entirely in the client-side sink. Auditing means finding the sinks: innerHTML, document.write, eval, and framework bypasses.",
+    concepts: ["DOM-based XSS", "Client-side sink", "innerHTML"],
     tags: ["xss"],
   },
 
@@ -232,6 +239,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A native button is in the tab order, fires on Enter and Space, and announces itself. Recreating that on a div takes a role, a tabindex, and keyboard handlers — and it usually gets partially done, which is why the guidance is to use the semantic element.",
+    concepts: ["Semantic HTML", "Focusable element", "Keyboard accessibility"],
     tags: ["semantic-html"],
   },
   {
@@ -253,6 +261,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "ARIA is a description layer. Labelling a div as a button tells assistive technology it behaves like one, and it still will not respond to Enter or Space — so the user is told something false. Native semantics carry behaviour and description together; ARIA is for the gaps.",
+    concepts: ["ARIA", "Accessible name", "Semantic HTML"],
     tags: ["aria"],
   },
   {
@@ -275,6 +284,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Without moving focus in, a keyboard user is still behind the dialog and can tab into content they cannot see. Without trapping it, they tab straight out. Without returning it on close, they are dumped at the document start and lose their place — this is a mouse-user problem too.",
+    concepts: ["Focus management", "Focus trap", "Modal dialog"],
     tags: ["focus-management"],
   },
   {
@@ -295,6 +305,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "The first four map directly to WCAG success criteria. Motion is the opposite of a requirement — it can trigger vestibular symptoms, which is why prefers-reduced-motion exists and why animation should never be the only signal that something changed.",
+    concepts: ["WCAG", "Colour contrast ratio", "Focus indicator"],
     tags: ["wcag"],
   },
   {
@@ -316,6 +327,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The moment a user starts typing, the only description of the field is gone — which hurts anyone who is interrupted, not just users of assistive technology. A real label also gives a larger click target and a reliable accessible name.",
+    concepts: ["Form label", "Placeholder text", "Accessible name"],
     tags: ["forms", "labels"],
   },
   {
@@ -339,6 +351,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "An empty alt, which tells assistive technology to skip it. Omitting the attribute entirely is different and worse — some screen readers then announce the filename. Alt text should carry purpose, so a decorative image's purpose is genuinely nothing.",
+    concepts: ["Alt text", "Decorative image", "Screen reader"],
     tags: ["images", "alt-text"],
   },
 ];

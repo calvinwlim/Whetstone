@@ -150,6 +150,7 @@ const questions: Question[] = [
     ],
     explanation:
       "Attention is finite, so spend it where a machine cannot. Formatting belongs to a linter or formatter, and a review thread about it is a signal that tooling is missing. Design comments are best raised early, because by review time the cost of changing direction is already high.",
+    concepts: ["Code review", "Review priorities", "Linting"],
     tags: ["priorities"],
   },
   {
@@ -173,6 +174,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "A question costs nothing if you are wrong and works just as well if you are right — the author checks either way. Asserting a break is expensive when you have missed context. Pushing to someone's branch removes their ownership, and approving a suspected defect defeats the purpose of reviewing.",
+    concepts: ["Code review", "Feedback framing", "Psychological safety"],
     tags: ["feedback", "tone"],
   },
   {
@@ -195,6 +197,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "A 50-line change gets read line by line; a 2,000-line change gets an approval. The most valuable thing a reviewer can do about it is intervene before the work happens — 'can this land in three PRs?' is cheap in advance and expensive once it is written.",
+    concepts: ["Pull request size", "Defect detection rate", "Review fatigue"],
     tags: ["pr-size"],
   },
   {
@@ -215,6 +218,7 @@ const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Signalling severity, approving when nothing blocks, and letting tools own style all reduce round trips. Requiring every comment resolved treats a preference as a gate, and blanket multi-approval rules add latency to every change to catch problems that concentrate in a few.",
+    concepts: ["Review throughput", "Blocking feedback", "Automated formatting"],
     tags: ["throughput"],
   },
   {
@@ -234,6 +238,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Without a reproduction you cannot confirm a fix, and you risk 'fixing' something that was never the cause. Minimising the reproduction frequently identifies the cause on its own, because stripping conditions away forces you to find which ones actually matter.",
+    concepts: ["Reproduction", "Minimal reproducible example", "Debugging method"],
     tags: ["reproduction"],
   },
   {
@@ -257,6 +262,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Bisection is binary search over history: log₂(200) is under 8 steps. git bisect automates it and can run a test script per step. Reading 200 diffs assumes you will recognise the bug on sight, which is exactly the assumption that has already failed.",
+    concepts: ["git bisect", "Binary search", "Regression"],
     tags: ["bisection", "git"],
   },
   {
@@ -280,6 +286,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Without knowing the mechanism, you cannot tell whether you removed the cause or perturbed the timing enough to mask it — and masked bugs return in production under different load. Revert to one change at a time and confirm which one is load-bearing.",
+    concepts: ["Change one variable at a time", "Root cause analysis", "Heisenbug"],
     tags: ["method", "one-at-a-time"],
   },
   {
@@ -296,6 +303,7 @@ const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "The symptom. The crash is gone and the invalid state remains, so the system now proceeds with data it should not have — a loud failure converted into a quiet one, which is strictly worse for diagnosis later. A null check is fine as a guard once you know why null is possible.",
+    concepts: ["Root cause versus symptom", "Defensive programming", "Fail fast"],
     tags: ["root-cause"],
   },
   {
@@ -318,6 +326,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Reviewers arrive with a favourite alternative. Addressing it in the document turns a live debate into a resolved one, and it demonstrates the decision was made rather than fallen into. Strawmanning the alternatives destroys this benefit and costs you credibility on the rest of the doc.",
+    concepts: ["Alternatives considered", "Design document", "Decision rationale"],
     tags: ["alternatives"],
   },
   {
@@ -340,6 +349,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "An open request gives nobody a reason to be the one who responds, and no deadline to respond by. 'Does anyone object to the migration order in §4 by Thursday?' assigns responsibility and a due date, which is what actually converts a document into a decision.",
+    concepts: ["Design review", "Decision deadline", "Reviewability"],
     tags: ["reviewability"],
   },
   {
@@ -360,6 +370,7 @@ const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Non-goals stop scope creep in review, constraints resolve most disagreements (which are usually about constraints rather than taste), and stated tradeoffs make the document credible. Exhaustive API references and staffing schedules belong elsewhere — they bury the decision the reader is there to make.",
+    concepts: ["Non-goals", "Scope creep", "Design document"],
     tags: ["structure"],
   },
   {
@@ -380,6 +391,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Mitigation comes before diagnosis while users are affected. A rollback takes seconds and the evidence — logs, traces, the commit itself — is all still available afterwards. Redeploying with logging extends the outage to gather data you could collect off the critical path.",
+    concepts: ["Mitigation before diagnosis", "Rollback", "Incident response"],
     tags: ["mitigation"],
   },
   {
@@ -401,6 +413,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "A commander who starts debugging stops coordinating, and that is when three people investigate the same thing while nobody talks to stakeholders. The role is deliberately separate from the hands-on work — on a small incident it can be someone with no context at all, which often works better.",
+    concepts: ["Incident commander", "Incident roles", "Coordination"],
     tags: ["roles"],
   },
   {
@@ -424,6 +437,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Every system will eventually see the wrong command run. The useful questions are why it was possible without confirmation, why it was not caught in staging, and why detection took as long as it did. Stopping at the person also teaches everyone to hide the next incident, which removes your ability to learn from it at all.",
+    concepts: ["Blameless postmortem", "Root cause analysis", "Systemic failure"],
     tags: ["postmortem", "blameless"],
   },
   {
@@ -446,6 +460,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "'Three to eight days, depending on whether the existing export code is reusable' tells the planner both the shape of the risk and how to reduce it — they can authorise a spike. A padded single number hides the risk inside a figure people will treat as a commitment.",
+    concepts: ["Estimation range", "Uncertainty", "Spike"],
     tags: ["ranges", "uncertainty"],
   },
   {
@@ -466,6 +481,7 @@ const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "Implementation is the one thing everyone remembers, and it is often under half the total. Review latency, tests, migrations, deploys, and the bug tail are all real work — estimating only the coding is the single most common source of overrun.",
+    concepts: ["Estimation", "Hidden work", "Definition of done"],
     tags: ["scope"],
   },
   {
@@ -489,6 +505,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Early bad news is a planning problem; late bad news is a crisis, because everyone downstream has already committed against your date. Raising it with options — cut scope, add help, move the date — makes it a decision someone can make rather than an announcement they have to absorb.",
+    concepts: ["Re-estimation", "Early escalation", "Scope negotiation"],
     tags: ["communication", "re-estimation"],
   },
 ];

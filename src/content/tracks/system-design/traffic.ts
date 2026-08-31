@@ -118,6 +118,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "TTL is the cheapest thing that works here. Staleness is explicitly acceptable, so you do not need the coordination cost of write-through or the correctness burden of tracking down every key a write touches. Set the TTL near the update interval and you bound staleness without writing any invalidation logic.",
+    concepts: ["TTL", "Cache invalidation", "Write-through cache"],
     tags: ["ttl", "invalidation"],
   },
   {
@@ -139,6 +140,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A cache stampede, also called a thundering herd. The database sees a spike precisely because the cache was doing its job — the busier the key, the worse the spike. Mitigations: coalesce duplicate in-flight requests behind one origin call, expire probabilistically early, or serve stale while refreshing in the background.",
+    concepts: ["Cache stampede", "Thundering herd problem"],
     tags: ["stampede", "failure-modes"],
   },
   {
@@ -168,6 +170,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The key distinction: cache-aside puts the loading logic in your application, read-through puts it in the cache layer. Write-through trades write latency for never serving stale data; write-behind trades durability for write speed — if the cache dies before flushing, those writes are gone.",
+    concepts: ["Cache-aside", "Write-through cache", "Write-behind cache", "Read-through cache"],
     tags: ["patterns"],
   },
   {
@@ -188,6 +191,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Coalescing, early expiration, and stale-while-revalidate all attack the actual problem: many simultaneous misses on one key. A longer TTL just makes the stampede rarer and larger when it lands, and more memory does nothing — the key expired, it was not evicted.",
+    concepts: ["Request coalescing", "Stale-while-revalidate", "Cache stampede"],
     tags: ["stampede", "mitigation"],
   },
   {
@@ -206,6 +210,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The defining trait of cache-aside is that the application orchestrates all of it — the cache is a dumb key-value store that never talks to the database. That is why the app keeps working, slower, when the cache is down.",
+    concepts: ["Cache-aside", "Cache miss"],
     tags: ["patterns", "cache-aside"],
   },
   {
@@ -229,6 +234,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Only the writer needs freshness, so only the writer should pay for it. Pinning that one user to the origin for a few seconds — or invalidating just their key — costs almost nothing. Dropping the TTL globally makes every user pay for one user's write, which is how a cache quietly stops being a cache.",
+    concepts: ["Read-your-writes consistency", "Cache invalidation"],
     tags: ["consistency", "read-your-writes"],
   },
   {
@@ -249,6 +255,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Round robin and random both assume requests cost roughly the same, so a server that catches several 30-second requests keeps getting new work anyway. Least connections tracks in-flight requests, so a backend bogged down in slow work naturally stops receiving traffic until it catches up.",
+    concepts: ["Least connections", "Round robin", "Load balancing"],
     tags: ["algorithms"],
   },
   {
@@ -271,6 +278,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "With hash(key) % n, changing n remaps almost every key at once — every cache node misses simultaneously and the origin takes the full load. Consistent hashing remaps roughly 1/n of keys. Plain consistent hashing actually distributes less evenly than modulo, which is exactly why implementations add virtual nodes.",
+    concepts: ["Consistent hashing", "Virtual nodes", "Modulo hashing"],
     tags: ["consistent-hashing"],
   },
   {
@@ -291,6 +299,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "e"],
     explanation:
       "Everything except (d) requires parsing the request. L4 sees only IP and port, so it can move connections around but cannot tell you what is inside them. Distributing raw TCP connections is exactly what L4 does well — and it does it with far less CPU.",
+    concepts: ["Layer 7 load balancing", "Layer 4 load balancing", "TLS termination"],
     tags: ["l4-l7"],
   },
   {
@@ -314,6 +323,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A health check is only useful if failing it means real requests would fail. A check that proves the process is alive but not that it can serve traffic will happily route users into a broken backend. Exercise the critical dependencies — but keep it cheap, and do not cascade: if a shared dependency blips, an over-eager check can mark every backend unhealthy at once.",
+    concepts: ["Health check", "Cascading failure", "Liveness probe"],
     tags: ["health-checks", "failure-modes"],
   },
   {
@@ -333,6 +343,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "stale-while-revalidate decouples the user's latency from the origin fetch — nobody waits for the refresh. must-revalidate is the opposite, forbidding stale responses. no-cache requires revalidation before every use, and immutable promises the content will never change at all.",
+    concepts: ["stale-while-revalidate", "Cache-Control", "Revalidation"],
     tags: ["cache-control"],
   },
   {
@@ -351,6 +362,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Content-addressed URLs sidestep invalidation entirely. Because the URL changes whenever the bytes change, you can cache with a one-year TTL and never purge — and a purge is slow and eventually consistent across hundreds of edges, so the best invalidation strategy is not needing one.",
+    concepts: ["Content-addressed URL", "Cache busting", "Immutable caching"],
     tags: ["invalidation", "immutable"],
   },
   {
@@ -374,6 +386,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Vary fragments the cache once per distinct header value, and User-Agent strings are nearly unique across browser and OS version combinations — so almost every request becomes its own cache entry. If you must branch on device type, normalise to a small set of buckets first.",
+    concepts: ["Vary header", "Cache key", "Cache hit rate"],
     tags: ["vary", "hit-rate"],
   },
   {
@@ -397,6 +410,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "This is the classic fixed-window boundary problem: both batches are legal within their own window, but together they are twice the limit inside one second. A sliding window counter fixes it by interpolating across the previous window, at a small fraction of the memory a full request log would need.",
+    concepts: ["Fixed window counter", "Sliding window counter", "Rate limiting"],
     tags: ["fixed-window", "boundary"],
   },
   {
@@ -417,6 +431,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Token bucket is built for exactly this shape: tokens accumulate up to a cap, so an idle client can spend a burst, while the refill rate bounds sustained throughput. Leaky bucket deliberately smooths bursts into a constant drain — correct when the downstream truly cannot absorb a spike, wrong when you want to let idle clients burst.",
+    concepts: ["Token bucket", "Leaky bucket", "Burst capacity"],
     tags: ["token-bucket"],
   },
   {
@@ -429,6 +444,7 @@ export const questions: Question[] = [
     answers: ["429", "http 429", "429 too many requests", "too many requests"],
     explanation:
       "429 Too Many Requests. Pair it with a Retry-After header — without one, well-behaved clients have no idea how long to wait and typically retry immediately, turning your rate limit into a retry storm.",
+    concepts: ["HTTP 429 Too Many Requests", "Retry-After header"],
     tags: ["http", "429"],
   },
   {
@@ -455,6 +471,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Each instance counts only what it sees, so the real ceiling is limit x instances — and it shifts every time you autoscale. A shared store (usually Redis) gives one global count at the cost of a network hop per request. The common compromise is a local limiter for cheap protection plus a shared one for correctness.",
+    concepts: ["Distributed rate limiting", "Shared counter", "Autoscaling"],
     tags: ["distributed", "scaling"],
   },
 ];

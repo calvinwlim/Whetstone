@@ -20,6 +20,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A cache keeps a copy of data somewhere faster to reach than the original. It buys latency and reduces load, and it deliberately trades away freshness — which is why a cache is never the system of record.",
+    concepts: ["Cache", "Latency", "System of record"],
     tags: ["fundamentals"],
   },
   {
@@ -34,6 +35,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "TTL — time to live. It is the simplest form of cache invalidation: rather than tracking when data changes, you accept that a cached copy is at most TTL seconds out of date.",
+    concepts: ["TTL", "Cache expiry"],
     tags: ["fundamentals", "ttl"],
   },
   {
@@ -52,6 +54,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It spreads traffic across a pool of backends so no single server carries everything, and it stops sending traffic to backends that fail their health checks.",
+    concepts: ["Load balancer", "Health check"],
     tags: ["fundamentals"],
   },
   {
@@ -70,6 +73,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "An index is a sorted structure that lets the database seek instead of scanning every row. The tradeoff is that every insert and update must maintain it, so indexes you never query are pure cost.",
+    concepts: ["Database index", "Table scan", "Write amplification"],
     tags: ["fundamentals", "indexes"],
   },
   {
@@ -84,6 +88,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A transaction. Its defining property is atomicity: partial application is impossible, so you never end up having debited one account without crediting the other.",
+    concepts: ["Transaction", "Atomicity", "ACID"],
     tags: ["fundamentals", "transactions"],
   },
   {
@@ -102,6 +107,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Replication buys durability and read capacity. It costs storage rather than saving it, and it usually makes writes slower, not faster, since they must propagate. Replicas are also not backups — a bad delete replicates faithfully.",
+    concepts: ["Replication", "Durability", "Read scaling"],
     tags: ["fundamentals"],
   },
   {
@@ -120,6 +126,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A queue decouples asking for work from doing it, so the user is not held waiting. The work itself is not faster, errors still need handling, and most brokers give at-least-once delivery rather than exactly-once.",
+    concepts: ["Message queue", "Asynchronous processing", "Decoupling"],
     tags: ["fundamentals", "async"],
   },
   {
@@ -137,6 +144,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "GET, PUT, and DELETE are idempotent — repeating them lands in the same state. POST is not, which is why retrying a failed POST risks creating two of something and why payment endpoints need idempotency keys.",
+    concepts: ["HTTP GET", "HTTP POST", "HTTP PUT", "Idempotent method"],
     tags: ["fundamentals", "http"],
   },
   {
@@ -155,6 +163,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "It is the 99th percentile: only the slowest 1% took longer. It matters because averages hide the tail, and a page making many backend calls will hit that slowest 1% on almost every load.",
+    concepts: ["p99 latency", "Percentile", "Tail latency"],
     tags: ["fundamentals", "percentiles"],
   },
   {
@@ -173,6 +182,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Object storage is cheap, effectively unlimited, and addressed by key — ideal for large immutable blobs. It has no query language and relatively high per-request latency, so it is wrong for anything you need to search or update rapidly.",
+    concepts: ["Object storage", "Blob storage"],
     tags: ["fundamentals"],
   },
   {
@@ -192,6 +202,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Ambiguity does not go away by being ignored — it turns into rework. Turning a vague request into a bounded problem is the job, and doing it out loud is what separates a senior response from an eager one.",
+    concepts: ["Requirements gathering", "Ambiguity", "Rework"],
     tags: ["fundamentals"],
   },
   {
@@ -211,6 +222,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Lead with the conclusion. Listeners can then treat everything after it as support, rather than holding facts in memory while waiting to find out what they are for — and if you get cut off, you have already delivered the important part.",
+    concepts: ["Top-down communication", "Pyramid principle"],
     tags: ["fundamentals", "top-down"],
   },
   {
@@ -229,6 +241,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Linear: the work grows in direct proportion to the input size. Nesting a second loop over the same n would make it O(n squared).",
+    concepts: ["Big-O notation", "Linear time"],
     tags: ["fundamentals", "big-o"],
   },
   {
@@ -248,6 +261,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A hash set answers membership in constant time on average. Scanning an array is O(n) per check, which turns a single pass into quadratic work — this swap is the most common optimisation in interview problems.",
+    concepts: ["Hash set", "Membership test", "Constant time lookup"],
     tags: ["fundamentals"],
   },
   {
@@ -266,6 +280,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A bug or a security hole is the expensive thing to miss. Formatting should be owned by a linter or formatter — spending human review attention on it means less attention on the things a machine cannot check.",
+    concepts: ["Code review", "Review priorities"],
     tags: ["fundamentals"],
   },
   {
@@ -284,6 +299,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "If you cannot make it happen on demand, you cannot tell whether your change fixed it or the problem simply did not occur that time. Minimising the reproduction also tends to reveal the cause on its own.",
+    concepts: ["Reproduction", "Debugging method"],
     tags: ["fundamentals"],
   },
   {
@@ -302,6 +318,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Writing the code is the part everyone remembers, and it is often less than half the total. Review latency, tests, migrations, and the bug tail after release are all real work with real duration.",
+    concepts: ["Estimation", "Hidden work"],
     tags: ["fundamentals"],
   },
   {
@@ -320,6 +337,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Mitigate first — roll back, disable the flag, shift traffic. The evidence is still there afterwards, and every minute spent diagnosing while users are down is a minute of avoidable impact.",
+    concepts: ["Mitigation before diagnosis", "Incident response", "Rollback"],
     tags: ["fundamentals"],
   },
 ];

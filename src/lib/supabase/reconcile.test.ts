@@ -14,6 +14,7 @@ function question(id: string): McqQuestion {
     difficulty: 2,
     prompt: "p",
     explanation: "e",
+    concepts: ["Example concept"],
     options: [{ id: "a", text: "a" }],
     answer: "a",
   };

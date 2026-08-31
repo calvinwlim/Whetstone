@@ -136,6 +136,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Third normal form forbids a non-key column depending on another non-key column. Here name and city depend on customer_id, so changing a customer's city means updating every order they have ever placed — and inevitably updating only some of them. It can be a deliberate denormalisation, but then the sync obligation is yours.",
+    concepts: ["Third normal form", "Transitive dependency", "Denormalisation"],
     tags: ["normalisation", "3nf"],
   },
   {
@@ -157,6 +158,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "People change email addresses, companies rebrand, and identifiers get reissued. A primary key that changes forces an update everywhere it is referenced. Use a surrogate key for identity and keep the natural key as a unique constraint — which was the actual requirement.",
+    concepts: ["Surrogate key", "Natural key", "Primary key"],
     tags: ["keys"],
   },
   {
@@ -177,6 +179,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "The value is that a constraint holds regardless of which code path wrote the row. They are not a performance feature — though a unique constraint does create an index — and you still want application validation to give users good errors before the database rejects the write.",
+    concepts: ["Database constraint", "Foreign key", "Referential integrity"],
     tags: ["constraints"],
   },
   {
@@ -192,6 +195,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "First normal form requires atomic values. A delimited list means you cannot index, join, or constrain individual tags, and every query does string matching. The fix is a separate row per tag, usually through a join table.",
+    concepts: ["First normal form", "Atomic value", "Join table"],
     tags: ["normalisation", "1nf"],
   },
 
@@ -212,6 +216,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "This is expand and contract. Every step is independently deployable and revertible, and at no point do running instances of old code encounter a schema they do not understand. A single rename migration breaks every instance still running the previous deploy.",
+    concepts: ["Expand and contract", "Parallel change", "Backfill"],
     tags: ["expand-contract"],
   },
   {
@@ -235,6 +240,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "One enormous transaction is the problem, not the total work. Batch it, commit between batches, throttle to leave capacity for real traffic, and make it resumable so a failure halfway does not mean starting over. Backfills are jobs, not statements.",
+    concepts: ["Backfill", "Write-ahead log", "Lock contention"],
     tags: ["backfill"],
   },
   {
@@ -258,6 +264,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A standard index build takes a lock that blocks writes for its duration, which on a large table is an outage. Building concurrently avoids that at the cost of being slower and needing a check afterwards, since a concurrent build can fail and leave an invalid index behind.",
+    concepts: ["CREATE INDEX CONCURRENTLY", "Table lock", "Online schema change"],
     tags: ["indexes", "locking"],
   },
   {
@@ -280,6 +287,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "During any rolling deploy — and during any rollback — both versions of the code are live simultaneously. The schema must therefore be compatible with both, which is exactly what expand and contract guarantees by never removing anything until nothing reads it.",
+    concepts: ["Rolling deployment", "Expand and contract", "Schema compatibility"],
     tags: ["rolling-deploy"],
   },
 
@@ -305,6 +313,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Encryption at rest defends against physical media and backup files, not against credentialed access — the engine decrypts transparently for anyone who can log in. Limiting what a compromised credential reaches requires least privilege and, for the most sensitive fields, application-level encryption the database cannot undo.",
+    concepts: ["Encryption at rest", "Transparent data encryption", "Application-level encryption"],
     tags: ["encryption"],
   },
   {
@@ -328,6 +337,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Relying on every query to remember a WHERE clause means isolation fails the first time someone forgets — and someone will. Row-level security moves the rule into the database so it applies to every query including ad-hoc ones. Replicas and foreign keys do nothing about which rows are returned.",
+    concepts: ["Row-level security", "Tenant isolation", "Multi-tenancy"],
     tags: ["rls", "multi-tenancy"],
   },
   {
@@ -348,6 +358,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Separating roles by what each genuinely needs means a compromise in one path cannot do everything. A single shared credential makes auditing worse, not better, because you cannot attribute anything — and an application user with DROP turns an injection bug into data loss.",
+    concepts: ["Least privilege", "Database role", "Privilege separation"],
     tags: ["least-privilege"],
   },
   {
@@ -369,6 +380,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "An untested backup is a hope. Plenty of organisations discover at the worst moment that their backups were empty, corrupt, or missing a critical table. Backups also carry the full dataset with typically weaker controls, so encryption and access restriction matter as much as the backup itself.",
+    concepts: ["Backup restore testing", "Disaster recovery", "Encryption at rest"],
     tags: ["backups"],
   },
 
@@ -394,6 +406,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Soft deletes keep the row and event logs are immutable by design, so neither actually removes anything. Encrypting each subject's data under a per-subject key and destroying the key renders it unrecoverable without rewriting immutable history — which is why crypto-shredding became the common answer.",
+    concepts: ["Right to erasure", "Crypto-shredding", "Soft delete"],
     tags: ["erasure", "crypto-shredding"],
   },
   {
@@ -415,6 +428,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Replacing a name with an identifier reduces exposure but keeps the data personal, because the link still exists somewhere. True anonymisation means no reasonably likely means of re-identification, which is harder than it sounds — sparse behavioural data can identify individuals with very few data points.",
+    concepts: ["Pseudonymisation", "Anonymisation", "Re-identification"],
     tags: ["anonymisation"],
   },
   {
@@ -435,6 +449,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "The primary table is the one everyone remembers. Personal data spreads into every derived and operational system, and logs are the most commonly overlooked because nobody thinks of them as a data store. Deleting reliably requires an inventory of everywhere it flows.",
+    concepts: ["Data inventory", "Right to erasure", "Derived data"],
     tags: ["deletion", "inventory"],
   },
   {
@@ -456,6 +471,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Every other control is ongoing effort applied to data you hold. Not holding it removes the obligation entirely. \"We might want it later\" is the reasoning behind most accumulated liability, and later rarely arrives.",
+    concepts: ["Data minimisation", "Personally identifiable information"],
     tags: ["minimisation"],
   },
 ];

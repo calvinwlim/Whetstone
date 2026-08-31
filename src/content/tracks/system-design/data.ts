@@ -152,6 +152,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "A composite index is sorted by tenant_id first, then created_at within each tenant. Filtering on created_at alone means scanning every tenant's slice, so the database usually falls back to a full scan. The index would serve tenant_id alone, or both together, but not created_at alone.",
+    concepts: ["Composite index", "Leftmost prefix rule", "B-tree index"],
     tags: ["indexes", "composite"],
   },
   {
@@ -166,6 +167,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A covering index. Because the index holds all requested columns, the engine performs an index-only scan and never touches the heap — often a large speedup on wide tables, paid for with a bigger index and slower writes.",
+    concepts: ["Covering index", "Index-only scan"],
     tags: ["indexes", "covering"],
   },
   {
@@ -185,6 +187,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Indexes tax writes, storage, and planning. They do not slow unrelated reads, and modern engines can build them concurrently without a long lock. The practical takeaway: an index nothing queries is pure cost, so audit for unused indexes as readily as you add new ones.",
+    concepts: ["Database index", "Write amplification", "Query planner"],
     tags: ["indexes", "tradeoffs"],
   },
   {
@@ -202,6 +205,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Each level rules out one more anomaly at increasing cost. Worth knowing that read committed is the default in PostgreSQL and many others — so unless you asked for more, a value you read twice in one transaction can legitimately differ.",
+    concepts: ["Read committed", "Repeatable read", "Serializable isolation", "Phantom read"],
     tags: ["transactions", "isolation"],
   },
   {
@@ -225,6 +229,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Range partitioning on a monotonically increasing key sends every new write to whichever shard owns the newest range, so you get the operational cost of sharding with none of the write scaling. Hash the key, or prefix it with something high-cardinality, to spread writes.",
+    concepts: ["Hotspot", "Range partitioning", "Shard key"],
     tags: ["hotspot", "partition-key"],
   },
   {
@@ -244,6 +249,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "High cardinality and even access spread the load; being present in most queries is what keeps them from scattering to every shard. Monotonically increasing is actively bad — it is the hotspot recipe — and low cardinality caps how many shards you can ever use.",
+    concepts: ["Shard key", "Cardinality", "Hash partitioning"],
     tags: ["partition-key"],
   },
   {
@@ -266,6 +272,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Without the shard key the router cannot tell which shard holds the data, so it asks all of them. Latency becomes the slowest shard's response, and total throughput drops because every shard works on every such query. This is why access patterns must inform the shard key before you commit to it.",
+    concepts: ["Scatter-gather query", "Shard key", "Fan-out"],
     tags: ["scatter-gather"],
   },
   {
@@ -289,6 +296,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The write succeeded but had not reached the follower yet. This is the read-your-writes problem. Standard fixes: route a user's reads to the leader for a short window after they write, or track the write position and only read from a replica that has caught up past it.",
+    concepts: ["Replication lag", "Read-your-writes consistency", "Leader-follower replication"],
     tags: ["lag", "read-your-writes"],
   },
   {
@@ -312,6 +320,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "W + R > N is the quorum condition: 3 + 3 = 6 > 5, so the write set and read set must share at least one node, and that node has the newest value. Tuning W down speeds writes at the cost of read consistency, and vice versa.",
+    concepts: ["Quorum", "Leaderless replication", "Tunable consistency"],
     tags: ["quorum"],
   },
   {
@@ -327,6 +336,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Split-brain. It is dangerous because both halves accept writes that will conflict when the partition heals, and the damage is silent rather than loud. Fencing tokens and requiring a majority quorum to elect a leader are the usual defences.",
+    concepts: ["Split-brain", "Fencing token", "Leader election"],
     tags: ["failover", "split-brain"],
   },
   {
@@ -349,6 +359,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Synchronous replication buys durability — a confirmed write survives leader failure — and charges the slowest acknowledging follower's latency on every write. It also means a slow or unreachable follower can stall writes entirely, which is why semi-synchronous setups keep exactly one synchronous follower.",
+    concepts: ["Synchronous replication", "Asynchronous replication", "Semi-synchronous replication"],
     tags: ["sync-async"],
   },
   {
@@ -370,6 +381,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The popular 'pick two' phrasing is misleading. Partitions are a fact of networks, not a design choice, so the real statement is conditional: when a partition happens, you choose C or A. With no partition you can have both — and the tradeoff you actually make daily is consistency versus latency, which is what PACELC captures.",
+    concepts: ["CAP theorem", "PACELC", "Network partition"],
     tags: ["cap", "pacelc"],
   },
   {
@@ -388,6 +400,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Strength is about how many orderings the model rules out. Linearizable admits only real-time order; eventual admits almost anything as long as replicas converge. The practical skill is picking per operation rather than per system — a payment needs the top of this list, a like count is fine at the bottom.",
+    concepts: ["Linearizability", "Causal consistency", "Eventual consistency"],
     tags: ["models"],
   },
   {
@@ -408,6 +421,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Nobody can tell whether a like count is 1,203 or 1,204, and paying coordination cost on the highest-volume operation in the system to get it exactly right is a poor trade. Reserve strong consistency for operations where being wrong is actually visible or costly.",
+    concepts: ["Eventual consistency", "Coordination cost"],
     tags: ["tradeoffs"],
   },
   {
@@ -430,6 +444,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Object storage is built for this: cheap, durable, and effectively unlimited. Blobs in a relational database bloat every backup, evict useful pages from the buffer cache, and slow queries that never touch the image. Local disk does not survive a redeploy and is not shared across instances.",
+    concepts: ["Object storage", "BLOB", "Buffer cache"],
     tags: ["object-storage"],
   },
   {
@@ -452,6 +467,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Proxying a 2MB upload means your server absorbs the bandwidth, memory, and request duration for every file. A presigned URL moves the transfer directly between client and storage while your server only signs the request and records metadata. It still requires authentication — you authenticate before you sign.",
+    concepts: ["Presigned URL", "Direct-to-storage upload"],
     tags: ["presigned-urls", "uploads"],
   },
   {
@@ -472,6 +488,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Denormalisation buys read speed and sells consistency. You now own keeping the copies in sync, detecting drift, and migrating both when the shape changes. Reads get faster, not slower — that is the entire point — and foreign keys elsewhere are unaffected.",
+    concepts: ["Denormalisation", "Data consistency", "Backfill"],
     tags: ["modelling", "denormalisation"],
   },
 ];

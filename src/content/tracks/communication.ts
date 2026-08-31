@@ -143,6 +143,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "The prompt is deliberately underspecified, and the first thing being tested is whether you notice. Scale and scope determine the entire architecture, so establishing them is not a delay before the real answer — it is the beginning of it. Language choice is almost never relevant at this altitude.",
+    concepts: ["Requirements gathering", "Scoping", "Ambiguity"],
     tags: ["scoping", "requirements"],
   },
   {
@@ -163,6 +164,7 @@ const questions: Question[] = [
     answers: ["a", "b", "c", "e"],
     explanation:
       "Ratio, scale, latency, and consistency requirements each force real structural decisions — precompute versus compute on read, single database versus sharded, cache placement. Cloud provider changes which managed service you name, not the shape of the system, so asking it early spends a question without buying information.",
+    concepts: ["Non-functional requirements", "Read-write ratio", "Latency budget"],
     tags: ["requirements"],
   },
   {
@@ -183,6 +185,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "10M writes over 86,400 seconds is roughly 115 writes per second; at 100:1 that is about 11,500 reads per second. Doing this arithmetic out loud is the point — it converts every later decision from taste into consequence, and it is what justifies reaching for a cache. Remember to plan for peak, often several times the average.",
+    concepts: ["Back-of-the-envelope estimation", "Requests per second", "Peak load"],
     tags: ["estimation", "back-of-envelope"],
   },
   {
@@ -202,6 +205,7 @@ const questions: Question[] = [
     ],
     explanation:
       "Each phase constrains the next: scale justifies the architecture, the architecture determines what is worth going deep on, and depth reveals the failure modes worth discussing. Skipping to the sketch is the classic mistake, and skipping the summary wastes the strongest moment you have.",
+    concepts: ["Signposting", "Top-down communication", "Design interview framework"],
     tags: ["structure"],
   },
   {
@@ -224,6 +228,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Reasoning that arrives before its conclusion forces the listener to hold every step in working memory without knowing what it is for. Leading with the conclusion gives them a frame to slot each point into — and if you get interrupted, they already have the part that mattered.",
+    concepts: ["Pyramid principle", "Top-down communication", "Working memory"],
     tags: ["top-down"],
   },
   {
@@ -239,6 +244,7 @@ const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Signposting. It tells the listener the shape of what is coming, so they stop wondering whether you have forgotten something and simply wait for it. It also quietly buys you permission to defer a topic rather than being pulled off course.",
+    concepts: ["Signposting", "Meeting structure"],
     tags: ["signposting"],
   },
   {
@@ -262,6 +268,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "The question is a probe, not a correction — they want to know whether you considered the alternative and understand its cost. Switching immediately suggests you had no reason initially. Claiming strong consistency is impossible is simply false, and overclaiming is more damaging than the original choice would have been.",
+    concepts: ["Trade-off analysis", "Eventual consistency", "Design rationale"],
     tags: ["defending", "probing"],
   },
   {
@@ -283,6 +290,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "The test is whether the constraints changed, not whether the pressure did. Updating on new information is exactly what good judgement looks like; updating on seniority alone signals that your original reasoning was not load-bearing. Refusing to update when genuinely shown otherwise is its own failure.",
+    concepts: ["Updating on evidence", "Intellectual honesty", "Constraint change"],
     tags: ["updating"],
   },
   {
@@ -304,6 +312,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "'It depends' is true of nearly everything, so on its own it transfers no information and reads as hedging. The valuable version names the variable and both branches: 'depends on whether we need cross-region writes — if so, multi-leader; if not, leader-follower is simpler.'",
+    concepts: ["Conditional reasoning", "Hedging", "Decision dependency"],
     tags: ["hedging"],
   },
   {
@@ -321,6 +330,7 @@ const questions: Question[] = [
     ],
     explanation:
       "The abstraction level should match the decision the listener actually owns. Giving an executive the engineer's explanation is not thoroughness — it is failing to translate, and it usually reads as an inability to see past your own context.",
+    concepts: ["Audience adaptation", "Abstraction level", "Technical translation"],
     tags: ["audience"],
   },
   {
@@ -344,6 +354,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "The analogy did its job — they built a mental model good enough to ask a sharp question. The failure was not marking its boundary. Saying 'like a shop queue, except the same person can be served twice, which is why we track who we have already served' pre-empts exactly this.",
+    concepts: ["Analogy", "Mental model", "Abstraction leak"],
     tags: ["analogies"],
   },
   {
@@ -367,6 +378,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Steelmanning proves you engaged with the proposal, which is what earns your objection a hearing rather than a defence. Leading a colleague into your conclusion in public reads as a trap even when well-intentioned. Private-only feedback deprives the team of information they need to decide.",
+    concepts: ["Steelmanning", "Design review", "Constructive disagreement"],
     tags: ["steelmanning", "review"],
   },
   {
@@ -390,6 +402,7 @@ const questions: Question[] = [
     answer: "a",
     explanation:
       "Disagree and commit, with a tripwire: 'I think write throughput will be the constraint — let's revisit if we cross 5k writes per second.' That converts a lost argument into a monitored assumption. Escalation is for consequential, hard-to-reverse decisions; spending it here costs credibility you will want later.",
+    concepts: ["Disagree and commit", "Reversible decision", "Tripwire"],
     tags: ["disagree-and-commit"],
   },
   {
@@ -410,6 +423,7 @@ const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Concrete scenarios are checkable, stated confidence lets others weight your input correctly, and acknowledging merit keeps the conversation technical. Framing around what someone missed makes it personal, and preference arguments have no resolution path — they just run until someone gets tired.",
+    concepts: ["Steelmanning", "Confidence calibration", "Falsifiable claim"],
     tags: ["framing"],
   },
 ];

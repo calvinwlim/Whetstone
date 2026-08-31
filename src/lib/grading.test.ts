@@ -14,6 +14,7 @@ const base = {
   difficulty: 2,
   prompt: "p",
   explanation: "e",
+  concepts: ["Example concept"] as string[],
 } as const;
 
 const mcq: McqQuestion = {

@@ -21,6 +21,7 @@ function q(id: string, topic = "caching", difficulty: Difficulty = 2): McqQuesti
     difficulty,
     prompt: id,
     explanation: "e",
+    concepts: ["Example concept"],
     options: [{ id: "a", text: "a" }],
     answer: "a",
   };

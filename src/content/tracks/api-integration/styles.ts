@@ -111,6 +111,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "WSDL formally describes operations, types, and bindings, so clients are generated rather than hand-written and the contract is enforced by machine. REST has no equivalent in the style itself — OpenAPI provides it, but as a convention layered on top rather than part of REST.",
+    concepts: ["WSDL", "SOAP", "Code generation"],
     tags: ["soap", "wsdl"],
   },
   {
@@ -134,6 +135,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "TLS is transport-level and terminates at each hop, so every relay along the path handles plaintext. WS-Security signs and encrypts at the message level, so protection travels with the message regardless of how many systems forward it. This is a large part of why SOAP persists in regulated industries.",
+    concepts: ["WS-Security", "Message-level security", "TLS termination"],
     tags: ["ws-security", "soap"],
   },
   {
@@ -151,6 +153,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "None of these is obsolete; they optimise for different things. Dismissing SOAP as legacy misreads why it exists — transport independence, a formal contract, and message-level security are genuine requirements in banking, telecom, and government.",
+    concepts: ["REST", "SOAP", "gRPC", "GraphQL"],
     tags: ["selection"],
   },
   {
@@ -166,6 +169,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "A SOAP Fault, carried in the envelope body with a code, reason, and optional detail. Because SOAP is transport-agnostic it cannot rely on HTTP status codes — the error has to live in the message.",
+    concepts: ["SOAP Fault", "SOAP envelope"],
     tags: ["soap", "errors"],
   },
   {
@@ -186,6 +190,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c", "d"],
     explanation:
       "The first four are real engineering reasons, not inertia. Payload size is where SOAP loses badly — XML envelopes are verbose and comparatively slow to parse, which is exactly why REST and JSON took over everywhere those constraints did not apply.",
+    concepts: ["SOAP", "WSDL", "WS-Security", "Transport independence"],
     tags: ["soap", "enterprise"],
   },
   {
@@ -207,6 +212,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The format difference is the visible consequence, not the substance. SOAP defines an envelope, an error model, and a contract language, and works over any transport. REST is a set of constraints on how you use HTTP, which is why it inherits HTTP's caching and status codes for free.",
+    concepts: ["REST", "SOAP", "Architectural style"],
     tags: ["fundamentals"],
   },
 
@@ -230,6 +236,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Spec-first makes the contract a design decision rather than a byproduct of the handler, and it unblocks consumers immediately via mocks. Code-first is lower friction and tends to document whatever you happened to build. The real failure is having the contract in neither place.",
+    concepts: ["OpenAPI", "Spec-first development", "Mock server"],
     tags: ["spec-first", "openapi"],
   },
   {
@@ -250,6 +257,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "Anything that invalidates a request a client could previously send, or removes something a client could previously read, is breaking. Narrowing a type is the one people miss — existing callers sending a legal string now fail validation. Purely additive changes are safe.",
+    concepts: ["Breaking change", "Backwards compatibility", "Schema evolution"],
     tags: ["compatibility"],
   },
   {
@@ -273,6 +281,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Each service passing its own tests is exactly the situation contract testing exists for: nobody's tests encode what the *other* side relies on. Consumers publish their expectations and the provider verifies against all of them. Full end-to-end suites can catch it too, at far higher cost and flakiness.",
+    concepts: ["Consumer-driven contract testing", "Pact", "Provider verification"],
     tags: ["contract-testing"],
   },
   {
@@ -295,6 +304,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Validating once at the edge deletes a layer of defensive checks from every handler and makes error responses uniform. Driving your types from the same schema also means the shape you validate and the shape you assume cannot drift apart.",
+    concepts: ["Schema validation", "Input validation", "Type generation"],
     tags: ["validation"],
   },
   {
@@ -310,6 +320,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "OpenAPI, formerly Swagger — a name still attached to much of its tooling. Its value is that it is one source generating clients, servers, mocks, validation, and documentation, so they cannot disagree.",
+    concepts: ["OpenAPI", "Swagger", "API specification"],
     tags: ["openapi"],
   },
 
@@ -335,6 +346,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Signature verification is the only check that proves the payload came from someone holding the shared secret. Two details bite people: compute the HMAC over the exact raw bytes, since re-serialising the JSON changes the result, and compare in constant time. IP allowlists are brittle and secondary.",
+    concepts: ["HMAC signature", "Webhook verification", "Constant-time comparison"],
     tags: ["signatures", "security"],
   },
   {
@@ -358,6 +370,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Providers treat slowness as failure, so any inline processing is a duration you are betting against. Acknowledge as soon as the event is safely recorded and do the work off the request path. Optimising helps until the work grows again; the queue fixes the shape of the problem.",
+    concepts: ["Webhook timeout", "Asynchronous processing", "Durable queue"],
     tags: ["async", "timeouts"],
   },
   {
@@ -381,6 +394,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Retries and parallel delivery make reordering normal rather than exceptional. Carrying a version on the resource lets the receiver discard stale updates deterministically. Buffering and sorting only narrows the window and adds latency to everything.",
+    concepts: ["Event ordering", "Idempotency", "Resource versioning"],
     tags: ["ordering", "idempotency"],
   },
   {
@@ -404,6 +418,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Server-side request forgery: you are making requests to an attacker-chosen address from inside your network. Scheme validation alone is not enough, because DNS can resolve a public-looking name to a private address — you must check the resolved IP, and re-check on redirects.",
+    concepts: ["Server-side request forgery", "Egress filtering", "URL validation"],
     tags: ["ssrf", "security"],
   },
   {
@@ -422,6 +437,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Order matters at every step. Parsing before verifying means acting on unverified input; verifying after re-serialising breaks the signature; and acknowledging before the event is durably recorded means a crash loses it with no retry coming.",
+    concepts: ["Webhook verification", "Idempotency", "Durable queue"],
     tags: ["handling"],
   },
   {
@@ -437,6 +453,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Replay. A validly signed request stays valid forever unless something bounds its lifetime, so a captured payload could be resent indefinitely. Signing a timestamp and enforcing a short window closes that.",
+    concepts: ["Replay attack", "Timestamp validation", "HMAC signature"],
     tags: ["replay", "security"],
   },
 ];

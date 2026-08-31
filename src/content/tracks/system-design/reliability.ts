@@ -74,6 +74,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "The N+1 query problem: one query for the list, then N more for the details. Fix it with a join, an eager load, or a batched \"where customer_id in (...)\" query. It hides well in development because N is small there.",
+    concepts: ["N+1 query problem", "Eager loading", "Query batching"],
     tags: ["n+1", "database"],
   },
   {
@@ -92,6 +93,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Naming the shape is most of the diagnosis. Chatty I/O is a latency problem, extraneous fetching is a bandwidth and memory problem, noisy neighbour is an isolation problem, retry storms are a coordination problem, and improper instantiation is an object-lifetime problem wearing a memory costume.",
+    concepts: ["Chatty I/O", "Extraneous fetching", "Noisy neighbour", "Retry storm"],
     tags: ["catalogue"],
   },
   {
@@ -115,6 +117,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Small payloads and a fast network are exactly the tell: the cost is 200 round trips, not the bytes. 200 x 5ms is a full second of latency. Batching into one call or issuing them concurrently collapses it, and neither requires the dependency to get any faster.",
+    concepts: ["Chatty I/O", "Round-trip latency", "Request batching"],
     tags: ["chatty-io", "latency"],
   },
   {
@@ -138,6 +141,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Retries turned a 10-second problem into a 20-minute one: the moment the dependency came back it was hit by every backed-up client simultaneously and fell over again. Exponential backoff spreads the load over time and jitter de-synchronises clients that all failed at the same instant. A circuit breaker stops the calls entirely until it is worth trying again.",
+    concepts: ["Retry storm", "Exponential backoff", "Circuit breaker"],
     tags: ["retry-storm"],
   },
   {
@@ -158,6 +162,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "The problem is a lack of isolation, so the fixes are all forms of isolation. Adding capacity is temporary — the noisy tenant simply consumes that too — and retrying starved requests adds load to a system already short of it.",
+    concepts: ["Noisy neighbour", "Bulkhead pattern", "Resource quota"],
     tags: ["noisy-neighbour", "isolation"],
   },
   {
@@ -181,6 +186,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Idle CPU with collapsed throughput is the signature of blocked threads. Each one holds memory and a pool slot while doing nothing. Async I/O lets the same thread serve other requests during the wait, which is why the fix raises throughput without touching CPU.",
+    concepts: ["Synchronous I/O", "Thread pool exhaustion", "Non-blocking I/O"],
     tags: ["synchronous-io", "throughput"],
   },
   {
@@ -204,6 +210,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Indexing addresses how rows are found, not how much is carried back. Selecting only what you need shrinks transfer and memory, and can let a covering index answer the query without touching the table at all.",
+    concepts: ["Extraneous fetching", "Covering index", "Projection"],
     tags: ["extraneous-fetching"],
   },
 
@@ -229,6 +236,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "An unbounded queue does not absorb overload, it conceals it. Work keeps accumulating past the point where anyone still wants the result, so the system spends its recovery capacity on requests nobody is waiting for. A bounded queue that rejects work fails faster, more honestly, and recovers sooner.",
+    concepts: ["Back pressure", "Bounded queue", "Queue depth"],
     tags: ["queues", "overload"],
   },
   {
@@ -252,6 +260,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Not all requests are worth the same. Shedding by priority keeps the system observable and the revenue path alive. Random dropping discards valuable work at the same rate as disposable work, and dropping health checks specifically can get you removed from the load balancer during a partial outage — turning degradation into an outage.",
+    concepts: ["Load shedding", "Graceful degradation", "Request prioritisation"],
     tags: ["load-shedding", "priority"],
   },
   {
@@ -275,6 +284,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "The client cannot tell whether the first request landed, so the server has to recognise the retry. A client-generated key recorded with its result makes that possible. A unique constraint only helps if the request carries something naturally unique, which orders usually do not, and a delay changes nothing about duplication.",
+    concepts: ["Idempotency key", "At-least-once delivery"],
     tags: ["idempotency-key"],
   },
   {
@@ -294,6 +304,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "GET reads, PUT replaces at a known location, and DELETE removes — repeating any of them lands in the same state. POST creates, so repeating it creates again. PATCH is not idempotent in general, because a patch like \"increment by one\" applied twice differs from applying it once.",
+    concepts: ["Idempotent method", "HTTP PUT", "HTTP POST"],
     tags: ["http", "idempotency"],
   },
   {
@@ -313,6 +324,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Reach for the cheapest intervention that works, and escalate only as far as you must. Buffering costs latency, throttling costs throughput, rate limiting costs specific clients, and shedding costs specific requests. Rejecting broadly is a last resort — but it is still better than accepting work you cannot complete.",
+    concepts: ["Back pressure", "Throttling", "Load shedding"],
     tags: ["load-shedding", "escalation"],
   },
   {
@@ -328,6 +340,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Jitter — randomising each client's delay. Without it, exponential backoff still leaves every client retrying at the same moments, just less often, so the dependency keeps getting hit by synchronised waves instead of a smooth trickle.",
+    concepts: ["Jitter", "Exponential backoff", "Thundering herd problem"],
     tags: ["backoff", "jitter"],
   },
   {
@@ -351,6 +364,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Buffering smooths bursts; it does not create throughput. If arrival rate exceeds service rate on average, a bigger buffer only means more work accumulates before the collapse, and more of it is stale by the time it is processed. Buffers are for spikes against spare average capacity — for a sustained deficit you need more capacity or less work.",
+    concepts: ["Queue-based load levelling", "Capacity planning", "Little's law"],
     tags: ["buffering", "capacity"],
   },
 ];

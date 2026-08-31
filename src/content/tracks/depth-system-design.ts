@@ -24,6 +24,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Pull is the common default: the first visitor to each region pays a slow miss, and everything else is automatic. Push suits small, infrequently changing catalogues where you would rather nobody pays that first miss — and it means you own uploading and expiring the content yourself.",
+    concepts: ["Push CDN", "Pull CDN", "Cache warming"],
     tags: ["push-pull"],
   },
   {
@@ -39,6 +40,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "An origin shield. Edges miss to the shield rather than to you, so the origin sees one request per object instead of one per edge. It matters most during a purge or a deploy, when many edges go cold simultaneously.",
+    concepts: ["Origin shield", "Cache hierarchy"],
     tags: ["origin-shield"],
   },
   {
@@ -57,6 +59,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The pairing that unlocks most real setups is s-maxage with a short max-age: cache hard at the CDN where you can purge, and keep browsers on a short leash where you cannot. Note no-store and no-cache are different — no-cache permits storage but requires revalidation.",
+    concepts: ["max-age", "s-maxage", "no-store", "immutable"],
     tags: ["cache-control"],
   },
   {
@@ -77,6 +80,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "This is one of the most damaging caching bugs there is: a shared cache stores one user's response and serves it to everyone behind the same key. Anything user-specific needs private, or no-store when it must never be written down at all. Revalidation directives control freshness, not who may store it.",
+    concepts: ["Shared cache", "Cache-Control private", "Cache poisoning"],
     tags: ["security", "cache-control"],
   },
 
@@ -97,6 +101,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The same pipeline must run over the query at search time. A mismatch between index-time and query-time analysis is the classic cause of a search that finds nothing for a term you can see in the document.",
+    concepts: ["Tokenisation", "Stemming", "Stop words", "Inverted index"],
     tags: ["analysis"],
   },
   {
@@ -119,6 +124,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "BM25 applies a saturating curve to term frequency, so the tenth occurrence adds far less than the second. That is what makes it resistant to keyword stuffing. It also penalises length, so a term in a short title counts for more than the same term buried in a long body.",
+    concepts: ["BM25", "Term frequency saturation", "Relevance ranking"],
     tags: ["bm25", "relevance"],
   },
   {
@@ -139,6 +145,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "CDC is the most robust because it derives from the same log the database already commits. Dual writes are simplest and drift silently when one write fails. Periodic reindexing is simple and stale between runs. Querying the database at search time means you have no search index, which was the problem.",
+    concepts: ["Change data capture", "Dual write", "Reindexing"],
     tags: ["indexing", "sync"],
   },
   {
@@ -154,6 +161,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "An inverted index. The inversion is what makes multi-term queries fast: look up each term's document list and intersect them, rather than scanning every document to see what it contains.",
+    concepts: ["Inverted index", "Full-text search"],
     tags: ["inverted-index"],
   },
 
@@ -173,6 +181,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The choice is really about burst tolerance. Token bucket rewards a client that has been idle, which usually matches what an API wants. Leaky bucket refuses to pass a burst on at all, which is what you want when the thing downstream genuinely cannot absorb one.",
+    concepts: ["Fixed window counter", "Sliding window log", "Token bucket", "Leaky bucket"],
     tags: ["algorithms"],
   },
   {
@@ -196,6 +205,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Rate limiting is only as good as its notion of \"who\". Shared NATs, mobile carrier gateways, and corporate proxies all collapse many users onto one address. Key on API key or user id where you have one, and treat IP as a coarse fallback for unauthenticated traffic.",
+    concepts: ["Rate limit key", "Network address translation", "Client identity"],
     tags: ["identity", "keys"],
   },
   {
@@ -211,6 +221,7 @@ export const questions: Question[] = [
     typoTolerance: true,
     explanation:
       "Retry-After, giving either seconds to wait or an HTTP date. Without it a client has no basis for choosing a delay, and most libraries default to retrying quickly — which converts your rate limit into a retry storm.",
+    concepts: ["Retry-After header", "HTTP 429 Too Many Requests"],
     tags: ["http", "429"],
   },
 
@@ -236,6 +247,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Even a high-cardinality key distributes badly when the underlying data is skewed. The usual answers are a composite key that subdivides the whale, or isolating it on its own shard so its load cannot hurt anyone else. Re-hashing keeps the same skew in a different arrangement.",
+    concepts: ["Hot shard", "Data skew", "Composite shard key"],
     tags: ["hot-shard", "skew"],
   },
   {
@@ -253,6 +265,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "The recurring tension is locality versus evenness: anything that keeps related rows together also concentrates load on them. Directory-based buys flexibility to rebalance individual keys, and introduces a component that must not go down.",
+    concepts: ["Range partitioning", "Hash partitioning", "Directory-based partitioning"],
     tags: ["strategies"],
   },
   {
@@ -275,6 +288,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "With one position per server the ring segments come out very unequal, so some servers own far more of the keyspace than others. Giving each server many virtual positions averages the segments out, and it also means a departing server's load spreads across all the others rather than landing entirely on its single neighbour.",
+    concepts: ["Consistent hashing", "Virtual nodes", "Rebalancing"],
     tags: ["consistent-hashing", "virtual-nodes"],
   },
 
@@ -298,6 +312,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "CAP only describes behaviour during a partition, which is rare. PACELC points out that Else — the other 99.9% of the time — you are still choosing between Latency and Consistency, because coordination costs round trips. That is the tradeoff you actually make every day.",
+    concepts: ["PACELC", "CAP theorem", "Latency-consistency tradeoff"],
     tags: ["pacelc", "cap"],
   },
   {
@@ -318,6 +333,7 @@ export const questions: Question[] = [
     answers: ["a", "b", "c"],
     explanation:
       "The test is whether two concurrent operations can both succeed and leave an invalid state. Money, scarce inventory, and uniqueness all fail that test. View counts and avatars converge harmlessly, and paying coordination cost on the highest-volume operations is how systems get slow for no benefit.",
+    concepts: ["Linearizability", "Invariant", "Uniqueness constraint"],
     tags: ["per-operation"],
   },
   {
@@ -334,6 +350,7 @@ export const questions: Question[] = [
     typoTolerance: false,
     explanation:
       "W + R > N. If the write set and the read set together exceed the number of replicas, they must overlap on at least one node, and that node holds the newest value. Tuning W down speeds writes at the cost of read certainty, and vice versa.",
+    concepts: ["Quorum", "Replication factor"],
     tags: ["quorum"],
   },
 
@@ -353,6 +370,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "Databases run on block storage; user uploads belong in object storage; shared filesystems are convenient and usually the slowest option. Matching the type to the access pattern avoids a whole class of scaling problems later.",
+    concepts: ["Object storage", "Block storage", "File storage", "Key-value store"],
     tags: ["taxonomy"],
   },
   {
@@ -376,6 +394,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Soft deletes preserve history and quietly turn every future query into a chance to get it wrong. The fix is structural rather than cultural: a view or row-level policy that filters by default, so forgetting is not an option.",
+    concepts: ["Soft delete", "Row-level security", "Database view"],
     tags: ["soft-delete", "modelling"],
   },
   {
@@ -399,6 +418,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Object stores price storage against retrieval: cold tiers cost a fraction to hold and more to read, which is exactly right for data that is legally required and rarely touched. Compression helps a little; a database is more expensive per byte, not less; and deletion defeats the compliance requirement.",
+    concepts: ["Storage lifecycle policy", "Cold storage", "Data retention"],
     tags: ["tiering", "cost"],
   },
 ];
