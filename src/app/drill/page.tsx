@@ -248,6 +248,26 @@ function DrillSession() {
 
           <p className="mt-2 text-sm leading-relaxed">{question.explanation}</p>
 
+          {/* The named terms worth reading about afterwards. Each links to a
+              search rather than one source, since the point is to go and read
+              around the term. */}
+          {question.concepts && question.concepts.length > 0 ? (
+            <div className="mt-3 flex flex-wrap items-center gap-1.5">
+              <span className="text-xs font-medium text-text-2">Look up</span>
+              {question.concepts.map((concept) => (
+                <a
+                  key={concept}
+                  href={`https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(concept)}`}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="rounded-md border border-border bg-bg px-2 py-0.5 text-xs font-medium hover:border-border-strong"
+                >
+                  {concept}
+                </a>
+              ))}
+            </div>
+          ) : null}
+
           {/* Questions rarely carry their own links, so fall back to the
               topic's -- otherwise this panel would almost never appear. */}
           {resources.length > 0 ? (

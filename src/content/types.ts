@@ -7,6 +7,8 @@ export type TrackId =
   | "api-integration"
   | "data-enterprise"
   | "frontend"
+  | "delivery"
+  | "code-craft"
   | "sql-analytics"
   | "communication"
   | "dsa-concepts"
@@ -43,6 +45,10 @@ interface QuestionBase {
   prompt: string;
   /** Always shown after answering, right or wrong. */
   explanation: string;
+  /** Named, lookup-able terms this question teaches -- the CRUD or ETL a
+   *  learner can go and read about afterwards. Surfaced after answering.
+   *  Write them as proper names, not slugs: "N+1 query problem", not "n+1". */
+  concepts?: string[];
   resources?: Resource[];
   tags?: string[];
 }
@@ -115,6 +121,8 @@ export const TRACK_IDS: TrackId[] = [
   "api-integration",
   "data-enterprise",
   "frontend",
+  "delivery",
+  "code-craft",
   "sql-analytics",
   "communication",
   "dsa-concepts",

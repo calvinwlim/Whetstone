@@ -4,6 +4,8 @@ import * as aiEngineering from "./tracks/ai-engineering";
 import * as apiIntegration from "./tracks/api-integration";
 import * as dataEnterprise from "./tracks/data-enterprise";
 import * as frontendTrack from "./tracks/frontend";
+import * as delivery from "./tracks/delivery";
+import * as codeCraft from "./tracks/code-craft";
 import * as sqlAnalytics from "./tracks/sql-analytics";
 import * as communication from "./tracks/communication";
 import * as dsaConcepts from "./tracks/dsa-concepts";
@@ -22,6 +24,8 @@ export const TRACKS: Track[] = [
   apiIntegration.track,
   dataEnterprise.track,
   frontendTrack.track,
+  delivery.track,
+  codeCraft.track,
   sqlAnalytics.track,
   communication.track,
   dsaConcepts.track,
@@ -34,6 +38,8 @@ export const ALL_QUESTIONS: Question[] = [
   ...apiIntegration.questions,
   ...dataEnterprise.questions,
   ...frontendTrack.questions,
+  ...delivery.questions,
+  ...codeCraft.questions,
   ...sqlAnalytics.questions,
   ...communication.questions,
   ...dsaConcepts.questions,

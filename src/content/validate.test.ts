@@ -313,3 +313,46 @@ describe("the real content bank", () => {
     expect(seen.size).toBeGreaterThanOrEqual(4);
   });
 });
+
+describe("concept checks", () => {
+  test("accepts a question with named concepts", () => {
+    const errors = validateContent(
+      [track],
+      [mcq({ concepts: ["Cache-aside", "TTL"] })],
+    );
+    expect(errors).toEqual([]);
+  });
+
+  test("rejects a blank concept", () => {
+    const errors = validateContent([track], [mcq({ concepts: ["TTL", "  "] })]);
+    expect(errors.join(" ")).toMatch(/concept/i);
+  });
+
+  test("rejects duplicate concepts", () => {
+    const errors = validateContent([track], [mcq({ concepts: ["TTL", "TTL"] })]);
+    expect(errors.join(" ")).toMatch(/duplicate/i);
+  });
+
+  test("rejects an empty concepts array, since it says nothing", () => {
+    const errors = validateContent([track], [mcq({ concepts: [] })]);
+    expect(errors.join(" ")).toMatch(/concept/i);
+  });
+
+  test("rejects a concept written as a slug rather than a name", () => {
+    const errors = validateContent([track], [mcq({ concepts: ["n+1-query"] })]);
+    expect(errors.join(" ")).toMatch(/slug|hyphen/i);
+  });
+});
+
+describe("concept slug detection exceptions", () => {
+  test("accepts a command flag, which is a real searchable term", () => {
+    expect(
+      validateContent([track], [mcq({ concepts: ["--force-with-lease"] })]),
+    ).toEqual([]);
+  });
+
+  test("still rejects an ordinary lowercase slug", () => {
+    const errors = validateContent([track], [mcq({ concepts: ["cache-aside-pattern"] })]);
+    expect(errors.join(" ")).toMatch(/slug/i);
+  });
+});
