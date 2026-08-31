@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useProgress } from "@/components/progress-provider";
 import { SignalStrip, type Signal } from "@/components/signal-strip";
 import { DifficultyPill } from "@/components/difficulty-pill";
@@ -15,8 +16,30 @@ import { gradeResponse } from "@/lib/grading";
 import { composeSession } from "@/lib/session";
 import { xpForAnswer } from "@/lib/xp";
 
+/** useSearchParams needs a Suspense boundary for this route to keep
+ *  prerendering as static HTML. */
 export default function DrillPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="animate-pulse space-y-3">
+          <div className="h-8 w-40 rounded-lg bg-surface" />
+          <div className="h-28 rounded-xl bg-surface" />
+        </div>
+      }
+    >
+      <DrillSession />
+    </Suspense>
+  );
+}
+
+function DrillSession() {
   const { state, hydrated, accuracy, byTopic, recordAnswer } = useProgress();
+
+  // /drill?topic=<id> drills one topic instead of the daily mix, which is what
+  // the "Drill this topic" action on a topic page means.
+  const focusTopicId = useSearchParams().get("topic");
+  const focusTopic = focusTopicId ? getTopic(focusTopicId) : undefined;
 
   // Composed once when the drill opens and then frozen. Recomputing as answers
   // land would reshuffle the questions out from under the learner.
@@ -33,21 +56,29 @@ export default function DrillPage() {
   // suppressed here rather than worked around with a less readable pattern.
   useEffect(() => {
     if (!hydrated || session !== null) return;
+
+    const pool = focusTopicId
+      ? ALL_QUESTIONS.filter((q) => q.topic === focusTopicId)
+      : ALL_QUESTIONS;
+
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSession(
       composeSession({
-        questions: ALL_QUESTIONS,
+        questions: pool,
         srs: state.srs,
         goal: state.dailyGoal,
         now: new Date(),
-        enabledTracks: state.enabledTracks,
-        accuracy,
+        // A focused drill is an explicit choice, so it ignores the track
+        // toggles and the difficulty band -- you asked for this topic.
+        enabledTracks: focusTopicId ? undefined : state.enabledTracks,
+        accuracy: focusTopicId ? undefined : accuracy,
         topicAccuracy: byTopic,
       }),
     );
   }, [
     hydrated,
     session,
+    focusTopicId,
     state.srs,
     state.dailyGoal,
     state.enabledTracks,
@@ -97,14 +128,29 @@ export default function DrillPage() {
   if (session.length === 0) {
     return (
       <div className="rounded-xl border border-border p-5">
-        <p className="font-semibold">Nothing due right now</p>
-        <p className="mt-1 text-sm text-text-2">
-          You have answered everything available in your enabled tracks. Reviews
-          return as they fall due.
+        <p className="font-semibold">
+          {focusTopic
+            ? `Nothing due in ${focusTopic.title}`
+            : "Nothing due right now"}
         </p>
-        <Link href="/" className="key key-plain mt-4 inline-block px-4 py-2 text-sm">
-          Back to today
-        </Link>
+        <p className="mt-1 text-sm text-text-2">
+          {focusTopic
+            ? "You have answered every question in this topic. They return as they fall due for review."
+            : "You have answered everything available in your enabled tracks. Reviews return as they fall due."}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link href="/" className="key key-plain inline-block px-4 py-2 text-sm">
+            Back to today
+          </Link>
+          {focusTopic ? (
+            <Link
+              href="/drill"
+              className="key key-green inline-block px-4 py-2 text-sm"
+            >
+              Today&apos;s drill
+            </Link>
+          ) : null}
+        </div>
       </div>
     );
   }
@@ -127,6 +173,17 @@ export default function DrillPage() {
 
   return (
     <div className="pb-32 sm:pb-0">
+      {focusTopic ? (
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm">
+          <span>
+            Drilling <span className="font-semibold">{focusTopic.title}</span>
+          </span>
+          <Link href="/drill" className="text-text-2 underline hover:text-green">
+            Switch to today&apos;s drill
+          </Link>
+        </div>
+      ) : null}
+
       <div className="flex items-center justify-between gap-4">
         <SignalStrip
           signals={signals}

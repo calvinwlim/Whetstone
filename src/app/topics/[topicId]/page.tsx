@@ -84,10 +84,17 @@ export default async function TopicPage({
           ) : null}
 
           <Link
-            href="/drill"
+            href={`/drill?topic=${topic.id}`}
             className="key key-green block px-4 py-3 text-center text-base"
           >
-            Start drill
+            Drill this topic
+          </Link>
+
+          <Link
+            href="/drill"
+            className="block text-center text-sm text-text-2 underline underline-offset-2 hover:text-green"
+          >
+            Or start today&apos;s drill
           </Link>
         </aside>
       </div>
