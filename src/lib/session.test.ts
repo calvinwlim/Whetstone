@@ -209,3 +209,44 @@ describe("determinism", () => {
     expect(a.map((s) => s.id)).not.toEqual(b.map((s) => s.id));
   });
 });
+
+describe("depth topics", () => {
+  const depthTopics = new Set(["sharding", "cdn"]);
+
+  test("excludes depth topics from the daily mix by default", () => {
+    const questions = [
+      q("core", { topic: "caching" }),
+      q("deep", { topic: "sharding" }),
+    ];
+    const session = composeSession({ questions, srs: {}, goal: 10, now: NOW, depthTopics });
+    expect(session.map((s) => s.id)).toEqual(["core"]);
+  });
+
+  test("includes depth topics when the learner opts in", () => {
+    const questions = [
+      q("core", { topic: "caching" }),
+      q("deep", { topic: "sharding" }),
+    ];
+    const session = composeSession({
+      questions,
+      srs: {},
+      goal: 10,
+      now: NOW,
+      depthTopics,
+      includeDepth: true,
+    });
+    expect(session).toHaveLength(2);
+  });
+
+  test("still surfaces a depth question that is due for review", () => {
+    const questions = [q("deep", { topic: "sharding" })];
+    const srs = { deep: reviewed(day(-5)) };
+    const session = composeSession({ questions, srs, goal: 5, now: NOW, depthTopics });
+    expect(session.map((s) => s.id)).toEqual(["deep"]);
+  });
+
+  test("behaves as before when no depth topics are given", () => {
+    const questions = [q("a"), q("b")];
+    expect(composeSession({ questions, srs: {}, goal: 5, now: NOW })).toHaveLength(2);
+  });
+});

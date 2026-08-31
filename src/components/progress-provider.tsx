@@ -42,6 +42,7 @@ interface ProgressContextValue {
   recordAnswer: (question: Question, correct: boolean) => void;
   setDailyGoal: (goal: number) => void;
   setEnabledTracks: (tracks: TrackId[]) => void;
+  setIncludeDepth: (include: boolean) => void;
   resetProgress: () => void;
 }
 
@@ -77,6 +78,10 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     updateProgress((current) => ({ ...current, enabledTracks: tracks }));
   }, []);
 
+  const setIncludeDepth = useCallback((include: boolean) => {
+    updateProgress((current) => ({ ...current, includeDepth: include }));
+  }, []);
+
   const resetProgress = useCallback(() => {
     setProgress(emptyProgress());
   }, []);
@@ -95,6 +100,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       recordAnswer,
       setDailyGoal,
       setEnabledTracks,
+      setIncludeDepth,
       resetProgress,
     }),
     [
@@ -104,6 +110,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       recordAnswer,
       setDailyGoal,
       setEnabledTracks,
+      setIncludeDepth,
       resetProgress,
     ],
   );

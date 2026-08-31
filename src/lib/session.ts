@@ -12,6 +12,11 @@ export interface ComposeInput {
   accuracy?: number;
   /** Per-topic accuracy, 0..1. Weak topics get served more often. */
   topicAccuracy?: Record<string, number>;
+  /** Topics marked as specialist depth. Kept out of new material by default
+   *  so the daily mix stays close to a software engineer's week. */
+  depthTopics?: Set<string>;
+  /** Opt in to depth topics appearing in the daily mix. */
+  includeDepth?: boolean;
   /** Defaults to the calendar day, so reloading keeps the same session. */
   seed?: number;
 }
@@ -92,7 +97,16 @@ export function composeSession(input: ComposeInput): Question[] {
   if (remaining <= 0) return reviews;
 
   const rng = mulberry32(input.seed ?? seedForDay(now));
-  const unseen = pool.filter((q) => !srs[q.id]);
+
+  // Depth topics are excluded from NEW material only. Anything already
+  // started stays in the review queue, so opting in and out never strands
+  // questions mid-schedule.
+  const { depthTopics, includeDepth } = input;
+  const unseen = pool.filter(
+    (q) =>
+      !srs[q.id] &&
+      (includeDepth || !depthTopics || !depthTopics.has(q.topic)),
+  );
   const [min, max] = targetBand(accuracy);
 
   const inBand = unseen.filter(

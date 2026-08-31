@@ -38,6 +38,8 @@ export interface ProgressState {
   streak: StreakState;
   dailyGoal: number;
   enabledTracks: TrackId[];
+  /** Opt in to specialist depth topics appearing in the daily mix. */
+  includeDepth?: boolean;
   dailyStats: Record<string, DailyStat>;
 }
 
@@ -50,6 +52,7 @@ export function emptyProgress(): ProgressState {
     streak: { current: 0, longest: 0, lastGoalDate: null },
     dailyGoal: 10,
     enabledTracks: [...TRACK_IDS],
+    includeDepth: false,
     dailyStats: {},
   };
 }

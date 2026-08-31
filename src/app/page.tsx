@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useProgress } from "@/components/progress-provider";
 import { SignalStrip } from "@/components/signal-strip";
 import { DifficultyPill } from "@/components/difficulty-pill";
-import { ALL_QUESTIONS, getTopic, getTrack } from "@/content";
+import { ALL_QUESTIONS, DEPTH_TOPIC_IDS, getTopic, getTrack } from "@/content";
 import { composeSession } from "@/lib/session";
 import { isDue } from "@/lib/srs";
 
@@ -26,12 +26,15 @@ export default function TodayPage() {
       enabledTracks: state.enabledTracks,
       accuracy,
       topicAccuracy: byTopic,
+      depthTopics: DEPTH_TOPIC_IDS,
+      includeDepth: state.includeDepth ?? false,
     });
   }, [
     hydrated,
     state.srs,
     state.dailyGoal,
     state.enabledTracks,
+    state.includeDepth,
     accuracy,
     byTopic,
   ]);

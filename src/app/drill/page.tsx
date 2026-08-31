@@ -10,7 +10,7 @@ import {
   QuestionInput,
   hasAnswer,
 } from "@/components/questions/question-input";
-import { ALL_QUESTIONS, getTopic } from "@/content";
+import { ALL_QUESTIONS, DEPTH_TOPIC_IDS, getTopic } from "@/content";
 import type { Question, Response } from "@/content/types";
 import { gradeResponse } from "@/lib/grading";
 import { composeSession } from "@/lib/session";
@@ -73,6 +73,8 @@ function DrillSession() {
         enabledTracks: focusTopicId ? undefined : state.enabledTracks,
         accuracy: focusTopicId ? undefined : accuracy,
         topicAccuracy: byTopic,
+        depthTopics: DEPTH_TOPIC_IDS,
+        includeDepth: state.includeDepth ?? false,
       }),
     );
   }, [
@@ -82,6 +84,7 @@ function DrillSession() {
     state.srs,
     state.dailyGoal,
     state.enabledTracks,
+    state.includeDepth,
     accuracy,
     byTopic,
   ]);

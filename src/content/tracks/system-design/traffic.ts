@@ -52,6 +52,7 @@ export const topics: Topic[] = [
   {
     id: "cdn",
     track: "system-design",
+    depth: true,
     title: "CDNs & Edge Delivery",
     blurb: "Moving bytes closer to users, and the invalidation cost of doing so.",
     lesson: `A CDN is a globally distributed cache in front of your origin. The win is physics: a user in Sydney fetching from a Sydney edge saves hundreds of milliseconds of round-trip time versus reaching a server in Virginia.

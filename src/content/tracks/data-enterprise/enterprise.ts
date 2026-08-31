@@ -4,6 +4,7 @@ export const topics: Topic[] = [
   {
     id: "enterprise-identity",
     track: "data-enterprise",
+    depth: true,
     title: "Enterprise Identity",
     blurb: "SSO, SAML, directories, and the part that actually matters — deprovisioning.",
     lesson: `In a large organisation, identity is centralised infrastructure. Your application does not own accounts; it trusts an identity provider and enforces what that provider says.
@@ -33,6 +34,7 @@ export const topics: Topic[] = [
   {
     id: "enterprise-integration",
     track: "data-enterprise",
+    depth: true,
     title: "Enterprise Integration & Data",
     blurb: "Moving data between systems that were never designed to talk.",
     lesson: `Enterprise integration is the work of connecting systems you did not build, cannot change, and cannot turn off.
@@ -58,6 +60,7 @@ export const topics: Topic[] = [
   {
     id: "multi-tenancy",
     track: "data-enterprise",
+    depth: true,
     title: "Multi-Tenancy",
     blurb: "Serving many customers from one system, and choosing how much to isolate them.",
     lesson: `Multi-tenancy is one decision with long consequences: how much do tenants share?

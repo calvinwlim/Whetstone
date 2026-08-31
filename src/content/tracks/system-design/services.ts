@@ -83,6 +83,7 @@ That makes **idempotency** the consumer's job, not the broker's. Give each messa
   {
     id: "search",
     track: "system-design",
+    depth: true,
     title: "Search",
     blurb: "Why text search needs its own index, and what it costs to keep one.",
     lesson: `A relational \`LIKE '%term%'\` cannot use a B-tree index and scans the table, and it has no concept of relevance. Real search needs an *inverted index*: a map from each term to the documents containing it, which is what makes multi-term queries fast.

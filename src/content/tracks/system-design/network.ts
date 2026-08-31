@@ -4,6 +4,7 @@ export const topics: Topic[] = [
   {
     id: "dns",
     track: "system-design",
+    depth: true,
     title: "DNS",
     blurb: "The first hop of every request, and the slowest thing to change.",
     lesson: `DNS turns a name into an address, and it is the first thing that happens in almost every request you will ever draw on a whiteboard.
@@ -54,6 +55,7 @@ export const topics: Topic[] = [
   {
     id: "availability",
     track: "system-design",
+    depth: true,
     title: "Availability & Failover",
     blurb: "Counting nines honestly, and what actually happens when a node dies.",
     lesson: `Availability is usually quoted in nines, and the arithmetic is worth knowing cold because interviewers ask for it directly.

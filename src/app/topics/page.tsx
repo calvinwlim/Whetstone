@@ -121,6 +121,14 @@ export default function TopicsPage() {
                   >
                     {topic.title}
                   </Link>
+                  {topic.depth ? (
+                    <span
+                      title="Specialist depth — kept out of daily drills unless you opt in"
+                      className="ml-2 rounded-md border border-border px-1.5 py-0.5 text-[10px] font-medium text-text-2"
+                    >
+                      Depth
+                    </span>
+                  ) : null}
                   <p className="mt-0.5 line-clamp-1 text-xs text-text-2 sm:hidden">
                     {track.title}
                   </p>

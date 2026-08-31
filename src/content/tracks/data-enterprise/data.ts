@@ -89,6 +89,7 @@ Every step is independently deployable and independently revertible, which is th
   {
     id: "data-privacy",
     track: "data-enterprise",
+    depth: true,
     title: "Data Privacy & Retention",
     blurb: "Handling personal data as an engineering constraint, not a legal footnote.",
     lesson: `Privacy regulation turns into concrete engineering requirements, and the ones that bite are architectural rather than procedural.

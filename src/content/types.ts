@@ -99,6 +99,12 @@ export type Response =
   | { type: "ordering"; items: string[] };
 
 export interface Topic {
+  /** Marks a topic as specialist depth rather than the software engineering
+   *  core -- platform, data, or enterprise material that is worth having and
+   *  is not what most engineers hit in a normal week. Depth topics stay fully
+   *  browsable and drillable on their own; they are just kept out of the daily
+   *  mix unless the learner opts in. */
+  depth?: true;
   id: string;
   track: TrackId;
   title: string;

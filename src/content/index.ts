@@ -54,7 +54,14 @@ export const ALL_QUESTIONS: Question[] = [
   ...depthSkills.questions,
 ];
 
+/** Topic ids marked as specialist depth, for the session composer and the UI. */
+export const DEPTH_TOPIC_IDS: Set<string> = new Set();
+
 export const ALL_TOPICS: Topic[] = TRACKS.flatMap((track) => track.topics);
+
+for (const topic of ALL_TOPICS) {
+  if (topic.depth) DEPTH_TOPIC_IDS.add(topic.id);
+}
 
 const questionsById = new Map(ALL_QUESTIONS.map((q) => [q.id, q]));
 const topicsById = new Map(ALL_TOPICS.map((t) => [t.id, t]));

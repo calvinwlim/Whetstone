@@ -4,6 +4,7 @@ export const topics: Topic[] = [
   {
     id: "product-metrics",
     track: "sql-analytics",
+    depth: true,
     title: "Product Metrics",
     blurb: "Defining what to measure, and noticing when a number is lying to you.",
     lesson: `Analytics interviews rarely ask you to compute something. They ask you to *define* it, and the definition is where the judgement is.
@@ -31,6 +32,7 @@ export const topics: Topic[] = [
   {
     id: "statistics-basics",
     track: "sql-analytics",
+    depth: true,
     title: "Statistics Basics",
     blurb: "The handful of ideas that come up constantly, stated correctly.",
     lesson: `You do not need much statistics for a data interview. You need a small set of ideas stated precisely, because the questions are usually testing whether you can state them precisely.
@@ -58,6 +60,7 @@ export const topics: Topic[] = [
   {
     id: "ab-testing",
     track: "sql-analytics",
+    depth: true,
     title: "A/B Testing",
     blurb: "Running an experiment that supports the conclusion you draw from it.",
     lesson: `An A/B test is a randomised experiment, and most of what goes wrong is decided before any data arrives.

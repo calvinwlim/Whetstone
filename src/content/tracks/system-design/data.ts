@@ -27,6 +27,7 @@ export const topics: Topic[] = [
   {
     id: "sharding",
     track: "system-design",
+    depth: true,
     title: "Sharding & Partitioning",
     blurb: "Splitting data across machines, and living with the shard key you chose.",
     lesson: `Sharding splits one logical dataset across many machines because it no longer fits, or no longer keeps up, on one. The shard key is the decision that matters, and it is close to irreversible.
