@@ -12,9 +12,13 @@
     "typecheck": "tsc --noEmit",
     "stats": "tsx scripts/content-stats.ts",
     "validate:content": "tsx scripts/content-stats.ts",
-    "review": "tsx scripts/content-review.ts"
+    "review": "tsx scripts/content-review.ts",
+    "db:migrate": "dotenv -e .env.local -- tsx scripts/db-migrate.ts",
+    "db:verify": "dotenv -e .env.local -- tsx scripts/verify-rls.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.5",
+    "@supabase/supabase-js": "^2.112.4",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -24,12 +28,15 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^20",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.1.1",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
     "jsdom": "^30.0.1",
+    "pg": "^8.23.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
     "typescript": "^5",

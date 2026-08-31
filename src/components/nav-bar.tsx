@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useProgress } from "@/components/progress-provider";
+import { AuthChip } from "@/components/auth-chip";
 
 const LINKS = [
   { href: "/", label: "Today" },
@@ -77,8 +78,9 @@ export function NavBar() {
             ))}
           </nav>
 
-          <div className="ml-auto sm:ml-0">
+          <div className="ml-auto flex items-center gap-2 sm:ml-0">
             <StatusChips />
+            <AuthChip />
           </div>
         </div>
       </header>

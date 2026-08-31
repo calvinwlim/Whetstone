@@ -13,7 +13,7 @@ export interface ProgressStore {
 /** Narrow structural check. Anything unrecognised is discarded in favour of a
  *  fresh state -- losing local progress is bad, but a crash loop on every page
  *  load is worse, and there is no way to repair an unknown shape. */
-function isProgressState(value: unknown): value is ProgressState {
+export function isProgressState(value: unknown): value is ProgressState {
   if (typeof value !== "object" || value === null) return false;
   const candidate = value as Partial<ProgressState>;
   return (

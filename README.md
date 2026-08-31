@@ -40,6 +40,40 @@ pnpm dev
 | `pnpm stats` | Question and topic counts, plus content validation |
 | `pnpm review` | Editorial review: thin topics, format mix, coverage gaps |
 
+## Accounts and sync
+
+Accounts are optional. With no Supabase environment variables the app works
+exactly as before, keeping progress in `localStorage`. Signing in adds sync
+across devices; it is not a gate on using the app.
+
+Progress is stored as a single JSONB blob per user, which maps directly onto
+the `ProgressState` the reducer already produces, so there is no mapping
+layer. Row Level Security scopes every row to its owner -- that is what makes
+the public anon key safe to ship to the browser.
+
+```bash
+vercel integration add supabase
+```
+
+```bash
+vercel env pull .env.local --yes
+```
+
+```bash
+pnpm db:migrate
+```
+
+```bash
+pnpm db:verify
+```
+
+`db:migrate` applies `supabase/schema.sql`. `db:verify` proves RLS is working
+by confirming an anonymous client can neither read nor write the table.
+
+Sync is background and local-first: `localStorage` stays authoritative during
+a session and changes are pushed after a short quiet period, so a dropped
+connection mid-drill never costs an answer or a streak.
+
 ## Deploying to Vercel
 
 The app is entirely static — every route prerenders at build time, there is no

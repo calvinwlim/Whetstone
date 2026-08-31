@@ -23,6 +23,7 @@ import {
   subscribe,
   updateProgress,
 } from "@/lib/progress-store";
+import { ProgressSync } from "@/components/progress-sync";
 import { levelForXp, streakAsOf, type LevelProgress } from "@/lib/xp";
 
 interface ProgressContextValue {
@@ -107,7 +108,12 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     ],
   );
 
-  return <ProgressContext value={value}>{children}</ProgressContext>;
+  return (
+    <ProgressContext value={value}>
+      <ProgressSync />
+      {children}
+    </ProgressContext>
+  );
 }
 
 export function useProgress(): ProgressContextValue {
