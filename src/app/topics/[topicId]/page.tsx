@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { LessonProse } from "@/components/lesson-prose";
 import { TopicProgress } from "@/components/topic-progress";
 import { DifficultySpread } from "@/components/difficulty-pill";
+import { Field } from "@/components/field";
 import { ALL_TOPICS, getTopic, getTrack, questionsForTopic } from "@/content";
 
 /** Every topic is known at build time, so all lesson pages ship as static
@@ -35,36 +36,57 @@ export default async function TopicPage({
   return (
     <article>
       <nav className="flex items-center gap-1.5 text-sm text-text-2">
-        <Link href="/topics" className="hover:text-green hover:underline">
+        <Link href="/topics" className="hover:text-text hover:underline">
           Topics
         </Link>
         <span aria-hidden>›</span>
         <span>{track?.title}</span>
       </nav>
 
-      <h1 className="mt-2 text-xl font-semibold">{topic.title}</h1>
-      <p className="mt-1 text-sm text-text-2">{topic.blurb}</p>
+      <h1 className="mt-2 text-2xl font-semibold tracking-tight">
+        {topic.title}
+      </h1>
+      <p className="mt-1.5 max-w-2xl text-[0.9375rem] text-text-2">
+        {topic.blurb}
+      </p>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm">
-        <span className="flex items-center gap-1.5">
-          <span className="text-text-2">Questions</span>
-          <span className="font-mono tabular-nums">{questions.length}</span>
-        </span>
-        <span className="flex items-center gap-1.5" title="Easy / Medium / Hard">
-          <span className="text-text-2">E/M/H</span>
+      {/* Facts about the topic read as a strip under the title; actions and
+          links live in the rail, so the two never compete. */}
+      <div className="mt-5 flex flex-wrap items-start gap-x-8 gap-y-3 border-y border-border py-3">
+        <Field label="Questions" value={String(questions.length)} />
+        <Field label="Easy / Med / Hard">
           <DifficultySpread
             difficulties={questions.map((question) => question.difficulty)}
           />
-        </span>
+        </Field>
         <TopicProgress topicId={topic.id} />
       </div>
 
-      <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
+      <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-start">
         <LessonProse text={topic.lesson} />
 
-        <aside className="space-y-3 lg:sticky lg:top-16">
+        <aside className="space-y-3 lg:sticky lg:top-[4.5rem]">
+          <div className="rounded-card border border-border p-4">
+            <h2 className="text-sm font-semibold">Practice</h2>
+            <p className="mt-1 text-[0.8125rem] leading-relaxed text-text-2">
+              {questions.length} questions on this topic, mixed difficulty.
+            </p>
+            <Link
+              href={`/drill?topic=${topic.id}`}
+              className="key key-ink mt-3 block px-4 py-2.5 text-center text-[0.9375rem]"
+            >
+              Drill this topic
+            </Link>
+            <Link
+              href="/drill"
+              className="mt-2.5 block text-center text-[0.8125rem] text-text-2 underline underline-offset-2 hover:text-text"
+            >
+              Or start today&apos;s drill
+            </Link>
+          </div>
+
           {topic.resources && topic.resources.length > 0 ? (
-            <div className="rounded-xl border border-border p-4">
+            <div className="rounded-card border border-border p-4">
               <h2 className="text-sm font-semibold">Go deeper</h2>
               <ul className="mt-2 space-y-1.5">
                 {topic.resources.map((resource) => (
@@ -73,7 +95,7 @@ export default async function TopicPage({
                       href={resource.url}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="text-sm text-text-2 underline underline-offset-2 hover:text-green"
+                      className="text-[0.8125rem] leading-snug text-text-2 underline underline-offset-2 hover:text-text"
                     >
                       {resource.label} ↗
                     </a>
@@ -82,20 +104,6 @@ export default async function TopicPage({
               </ul>
             </div>
           ) : null}
-
-          <Link
-            href={`/drill?topic=${topic.id}`}
-            className="key key-ink block px-4 py-3 text-center text-base"
-          >
-            Drill this topic
-          </Link>
-
-          <Link
-            href="/drill"
-            className="block text-center text-sm text-text-2 underline underline-offset-2 hover:text-green"
-          >
-            Or start today&apos;s drill
-          </Link>
         </aside>
       </div>
     </article>

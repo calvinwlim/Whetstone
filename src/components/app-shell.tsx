@@ -135,7 +135,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           className="mx-2 mb-2 min-w-0 flex-1 rounded-canvas bg-bg px-4 py-5 sm:px-6 lg:ml-0 lg:mr-3 lg:mb-3"
           style={{ minHeight: `calc(100dvh - ${HEADER} - 0.5rem)` }}
         >
-          <div className="mx-auto w-full max-w-4xl">{children}</div>
+          <div className="mx-auto w-full max-w-5xl">{children}</div>
         </main>
       </div>
     </div>

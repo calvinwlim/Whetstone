@@ -2,6 +2,7 @@
 
 import { useProgress } from "@/components/progress-provider";
 import { SignalStrip } from "@/components/signal-strip";
+import { Field } from "@/components/field";
 
 const HISTORY_LENGTH = 16;
 
@@ -16,26 +17,23 @@ export function TopicProgress({ topicId }: { topicId: string }) {
     .slice(-HISTORY_LENGTH)
     .map((attempt) => attempt.correct);
 
+  const known = hydrated && accuracy !== undefined;
+
   return (
     <>
-      <span className="flex items-center gap-1.5">
-        <span className="text-text-2">Accuracy</span>
-        <span
-          className={`font-mono tabular-nums ${
-            hydrated && accuracy !== undefined
-              ? accuracy >= 0.7
-                ? "text-green"
-                : "text-red"
-              : "text-text-2"
-          }`}
-        >
-          {hydrated && accuracy !== undefined
-            ? `${Math.round(accuracy * 100)}%`
-            : "—"}
-        </span>
-      </span>
+      <Field
+        label="Your accuracy"
+        value={known ? `${Math.round(accuracy * 100)}%` : "—"}
+        tone={known ? (accuracy >= 0.7 ? "good" : "bad") : undefined}
+      />
 
-      {history.length > 0 ? <SignalStrip signals={history} /> : null}
+      {history.length > 0 ? (
+        <Field label={`Last ${history.length}`}>
+          <span className="flex h-6 items-center">
+            <SignalStrip signals={history} />
+          </span>
+        </Field>
+      ) : null}
     </>
   );
 }
