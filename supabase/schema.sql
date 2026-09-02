@@ -41,3 +41,11 @@ create trigger progress_touch_updated_at
   before update on public.progress
   for each row
   execute function public.touch_updated_at();
+
+-- Newer Supabase projects do not grant table privileges to the API roles by
+-- default, so enabling RLS is not sufficient on its own: without this, a
+-- signed-in user gets "permission denied for table progress" (42501) before
+-- any policy is even consulted. Only `authenticated` is granted -- `anon` has
+-- no business reading progress, and the policy above is scoped to
+-- authenticated regardless. RLS still decides which rows are visible.
+grant select, insert, update, delete on public.progress to authenticated;
