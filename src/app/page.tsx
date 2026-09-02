@@ -6,6 +6,7 @@ import { useProgress } from "@/components/progress-provider";
 import { SignalStrip } from "@/components/signal-strip";
 import { DifficultyPill } from "@/components/difficulty-pill";
 import { Field } from "@/components/field";
+import { Landing } from "@/components/landing";
 import { ALL_QUESTIONS, DEPTH_TOPIC_IDS, getTopic } from "@/content";
 import { composeSession } from "@/lib/session";
 import { isDue } from "@/lib/srs";
@@ -13,9 +14,29 @@ import { isDue } from "@/lib/srs";
 const RECENT_SIGNALS = 20;
 const WEAK_THRESHOLD = 0.7;
 
-export default function TodayPage() {
-  const { state, hydrated, accuracy, byTopic, level, answeredToday } =
-    useProgress();
+/** Someone who has never answered anything gets the front door; everyone
+ *  else gets their dashboard. The server always renders the empty state, so
+ *  this is also what a crawler indexes at / -- which is the point, since a
+ *  dashboard of zeroes says nothing about what this is. */
+export default function HomePage() {
+  const { state, hydrated } = useProgress();
+
+  if (hydrated && state.attempts.length > 0) return <TodayDashboard />;
+  return <Landing />;
+}
+
+function TodayDashboard() {
+  const {
+    state,
+    hydrated,
+    accuracy,
+    byTopic,
+    level,
+    answeredToday,
+    streak,
+    canRepairStreak,
+    repairStreak,
+  } = useProgress();
 
   const session = useMemo(() => {
     if (!hydrated) return [];
@@ -83,7 +104,9 @@ export default function TodayPage() {
           label="Answered today"
           value={`${hydrated ? answeredToday : 0}/${state.dailyGoal}`}
         />
-        <Field label="Day streak" value={String(hydrated ? state.streak.current : 0)} />
+        {/* The effective streak, not the stored counter: a streak that lapsed
+            reads as 0 until it is repaired, which is what the header shows too. */}
+        <Field label="Day streak" value={String(hydrated ? streak : 0)} />
         <Field label="Due now" value={String(hydrated ? dueTotal : 0)} />
         <Field label="Level">
           <span className="font-sans text-base font-semibold">
@@ -91,6 +114,27 @@ export default function TodayPage() {
           </span>
         </Field>
       </div>
+
+      {/* Only ever shown on the one day it can help: the streak broke
+          yesterday and is still recoverable. */}
+      {canRepairStreak ? (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-card border-[1.5px] border-amber bg-amber-wash p-3.5">
+          <p className="text-sm">
+            <span className="font-semibold">
+              You missed a day, and your {state.streak.current}-day streak is
+              still recoverable.
+            </span>{" "}
+            One repair a month, and today does not count until you hit your goal.
+          </p>
+          <button
+            type="button"
+            onClick={repairStreak}
+            className="btn btn-primary shrink-0 px-3.5 py-2 text-sm"
+          >
+            Repair streak
+          </button>
+        </div>
+      ) : null}
 
       <section className="mt-5 rounded-card border border-border p-4">
         <div className="h-2 overflow-hidden rounded-full bg-surface-2">

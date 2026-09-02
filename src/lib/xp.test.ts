@@ -5,6 +5,8 @@ import {
   recordGoalMet,
   streakAsOf,
   xpForAnswer,
+  canRepairStreak,
+  repairStreak,
   type StreakState,
 } from "@/lib/xp";
 
@@ -119,5 +121,71 @@ describe("streaks", () => {
   test("counts the streak on the day it was earned", () => {
     const s = recordGoalMet(fresh, "2026-03-10");
     expect(streakAsOf(s, "2026-03-10")).toBe(1);
+  });
+});
+
+describe("streak repair", () => {
+  /** A streak that reached 5 on the 10th, so the 11th is the missed day and
+   *  the 12th is the day you come back. */
+  const broken: StreakState = {
+    current: 5,
+    longest: 7,
+    lastGoalDate: "2026-03-10",
+    lastRepairDate: null,
+  };
+
+  test("is offered after exactly one missed day", () => {
+    expect(canRepairStreak(broken, "2026-03-12")).toBe(true);
+  });
+
+  test("is not offered while the streak is still alive", () => {
+    expect(canRepairStreak(broken, "2026-03-10")).toBe(false);
+    expect(canRepairStreak(broken, "2026-03-11")).toBe(false);
+  });
+
+  test("is not offered once two days have been missed", () => {
+    expect(canRepairStreak(broken, "2026-03-13")).toBe(false);
+  });
+
+  test("is not offered when there is no streak to save", () => {
+    expect(canRepairStreak(fresh, "2026-03-12")).toBe(false);
+  });
+
+  test("restores the streak to what it was", () => {
+    const repaired = repairStreak(broken, "2026-03-12");
+    expect(streakAsOf(broken, "2026-03-12")).toBe(0);
+    expect(streakAsOf(repaired, "2026-03-12")).toBe(5);
+    expect(repaired.current).toBe(5);
+  });
+
+  test("does not itself count as a day -- today's goal still has to be met", () => {
+    const repaired = repairStreak(broken, "2026-03-12");
+    expect(repaired.current).toBe(5);
+    const afterDrilling = recordGoalMet(repaired, "2026-03-12");
+    expect(afterDrilling.current).toBe(6);
+  });
+
+  test("allows one repair per calendar month", () => {
+    const repaired = repairStreak(broken, "2026-03-12");
+    const brokenAgain: StreakState = {
+      ...repaired,
+      current: 8,
+      lastGoalDate: "2026-03-20",
+    };
+    expect(canRepairStreak(brokenAgain, "2026-03-22")).toBe(false);
+  });
+
+  test("allows another repair the following month", () => {
+    const repaired = repairStreak(broken, "2026-03-12");
+    const brokenAgain: StreakState = {
+      ...repaired,
+      current: 8,
+      lastGoalDate: "2026-04-20",
+    };
+    expect(canRepairStreak(brokenAgain, "2026-04-22")).toBe(true);
+  });
+
+  test("is a no-op when it is not available", () => {
+    expect(repairStreak(broken, "2026-03-13")).toBe(broken);
   });
 });

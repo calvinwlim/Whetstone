@@ -59,6 +59,9 @@ export interface StreakState {
   current: number;
   longest: number;
   lastGoalDate: string | null;
+  /** When a repair was last spent, for the one-a-month allowance. Optional so
+   *  progress saved before repair existed still loads. */
+  lastRepairDate?: string | null;
 }
 
 function daysBetween(from: string, to: string): number {
@@ -86,4 +89,40 @@ export function recordGoalMet(state: StreakState, date: string): StreakState {
 export function streakAsOf(state: StreakState, today: string): number {
   if (state.lastGoalDate === null) return 0;
   return daysBetween(state.lastGoalDate, today) <= 1 ? state.current : 0;
+}
+
+/** Repair covers exactly one missed day: a gap of two means yesterday was
+ *  skipped and today you are back. Three days is a streak that genuinely
+ *  ended, and pretending otherwise would make the number meaningless. */
+const REPAIRABLE_GAP_DAYS = 2;
+
+function sameMonth(a: string, b: string): boolean {
+  return a.slice(0, 7) === b.slice(0, 7);
+}
+
+function addDays(date: string, days: number): string {
+  return new Date(Date.parse(`${date}T00:00:00Z`) + days * DAY_MS)
+    .toISOString()
+    .slice(0, 10);
+}
+
+/** Whether today's visit can rescue a streak that broke yesterday. */
+export function canRepairStreak(state: StreakState, today: string): boolean {
+  if (state.lastGoalDate === null || state.current === 0) return false;
+  if (daysBetween(state.lastGoalDate, today) !== REPAIRABLE_GAP_DAYS) {
+    return false;
+  }
+  return !(state.lastRepairDate && sameMonth(state.lastRepairDate, today));
+}
+
+/** Moves the last goal date to yesterday, which is the whole trick: the streak
+ *  reads as unbroken again without being credited a day that was not earned.
+ *  Today's goal still has to be met to advance it. */
+export function repairStreak(state: StreakState, today: string): StreakState {
+  if (!canRepairStreak(state, today)) return state;
+  return {
+    ...state,
+    lastGoalDate: addDays(today, -1),
+    lastRepairDate: today,
+  };
 }

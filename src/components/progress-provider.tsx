@@ -24,7 +24,13 @@ import {
   updateProgress,
 } from "@/lib/progress-store";
 import { ProgressSync } from "@/components/progress-sync";
-import { levelForXp, streakAsOf, type LevelProgress } from "@/lib/xp";
+import {
+  canRepairStreak,
+  levelForXp,
+  repairStreak as applyRepair,
+  streakAsOf,
+  type LevelProgress,
+} from "@/lib/xp";
 
 interface ProgressContextValue {
   state: ProgressState;
@@ -39,10 +45,13 @@ interface ProgressContextValue {
   level: LevelProgress;
   streak: number;
   answeredToday: number;
+  /** True only on a day when a streak that broke yesterday can still be saved. */
+  canRepairStreak: boolean;
   recordAnswer: (question: Question, correct: boolean) => void;
   setDailyGoal: (goal: number) => void;
   setEnabledTracks: (tracks: TrackId[]) => void;
   setIncludeDepth: (include: boolean) => void;
+  repairStreak: () => void;
   resetProgress: () => void;
 }
 
@@ -82,6 +91,14 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     updateProgress((current) => ({ ...current, includeDepth: include }));
   }, []);
 
+  const repairStreak = useCallback(() => {
+    const day = new Date().toISOString().slice(0, 10);
+    updateProgress((current) => ({
+      ...current,
+      streak: applyRepair(current.streak, day),
+    }));
+  }, []);
+
   const resetProgress = useCallback(() => {
     setProgress(emptyProgress());
   }, []);
@@ -97,10 +114,12 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       level: levelForXp(state.totalXp),
       streak: streakAsOf(state.streak, today),
       answeredToday: state.dailyStats[today]?.answered ?? 0,
+      canRepairStreak: canRepairStreak(state.streak, today),
       recordAnswer,
       setDailyGoal,
       setEnabledTracks,
       setIncludeDepth,
+      repairStreak,
       resetProgress,
     }),
     [
@@ -111,6 +130,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       setDailyGoal,
       setEnabledTracks,
       setIncludeDepth,
+      repairStreak,
       resetProgress,
     ],
   );
