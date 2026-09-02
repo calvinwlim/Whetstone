@@ -11,6 +11,43 @@ const GOALS = [
   { value: 20, name: "Intense", note: "~10 min" },
 ] as const;
 
+/** The switch used by every toggle row. Achromatic when on, like every other
+ *  affirmative control -- green is reserved for correctness. */
+function Switch({ on }: { on: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={`flex h-5 w-9 shrink-0 items-center rounded-full px-0.5 transition-colors ${
+        on ? "bg-ink" : "bg-surface-2"
+      }`}
+    >
+      <span
+        className={`h-4 w-4 rounded-full bg-bg shadow-sm transition-transform ${
+          on ? "translate-x-4" : ""
+        }`}
+      />
+    </span>
+  );
+}
+
+function Section({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="border-t border-border pt-5">
+      <h2 className="text-sm font-semibold">{title}</h2>
+      <p className="mt-1 max-w-xl text-sm text-text-2">{description}</p>
+      <div className="mt-3">{children}</div>
+    </section>
+  );
+}
+
 export default function SettingsPage() {
   const {
     state,
@@ -36,22 +73,23 @@ export default function SettingsPage() {
   if (!hydrated) {
     return (
       <div className="animate-pulse space-y-3">
-        <div className="h-8 w-32 rounded-lg bg-surface" />
-        <div className="h-28 rounded-xl bg-surface" />
+        <div className="h-8 w-32 rounded-control bg-surface" />
+        <div className="h-28 rounded-card bg-surface" />
       </div>
     );
   }
 
-  return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Settings</h1>
+  const depthOn = state.includeDepth ?? false;
 
-      <section className="rounded-xl border border-border p-4">
-        <h2 className="text-sm font-semibold">Daily goal</h2>
-        <p className="mt-1 text-sm text-text-2">
-          How many questions count as a day. Hitting it extends your streak.
-        </p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+  return (
+    <div className="space-y-5">
+      <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+
+      <Section
+        title="Daily goal"
+        description="How many questions count as a day. Hitting it extends your streak."
+      >
+        <div className="inline-flex rounded-control border border-border p-0.5">
           {GOALS.map((goal) => {
             const active = state.dailyGoal === goal.value;
             return (
@@ -60,25 +98,33 @@ export default function SettingsPage() {
                 type="button"
                 onClick={() => setDailyGoal(goal.value)}
                 aria-pressed={active}
-                className={`tile px-3.5 py-2.5 text-left ${active ? "tile-on" : ""}`}
+                className={`btn rounded-chip px-3 py-1.5 text-sm ${
+                  active ? "btn-primary" : "text-text-2 hover:text-text"
+                }`}
               >
-                <span className="block font-semibold">{goal.name}</span>
-                <span className="mt-0.5 block text-xs text-text-2">
-                  {goal.value} questions · {goal.note}
+                {goal.name}
+                <span
+                  className={`ml-1.5 font-mono text-xs tabular-nums ${
+                    active ? "opacity-70" : "opacity-60"
+                  }`}
+                >
+                  {goal.value}
                 </span>
               </button>
             );
           })}
         </div>
-      </section>
-
-      <section className="rounded-xl border border-border p-4">
-        <h2 className="text-sm font-semibold">Tracks</h2>
-        <p className="mt-1 text-sm text-text-2">
-          Turn a track off to keep it out of your drills. Lessons stay readable
-          either way.
+        <p className="mt-2 text-xs text-text-2">
+          {GOALS.find((goal) => goal.value === state.dailyGoal)?.note} a day at
+          your current pace.
         </p>
-        <ul className="mt-3 space-y-2">
+      </Section>
+
+      <Section
+        title="Tracks"
+        description="Turn a track off to keep it out of your drills. Lessons stay readable either way."
+      >
+        <ul className="divide-y divide-border border-y border-border">
           {TRACKS.map((track) => {
             const enabled = state.enabledTracks.includes(track.id);
             const isLast = enabled && state.enabledTracks.length === 1;
@@ -93,84 +139,62 @@ export default function SettingsPage() {
                   onClick={() => toggleTrack(track.id)}
                   disabled={isLast}
                   aria-pressed={enabled}
-                  className={`tile flex w-full items-center justify-between gap-4 px-3.5 py-2.5 text-left disabled:cursor-not-allowed ${
-                    enabled ? "tile-on" : ""
-                  }`}
+                  className="flex w-full items-center justify-between gap-4 py-2.5 text-left transition-colors hover:bg-surface disabled:cursor-not-allowed"
                 >
-                  <span className="min-w-0">
-                    <span className="block font-medium">{track.title}</span>
+                  <span className="min-w-0 pl-1">
+                    <span
+                      className={`block text-sm font-medium ${enabled ? "" : "text-text-2"}`}
+                    >
+                      {track.title}
+                    </span>
                     <span className="mt-0.5 block text-xs text-text-2">
-                      {count} questions
+                      <span className="font-mono tabular-nums">{count}</span>{" "}
+                      questions
                       {isLast ? " · your only active track" : ""}
                     </span>
                   </span>
-                  <span
-                    aria-hidden
-                    className={`flex h-6 w-10 shrink-0 items-center rounded-full px-0.5 transition-colors ${
-                      enabled ? "bg-green" : "bg-surface-2"
-                    }`}
-                  >
-                    <span
-                      className={`h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
-                        enabled ? "translate-x-4" : ""
-                      }`}
-                    />
+                  <span className="pr-1">
+                    <Switch on={enabled} />
                   </span>
                 </button>
               </li>
             );
           })}
         </ul>
-      </section>
+      </Section>
 
-
-      <section className="rounded-xl border border-border p-4">
-        <h2 className="text-sm font-semibold">Specialist depth</h2>
-        <p className="mt-1 text-sm text-text-2">
-          Some topics are specialist rather than everyday software engineering
-          — DNS, sharding, enterprise identity, product analytics. They stay
-          fully readable and drillable on their own; this decides whether they
-          also appear in your daily mix.
-        </p>
+      <Section
+        title="Specialist depth"
+        description="Some topics are specialist rather than everyday software engineering — DNS, sharding, enterprise identity, product analytics. They stay fully readable and drillable on their own; this decides whether they also appear in your daily mix."
+      >
         <button
           type="button"
-          onClick={() => setIncludeDepth(!(state.includeDepth ?? false))}
-          aria-pressed={state.includeDepth ?? false}
-          className={`tile mt-3 flex w-full items-center justify-between gap-4 px-3.5 py-2.5 text-left ${
-            state.includeDepth ? "tile-on" : ""
-          }`}
+          onClick={() => setIncludeDepth(!depthOn)}
+          aria-pressed={depthOn}
+          className="flex w-full items-center justify-between gap-4 border-y border-border py-2.5 text-left transition-colors hover:bg-surface"
         >
-          <span className="min-w-0">
-            <span className="block font-medium">Include depth topics</span>
+          <span className="min-w-0 pl-1">
+            <span className="block text-sm font-medium">
+              Include depth topics
+            </span>
             <span className="mt-0.5 block text-xs text-text-2">
-              {state.includeDepth
+              {depthOn
                 ? "Depth topics appear in daily drills"
                 : "Daily drills stay on core engineering topics"}
             </span>
           </span>
-          <span
-            aria-hidden
-            className={`flex h-6 w-10 shrink-0 items-center rounded-full px-0.5 transition-colors ${
-              state.includeDepth ? "bg-green" : "bg-surface-2"
-            }`}
-          >
-            <span
-              className={`h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
-                state.includeDepth ? "translate-x-4" : ""
-              }`}
-            />
+          <span className="pr-1">
+            <Switch on={depthOn} />
           </span>
         </button>
-      </section>
-      <section className="rounded-xl border border-border p-4">
-        <h2 className="text-sm font-semibold">Progress</h2>
-        <p className="mt-1 text-sm text-text-2">
-          Stored in this browser only, so it does not follow you to another
-          device yet.
-        </p>
+      </Section>
 
+      <Section
+        title="Progress"
+        description="Stored in this browser, and synced to your account when you are signed in."
+      >
         {confirmingReset ? (
-          <div className="mt-3 rounded-lg border-[1.5px] border-red bg-red-wash p-3.5">
+          <div className="rounded-card border-[1.5px] border-red bg-red-wash p-3.5">
             <p className="text-sm">
               This erases {state.attempts.length.toLocaleString()} answers, your{" "}
               {state.totalXp.toLocaleString()} XP, and your streak. It cannot be
@@ -183,14 +207,14 @@ export default function SettingsPage() {
                   resetProgress();
                   setConfirmingReset(false);
                 }}
-                className="rounded-lg bg-red px-3.5 py-2 text-sm font-semibold text-white"
+                className="btn bg-red px-3.5 py-2 text-sm text-white"
               >
                 Erase everything
               </button>
               <button
                 type="button"
                 onClick={() => setConfirmingReset(false)}
-                className="rounded-lg border border-border px-3.5 py-2 text-sm font-medium"
+                className="btn btn-quiet px-3.5 py-2 text-sm"
               >
                 Keep my progress
               </button>
@@ -200,12 +224,12 @@ export default function SettingsPage() {
           <button
             type="button"
             onClick={() => setConfirmingReset(true)}
-            className="mt-3 rounded-lg border border-border px-3.5 py-2 text-sm font-medium text-text-2 hover:border-red hover:text-red"
+            className="btn btn-quiet px-3.5 py-2 text-sm text-text-2 hover:border-red hover:text-red"
           >
             Reset progress
           </button>
         )}
-      </section>
+      </Section>
     </div>
   );
 }

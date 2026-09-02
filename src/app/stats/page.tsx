@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useProgress } from "@/components/progress-provider";
 import { SignalStrip } from "@/components/signal-strip";
+import { Field } from "@/components/field";
 import { getTopic, TRACKS } from "@/content";
 import { isDue } from "@/lib/srs";
+
+const CHART_HEIGHT = 56;
 
 export default function StatsPage() {
   const { state, hydrated, today, accuracy, byTopic, byTrack, level, streak } =
@@ -46,8 +49,8 @@ export default function StatsPage() {
   if (!hydrated) {
     return (
       <div className="animate-pulse space-y-3">
-        <div className="h-8 w-32 rounded-lg bg-surface" />
-        <div className="h-24 rounded-xl bg-surface" />
+        <div className="h-8 w-32 rounded-control bg-surface" />
+        <div className="h-24 rounded-card bg-surface" />
       </div>
     );
   }
@@ -55,8 +58,8 @@ export default function StatsPage() {
   if (state.attempts.length === 0) {
     return (
       <div>
-        <h1 className="text-xl font-semibold">Stats</h1>
-        <div className="mt-3 rounded-xl border border-border p-5">
+        <h1 className="text-2xl font-semibold tracking-tight">Stats</h1>
+        <div className="mt-4 rounded-card border border-border p-5">
           <p className="text-sm text-text-2">
             Nothing to show yet. Answer a few questions and your accuracy, weak
             topics, and review queue appear here.
@@ -73,54 +76,77 @@ export default function StatsPage() {
   }
 
   const maxAnswered = Math.max(...last14.map((day) => day.answered), 1);
+  const totalCorrect = last14.reduce((sum, day) => sum + day.correct, 0);
+  const totalAnswered = last14.reduce((sum, day) => sum + day.answered, 0);
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Stats</h1>
+    <div>
+      <h1 className="text-2xl font-semibold tracking-tight">Stats</h1>
 
-      <section className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
-        <Metric label="Answered" value={state.attempts.length.toLocaleString()} />
-        <Metric
+      <div className="mt-3 flex flex-wrap items-start gap-x-8 gap-y-3 border-y border-border py-3">
+        <Field label="Answered" value={state.attempts.length.toLocaleString()} />
+        <Field
           label="Accuracy"
           value={accuracy === undefined ? "—" : `${Math.round(accuracy * 100)}%`}
           tone={
             accuracy === undefined ? undefined : accuracy >= 0.7 ? "good" : "bad"
           }
         />
-        <Metric label="Streak" value={`${streak}d`} />
-        <Metric label="Due now" value={String(dueNow)} />
-      </section>
+        <Field label="Day streak" value={String(streak)} />
+        <Field label="Due now" value={String(dueNow)} />
+      </div>
 
-      <section className="rounded-xl border border-border p-4">
-        <h2 className="text-sm font-semibold">Last 14 days</h2>
+      <section className="mt-5 rounded-card border border-border p-4">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="text-sm font-semibold">Last 14 days</h2>
+          <span className="font-mono text-xs tabular-nums text-text-2">
+            {totalCorrect}/{totalAnswered} correct
+          </span>
+        </div>
+
+        {/* Bar height is volume; the filled portion is what you got right. The
+            neutral remainder is deliberate -- a bar is not "wrong", it is just
+            the part that was not correct. */}
         <div
           className="mt-3 flex items-end gap-1"
           role="img"
-          aria-label="Questions answered per day over the last 14 days"
+          aria-label={`Questions answered per day over the last 14 days: ${totalCorrect} correct of ${totalAnswered}`}
         >
-          {last14.map((day) => (
-            <div
-              key={day.date}
-              className="flex flex-1 flex-col items-center gap-1.5"
-              title={`${day.date}: ${day.answered} answered`}
-            >
+          {last14.map((day) => {
+            const height = Math.max(
+              3,
+              (day.answered / maxAnswered) * CHART_HEIGHT,
+            );
+            const correctFraction =
+              day.answered > 0 ? day.correct / day.answered : 0;
+
+            return (
               <div
-                className={`w-full rounded-[3px] ${
-                  day.answered === 0 ? "bg-surface-2" : "bg-green"
-                }`}
-                style={{
-                  height: `${Math.max(4, (day.answered / maxAnswered) * 60)}px`,
-                }}
-              />
-              <span className="font-mono text-[10px] tabular-nums text-text-2">
-                {day.date.slice(8)}
-              </span>
-            </div>
-          ))}
+                key={day.date}
+                className="flex flex-1 flex-col items-center gap-1.5"
+                title={`${day.date}: ${day.correct}/${day.answered} correct`}
+              >
+                <div
+                  className="flex w-full flex-col justify-end overflow-hidden rounded-[3px] bg-surface-2"
+                  style={{ height: `${height}px` }}
+                >
+                  {day.answered > 0 ? (
+                    <div
+                      className="w-full bg-green"
+                      style={{ height: `${correctFraction * 100}%` }}
+                    />
+                  ) : null}
+                </div>
+                <span className="font-mono text-[10px] tabular-nums text-text-2">
+                  {day.date.slice(8)}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      <section className="rounded-xl border border-border p-4">
+      <section className="mt-4 rounded-card border border-border p-4">
         <h2 className="text-sm font-semibold">By track</h2>
         <ul className="mt-3 space-y-2.5">
           {TRACKS.map((track) => {
@@ -133,7 +159,7 @@ export default function StatsPage() {
                     {value === undefined ? "—" : `${Math.round(value * 100)}%`}
                   </span>
                 </div>
-                <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-2">
+                <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">
                   <div
                     className={`h-full rounded-full ${
                       value === undefined
@@ -151,10 +177,10 @@ export default function StatsPage() {
         </ul>
       </section>
 
-      <section className="rounded-xl border border-border">
+      <section className="mt-4 rounded-card border border-border">
         <div className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-3">
           <h2 className="text-sm font-semibold">Topics you have seen</h2>
-          <span className="text-xs text-text-2">Weakest first</span>
+          <span className="label">Weakest first</span>
         </div>
         <ul className="divide-y divide-border">
           {rankedTopics.map(({ id, value, topic }) => {
@@ -189,50 +215,23 @@ export default function StatsPage() {
         </ul>
       </section>
 
-      <section className="rounded-xl border border-border p-4">
-        <div className="flex items-baseline justify-between gap-4">
-          <h2 className="text-sm font-semibold">{level.level.title}</h2>
-          <span className="font-mono text-xs tabular-nums text-text-2">
-            {state.totalXp.toLocaleString()} XP
-          </span>
-        </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2">
-          <div
-            className="h-full rounded-full bg-green"
+      <div className="mt-4 flex items-center gap-3 text-xs text-text-2">
+        <span className="shrink-0 font-medium">{level.level.title}</span>
+        <span className="h-1 flex-1 overflow-hidden rounded-full bg-surface-2">
+          <span
+            className="block h-full rounded-full bg-border-strong"
             style={{ width: `${Math.max(1, level.progress * 100)}%` }}
           />
-        </div>
-        <p className="mt-2 text-xs text-text-2">
+        </span>
+        <span className="shrink-0 font-mono tabular-nums">
+          {state.totalXp.toLocaleString()} XP
           {level.xpToNext === null
-            ? "Top level reached"
-            : `${level.xpToNext.toLocaleString()} XP to next level`}{" "}
-          · Longest streak {state.streak.longest}{" "}
-          {state.streak.longest === 1 ? "day" : "days"}
-        </p>
-      </section>
-    </div>
-  );
-}
-
-function Metric({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: string;
-  tone?: "good" | "bad";
-}) {
-  return (
-    <div className="bg-bg px-4 py-3">
-      <p className="text-xs font-medium text-text-2">{label}</p>
-      <p
-        className={`mt-0.5 text-xl font-semibold tabular-nums ${
-          tone === "good" ? "text-green" : tone === "bad" ? "text-red" : ""
-        }`}
-      >
-        {value}
-      </p>
+            ? " · top level"
+            : ` · ${level.xpToNext.toLocaleString()} to go`}
+          {" · longest streak "}
+          {state.streak.longest}d
+        </span>
+      </div>
     </div>
   );
 }
