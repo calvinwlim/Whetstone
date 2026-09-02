@@ -104,7 +104,7 @@ function SignIn() {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="key key-green mt-3 w-full px-4 py-3"
+            className="key key-ink mt-3 w-full px-4 py-3"
           >
             {status === "sending" ? "Sending…" : "Send link"}
           </button>

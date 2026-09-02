@@ -85,7 +85,7 @@ export default async function TopicPage({
 
           <Link
             href={`/drill?topic=${topic.id}`}
-            className="key key-green block px-4 py-3 text-center text-base"
+            className="key key-ink block px-4 py-3 text-center text-base"
           >
             Drill this topic
           </Link>

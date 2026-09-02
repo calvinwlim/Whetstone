@@ -63,7 +63,7 @@ export default function StatsPage() {
           </p>
           <Link
             href="/drill"
-            className="key key-green mt-4 inline-block px-4 py-2.5 text-base"
+            className="key key-ink mt-4 inline-block px-4 py-2.5 text-base"
           >
             Start a drill
           </Link>

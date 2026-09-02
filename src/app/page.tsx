@@ -89,7 +89,7 @@ export default function TodayPage() {
           <>
             <Link
               href="/drill"
-              className="key key-green mt-4 block px-5 py-3.5 text-center text-lg"
+              className="key key-ink mt-4 block px-5 py-3.5 text-center text-lg"
             >
               {goalMet
                 ? "Keep drilling"

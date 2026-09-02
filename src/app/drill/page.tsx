@@ -148,7 +148,7 @@ function DrillSession() {
           {focusTopic ? (
             <Link
               href="/drill"
-              className="key key-green inline-block px-4 py-2 text-sm"
+              className="key key-ink inline-block px-4 py-2 text-sm"
             >
               Today&apos;s drill
             </Link>
@@ -299,7 +299,7 @@ function DrillSession() {
             <button
               type="button"
               onClick={next}
-              className="key key-green w-full px-5 py-3.5 text-lg"
+              className="key key-ink w-full px-5 py-3.5 text-lg"
             >
               {index + 1 === session.length ? "Finish" : "Next"}
             </button>
@@ -310,7 +310,7 @@ function DrillSession() {
               disabled={!hasAnswer(question, response)}
               className={`key w-full px-5 py-3.5 text-lg ${
                 hasAnswer(question, response)
-                  ? "key-green"
+                  ? "key-ink"
                   : "bg-surface-2 text-text-2"
               }`}
             >
@@ -384,7 +384,7 @@ function SessionSummary({
       <div className="flex gap-2">
         <Link
           href="/"
-          className="key key-green flex-1 px-5 py-3 text-center text-base"
+          className="key key-ink flex-1 px-5 py-3 text-center text-base"
         >
           Back to today
         </Link>

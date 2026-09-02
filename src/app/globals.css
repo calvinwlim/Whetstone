@@ -1,9 +1,23 @@
 @import "tailwindcss";
 
-/* Light-first, like the practice sites this borrows its density from.
-   Colour is functional: green means correct or easy, amber means medium,
-   red means wrong or hard. Nothing is tinted for decoration. */
+/* Two surfaces, not one. The shell is the dark application chrome that holds
+   navigation; the canvas is the light panel the content sits on. In dark mode
+   the shell goes a step darker than the canvas rather than lighter, so the
+   canvas still reads as floating above it in both themes.
+
+   Colour is functional and now says only one thing each: green means correct
+   or easy, amber medium, red wrong or hard. Primary actions are achromatic
+   (near-black on light, near-white on dark) so the three signal colours are
+   the only chromatic things on screen and mean something when they appear. */
 :root {
+  /* Application chrome. Dark in both themes -- it is not a theme surface. */
+  --shell: #16191d;
+  --shell-2: #22272d;
+  --shell-text: #eef1f4;
+  --shell-text-2: #949fab;
+  --shell-border: #2b3138;
+
+  /* Content canvas. */
   --bg: #ffffff;
   --surface: #f4f6f8;
   --surface-2: #e9edf1;
@@ -11,6 +25,12 @@
   --border-strong: #b6c0cb;
   --text: #14171a;
   --text-2: #57616c;
+
+  /* Achromatic primary: buttons, active states, selection. */
+  --ink: #14171a;
+  --ink-edge: #000000;
+  --ink-text: #ffffff;
+  --ink-wash: #f0f2f4;
 
   --green: #37a353;
   --green-deep: #29803f;
@@ -25,10 +45,23 @@
   --red-wash: #fceae8;
 
   --shadow: rgba(20, 23, 26, 0.08);
+
+  /* Radius carries hierarchy: the canvas is the largest shape on screen, then
+     cards, then controls, then chips. Previously everything was 12px. */
+  --r-canvas: 16px;
+  --r-card: 12px;
+  --r-control: 8px;
+  --r-chip: 6px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --shell: #0a0c0e;
+    --shell-2: #171b1f;
+    --shell-text: #e9edf1;
+    --shell-text-2: #8b95a1;
+    --shell-border: #1e2429;
+
     --bg: #14171a;
     --surface: #1c2126;
     --surface-2: #252c33;
@@ -36,6 +69,11 @@
     --border-strong: #48545f;
     --text: #e9edf1;
     --text-2: #9aa5b1;
+
+    --ink: #e9edf1;
+    --ink-edge: #7d8793;
+    --ink-text: #14171a;
+    --ink-wash: #252c33;
 
     --green: #4cbb69;
     --green-deep: #2f7d45;
@@ -54,6 +92,12 @@
 }
 
 @theme inline {
+  --color-shell: var(--shell);
+  --color-shell-2: var(--shell-2);
+  --color-shell-text: var(--shell-text);
+  --color-shell-text-2: var(--shell-text-2);
+  --color-shell-border: var(--shell-border);
+
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
@@ -61,6 +105,11 @@
   --color-border-strong: var(--border-strong);
   --color-text: var(--text);
   --color-text-2: var(--text-2);
+
+  --color-ink: var(--ink);
+  --color-ink-text: var(--ink-text);
+  --color-ink-wash: var(--ink-wash);
+
   --color-green: var(--green);
   --color-green-deep: var(--green-deep);
   --color-green-wash: var(--green-wash);
@@ -71,21 +120,39 @@
   --color-red-deep: var(--red-deep);
   --color-red-wash: var(--red-wash);
 
+  --radius-canvas: var(--r-canvas);
+  --radius-card: var(--r-card);
+  --radius-control: var(--r-control);
+  --radius-chip: var(--r-chip);
+
   --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
 body {
-  background: var(--bg);
+  background: var(--shell);
   color: var(--text);
   font-family: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
+/* The micro-label tier: a tiny uppercase key over a large value. Used for the
+   metadata strips that replace the old label-beside-value rows. */
+.label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  line-height: 1.4;
+}
+
 /* The signature: a solid bottom edge that compresses under the press, so a
-   primary action feels like a physical key rather than a coloured rectangle. */
+   primary action feels like a physical key rather than a coloured rectangle.
+   Reserved for the drill, where the job is answering; everything else uses the
+   flat .btn below so this does not dilute into a texture. */
 .key {
-  border-radius: 12px;
+  border-radius: var(--r-control);
   font-weight: 600;
   box-shadow: 0 4px 0 var(--key-edge, var(--border-strong));
   transition:
@@ -95,7 +162,7 @@ body {
 }
 
 .key:hover:not(:disabled) {
-  filter: brightness(1.04);
+  filter: brightness(1.08);
 }
 
 .key:active:not(:disabled) {
@@ -108,10 +175,10 @@ body {
   cursor: not-allowed;
 }
 
-.key-green {
-  --key-edge: var(--green-deep);
-  background: var(--green);
-  color: #ffffff;
+.key-ink {
+  --key-edge: var(--ink-edge);
+  background: var(--ink);
+  color: var(--ink-text);
 }
 
 .key-plain {
@@ -129,11 +196,42 @@ body {
   }
 }
 
-/* Selectable answers get the same physicality, one step quieter. */
+/* Flat buttons for everywhere that is not the drill. */
+.btn {
+  border-radius: var(--r-control);
+  font-weight: 600;
+  transition:
+    background-color 120ms ease-out,
+    border-color 120ms ease-out,
+    color 120ms ease-out;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--ink-text);
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.btn-quiet {
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn-quiet:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+/* Selectable answers get the same physicality, one step quieter. Selection is
+   achromatic: an answer you have picked is not yet a correct answer, so it
+   must not be green until it has been checked. */
 .tile {
   border: 1.5px solid var(--border);
   background: var(--bg);
-  border-radius: 10px;
+  border-radius: var(--r-control);
   box-shadow: 0 2px 0 var(--border);
   transition:
     transform 60ms ease-out,
@@ -152,9 +250,9 @@ body {
 }
 
 .tile-on {
-  border-color: var(--green);
-  background: var(--green-wash);
-  box-shadow: 0 2px 0 var(--green);
+  border-color: var(--ink);
+  background: var(--ink-wash);
+  box-shadow: 0 2px 0 var(--ink);
 }
 
 .tile-right {
@@ -253,7 +351,13 @@ body {
 }
 
 *:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Inside the dark shell the ink outline would vanish, so focus flips to the
+   shell's own light text colour there. */
+.shell-scope *:focus-visible {
+  outline-color: var(--shell-text);
 }

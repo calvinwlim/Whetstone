@@ -43,7 +43,7 @@ export function AuthChip() {
     return (
       <Link
         href="/sign-in"
-        className="rounded-lg border border-border px-2.5 py-1 text-sm font-medium text-text-2 hover:border-border-strong hover:text-text"
+        className="rounded-control border border-shell-border px-2.5 py-1 text-sm font-medium text-shell-text-2 transition-colors hover:border-shell-text-2 hover:text-shell-text"
       >
         Sign in
       </Link>
@@ -60,11 +60,11 @@ export function AuthChip() {
         await supabase.auth.signOut();
         router.refresh();
       }}
-      className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-sm font-medium text-text-2 hover:border-border-strong hover:text-text"
+      className="flex items-center gap-1.5 rounded-control border border-shell-border px-2.5 py-1 text-sm font-medium text-shell-text-2 transition-colors hover:border-shell-text-2 hover:text-shell-text"
     >
       <span
         aria-hidden
-        className="grid h-4 w-4 place-items-center rounded-full bg-green text-[10px] font-bold text-white"
+        className="grid h-4 w-4 place-items-center rounded-full bg-shell-text text-[10px] font-bold text-shell"
       >
         {label.slice(0, 1).toUpperCase()}
       </span>

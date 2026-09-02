@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Rubik, JetBrains_Mono } from "next/font/google";
 import { ProgressProvider } from "@/components/progress-provider";
-import { NavBar } from "@/components/nav-bar";
+import { AppShell } from "@/components/app-shell";
 import "./globals.css";
 
 const rubik = Rubik({
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#14171a" },
+    { media: "(prefers-color-scheme: light)", color: "#16191d" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0c0e" },
   ],
 };
 
@@ -34,12 +34,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${rubik.variable} ${jetbrainsMono.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="min-h-full">
         <ProgressProvider>
-          <NavBar />
-          <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-24 pt-5 sm:px-6 sm:pb-10">
-            {children}
-          </main>
+          <AppShell>{children}</AppShell>
         </ProgressProvider>
       </body>
     </html>
