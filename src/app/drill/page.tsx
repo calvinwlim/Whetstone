@@ -24,7 +24,7 @@ export default function DrillPage() {
       fallback={
         <div className="animate-pulse space-y-3">
           <div className="h-8 w-40 rounded-lg bg-surface" />
-          <div className="h-28 rounded-xl bg-surface" />
+          <div className="h-28 rounded-card bg-surface" />
         </div>
       }
     >
@@ -123,14 +123,14 @@ function DrillSession() {
     return (
       <div className="animate-pulse space-y-3">
         <div className="h-8 w-40 rounded-lg bg-surface" />
-        <div className="h-28 rounded-xl bg-surface" />
+        <div className="h-28 rounded-card bg-surface" />
       </div>
     );
   }
 
   if (session.length === 0) {
     return (
-      <div className="rounded-xl border border-border p-5">
+      <div className="rounded-card border border-border p-5">
         <p className="font-semibold">
           {focusTopic
             ? `Nothing due in ${focusTopic.title}`
@@ -175,7 +175,7 @@ function DrillSession() {
   );
 
   return (
-    <div className="pb-32 sm:pb-0">
+    <div className="pb-28 sm:pb-0">
       {focusTopic ? (
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm">
           <span>
@@ -210,7 +210,7 @@ function DrillSession() {
       </div>
 
       {question.context ? (
-        <p className="mt-3 rounded-lg border-l-[3px] border-border-strong bg-surface px-3.5 py-2.5 text-sm leading-relaxed text-text-2">
+        <p className="mt-3 rounded-control border-l-[3px] border-border-strong bg-surface px-3.5 py-2.5 text-sm leading-relaxed text-text-2">
           {question.context}
         </p>
       ) : null}
@@ -230,7 +230,7 @@ function DrillSession() {
 
       {locked ? (
         <div
-          className={`mt-4 rounded-xl border-[1.5px] p-4 ${
+          className={`mt-4 rounded-card border-[1.5px] p-4 ${
             correct
               ? "border-green bg-green-wash"
               : "border-red bg-red-wash"
@@ -263,7 +263,7 @@ function DrillSession() {
                   href={`https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(concept)}`}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="rounded-md border border-border bg-bg px-2 py-0.5 text-xs font-medium hover:border-border-strong"
+                  className="rounded-chip border border-border bg-bg px-2 py-0.5 text-xs font-medium hover:border-border-strong"
                 >
                   {concept}
                 </a>
@@ -293,7 +293,7 @@ function DrillSession() {
       ) : null}
 
       {/* Pinned on a phone so the action is always under your thumb. */}
-      <div className="fixed inset-x-0 bottom-14 z-10 border-t border-border bg-bg px-4 py-3 sm:static sm:mt-5 sm:border-0 sm:bg-transparent sm:p-0">
+      <div className="fixed inset-x-2 bottom-2 z-20 rounded-control border border-border bg-bg p-2 sm:static sm:mt-5 sm:border-0 sm:bg-transparent sm:p-0">
         <div className="mx-auto max-w-5xl">
           {locked ? (
             <button
@@ -337,7 +337,7 @@ function SessionSummary({
 
   return (
     <div className="space-y-4">
-      <section className="rounded-xl border border-border p-5 text-center">
+      <section className="rounded-card border border-border p-5 text-center">
         <p className="text-sm font-medium text-text-2">Session complete</p>
         <p className="mt-1 text-3xl font-bold tabular-nums">
           {correct}
@@ -350,7 +350,7 @@ function SessionSummary({
       </section>
 
       {missed.length > 0 ? (
-        <section className="rounded-xl border border-border p-4">
+        <section className="rounded-card border border-border p-4">
           <h2 className="text-sm font-semibold">Coming back for review</h2>
           <ul className="mt-2 divide-y divide-border">
             {missed.map((question) => {
@@ -376,7 +376,7 @@ function SessionSummary({
           </p>
         </section>
       ) : (
-        <p className="rounded-xl border border-border p-4 text-sm text-text-2">
+        <p className="rounded-card border border-border p-4 text-sm text-text-2">
           Everything correct. These questions move to a longer review interval.
         </p>
       )}

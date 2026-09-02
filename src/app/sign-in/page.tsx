@@ -13,7 +13,7 @@ const ERRORS: Record<string, string> = {
 
 export default function SignInPage() {
   return (
-    <Suspense fallback={<div className="h-40 animate-pulse rounded-xl bg-surface" />}>
+    <Suspense fallback={<div className="h-40 animate-pulse rounded-card bg-surface" />}>
       <SignIn />
     </Suspense>
   );
@@ -31,7 +31,7 @@ function SignIn() {
 
   if (!supabase) {
     return (
-      <div className="rounded-xl border border-border p-5">
+      <div className="rounded-card border border-border p-5">
         <h1 className="text-lg font-semibold">Accounts are not configured</h1>
         <p className="mt-1 text-sm text-text-2">
           Your progress is still saved in this browser. It just will not follow
@@ -73,13 +73,13 @@ function SignIn() {
       </p>
 
       {message ? (
-        <p className="mt-4 rounded-lg border-[1.5px] border-red bg-red-wash px-3.5 py-2.5 text-sm">
+        <p className="mt-4 rounded-control border-[1.5px] border-red bg-red-wash px-3.5 py-2.5 text-sm">
           {message}
         </p>
       ) : null}
 
       {status === "sent" ? (
-        <div className="mt-4 rounded-lg border-[1.5px] border-green bg-green-wash px-3.5 py-3 text-sm">
+        <div className="mt-4 rounded-control border-[1.5px] border-green bg-green-wash px-3.5 py-3 text-sm">
           <p className="font-semibold">Check your email</p>
           <p className="mt-1">
             We sent a sign-in link to {email}. It expires shortly, so use it
@@ -99,7 +99,7 @@ function SignIn() {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="you@example.com"
-            className="mt-1.5 w-full rounded-lg border-[1.5px] border-border bg-bg px-3.5 py-3 text-[0.9375rem] outline-none focus:border-green"
+            className="mt-1.5 w-full rounded-control border-[1.5px] border-border bg-bg px-3.5 py-3 text-[0.9375rem] outline-none focus:border-ink"
           />
           <button
             type="submit"

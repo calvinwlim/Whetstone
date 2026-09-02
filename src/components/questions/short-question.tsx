@@ -31,9 +31,9 @@ export function ShortInput({
         autoCapitalize="off"
         spellCheck={false}
         placeholder="Type your answer"
-        className={`mt-1.5 w-full rounded-lg border-[1.5px] px-3.5 py-3 text-[0.9375rem] outline-none transition-colors placeholder:text-text-2 disabled:cursor-default ${
+        className={`mt-1.5 w-full rounded-control border-[1.5px] px-3.5 py-3 text-[0.9375rem] outline-none transition-colors placeholder:text-text-2 disabled:cursor-default ${
           !locked
-            ? "border-border bg-bg focus:border-green"
+            ? "border-border bg-bg focus:border-ink"
             : correct
               ? "border-green bg-green-wash"
               : "border-red bg-red-wash"

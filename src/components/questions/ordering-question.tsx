@@ -46,7 +46,7 @@ export function OrderingInput({
           return (
             <li
               key={item}
-              className={`flex items-center gap-2.5 rounded-lg border-[1.5px] px-2.5 py-2 transition-colors ${
+              className={`flex items-center gap-2.5 rounded-control border-[1.5px] px-2.5 py-2 transition-colors ${
                 !locked
                   ? "border-border bg-bg"
                   : inPlace
@@ -54,7 +54,7 @@ export function OrderingInput({
                     : "border-red bg-red-wash"
               }`}
             >
-              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-surface-2 font-mono text-xs tabular-nums">
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-chip bg-surface-2 font-mono text-xs tabular-nums">
                 {index + 1}
               </span>
               <span className="flex-1 text-[0.9375rem] leading-snug">
@@ -68,7 +68,7 @@ export function OrderingInput({
                     onClick={() => move(index, index - 1)}
                     disabled={index === 0}
                     aria-label={`Move "${item}" up`}
-                    className="grid h-10 w-10 place-items-center rounded-lg border border-border text-text-2 transition-colors hover:border-border-strong hover:text-text disabled:opacity-25"
+                    className="grid h-10 w-10 place-items-center rounded-control border border-border text-text-2 transition-colors hover:border-border-strong hover:text-text disabled:opacity-25"
                   >
                     ↑
                   </button>
@@ -77,7 +77,7 @@ export function OrderingInput({
                     onClick={() => move(index, index + 1)}
                     disabled={index === items.length - 1}
                     aria-label={`Move "${item}" down`}
-                    className="grid h-10 w-10 place-items-center rounded-lg border border-border text-text-2 transition-colors hover:border-border-strong hover:text-text disabled:opacity-25"
+                    className="grid h-10 w-10 place-items-center rounded-control border border-border text-text-2 transition-colors hover:border-border-strong hover:text-text disabled:opacity-25"
                   >
                     ↓
                   </button>
@@ -89,7 +89,7 @@ export function OrderingInput({
       </ol>
 
       {locked ? (
-        <div className="mt-3 rounded-lg border border-border bg-surface p-3">
+        <div className="mt-3 rounded-control border border-border bg-surface p-3">
           <p className="text-sm font-medium">Correct order</p>
           <ol className="mt-1.5 space-y-1">
             {question.items.map((item, index) => (

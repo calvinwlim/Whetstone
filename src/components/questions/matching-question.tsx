@@ -40,7 +40,7 @@ export function MatchingInput({
         return (
           <div
             key={pair.left}
-            className={`rounded-lg border-[1.5px] px-3.5 py-2.5 transition-colors ${
+            className={`rounded-control border-[1.5px] px-3.5 py-2.5 transition-colors ${
               !locked
                 ? "border-border bg-bg"
                 : isCorrect
@@ -60,7 +60,7 @@ export function MatchingInput({
               value={chosen}
               disabled={locked}
               onChange={(event) => setPair(pair.left, event.target.value)}
-              className="mt-1.5 w-full rounded-md border border-border bg-bg px-2.5 py-2 text-sm outline-none focus:border-green disabled:cursor-default"
+              className="mt-1.5 w-full rounded-chip border border-border bg-bg px-2.5 py-2 text-sm outline-none focus:border-ink disabled:cursor-default"
             >
               <option value="">Choose…</option>
               {rights.map((right) => (
