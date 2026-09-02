@@ -8,6 +8,8 @@ import {
   pushRemoteProgress,
 } from "@/lib/supabase/progress-remote";
 import { reconcileProgress } from "@/lib/supabase/reconcile";
+import { refreshMyStats } from "@/lib/supabase/leaderboard-remote";
+import { leaderboardStats } from "@/lib/leaderboard";
 import { getSnapshot, setProgress, subscribe } from "@/lib/progress-store";
 
 /** Milliseconds of quiet before a change is pushed. Long enough that a burst
@@ -33,7 +35,15 @@ export function ProgressSync() {
       if (pushTimer) clearTimeout(pushTimer);
       pushTimer = setTimeout(() => {
         if (cancelled || !user) return;
-        void pushRemoteProgress(supabase, user.id, getSnapshot());
+        const snapshot = getSnapshot();
+        void pushRemoteProgress(supabase, user.id, snapshot);
+        // An update, not an upsert: it touches nothing for anyone who has not
+        // joined the board, so drilling cannot quietly list you.
+        void refreshMyStats(
+          supabase,
+          user.id,
+          leaderboardStats(snapshot, new Date().toISOString().slice(0, 10)),
+        );
       }, PUSH_DEBOUNCE_MS);
     }
 

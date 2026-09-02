@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { TRACKS } from "@/content";
 
 /** Stroke icons sized to the 14px label text beside them. Inline rather than a
- *  dependency: there are five of them and they never change. */
+ *  dependency: there are a handful of them and they never change. */
 function Icon({ path, className = "" }: { path: string; className?: string }) {
   return (
     <svg
@@ -28,6 +28,8 @@ const ICONS = {
   today: "M3 6h10M3 6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Zm3-4v3m4-3v3",
   topics: "M2.5 4h11M2.5 8h11M2.5 12h7",
   stats: "M3 13V7m5 6V3m5 10v-4",
+  leaderboard:
+    "M5 2.5h6v3.5a3 3 0 1 1-6 0V2.5Zm0 1H3.5v1a2 2 0 0 0 2 2m5.5-3H12.5v1a2 2 0 0 1-2 2M8 9v2.5M6 13.5h4",
   settings: "M2.5 5h11M2.5 11h11M6 3v4m4 2v4",
 } as const;
 
@@ -35,6 +37,7 @@ const LINKS = [
   { href: "/", label: "Today", icon: ICONS.today },
   { href: "/topics", label: "Topics", icon: ICONS.topics },
   { href: "/stats", label: "Stats", icon: ICONS.stats },
+  { href: "/leaderboard", label: "Leaderboard", icon: ICONS.leaderboard },
   { href: "/settings", label: "Settings", icon: ICONS.settings },
 ] as const;
 
@@ -110,7 +113,7 @@ export function Sidebar({
       </nav>
 
       {/* The corpus is a tree, so it is shown as one. Collapsed to the rail
-          there is no room for it, and the four links above are enough. */}
+          there is no room for it, and the links above are enough. */}
       {open ? (
         <div className="mt-4 min-h-0 flex-1 px-3">
           <p className="label px-2.5 text-shell-text-2">Tracks</p>

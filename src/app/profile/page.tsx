@@ -8,11 +8,23 @@ import { useProgress } from "@/components/progress-provider";
 import { Field } from "@/components/field";
 import { getBrowserSupabase } from "@/lib/supabase/client";
 import { fetchRemoteSyncedAt } from "@/lib/supabase/progress-remote";
+import {
+  fetchMyRow,
+  joinBoard,
+  leaveBoard,
+  type BoardRow,
+} from "@/lib/supabase/leaderboard-remote";
+import {
+  MAX_NAME,
+  displayNameError,
+  leaderboardStats,
+  normaliseDisplayName,
+} from "@/lib/leaderboard";
 
 export default function ProfilePage() {
   const supabase = getBrowserSupabase();
   const router = useRouter();
-  const { state, hydrated, accuracy, level, streak } = useProgress();
+  const { state, hydrated, today, accuracy, level, streak } = useProgress();
 
   const [user, setUser] = useState<User | null>(null);
   // Resolution is only ever pending when there is a client to ask. With no
@@ -21,6 +33,11 @@ export default function ProfilePage() {
   const [resolved, setResolved] = useState(false);
   const [syncedAt, setSyncedAt] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
+
+  const [boardRow, setBoardRow] = useState<BoardRow | null>(null);
+  const [name, setName] = useState("");
+  const [boardBusy, setBoardBusy] = useState(false);
+  const [boardError, setBoardError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supabase) return;
@@ -31,8 +48,14 @@ export default function ProfilePage() {
       setUser(data.user ?? null);
       setResolved(true);
       if (data.user) {
-        const at = await fetchRemoteSyncedAt(supabase, data.user.id);
-        if (active) setSyncedAt(at);
+        const [at, row] = await Promise.all([
+          fetchRemoteSyncedAt(supabase, data.user.id),
+          fetchMyRow(supabase, data.user.id),
+        ]);
+        if (!active) return;
+        setSyncedAt(at);
+        setBoardRow(row);
+        setName(row?.displayName ?? "");
       }
     });
 
@@ -150,6 +173,114 @@ export default function ProfilePage() {
             </span>
           </Row>
         </dl>
+      </section>
+
+      <section className="mt-4 rounded-card border border-border p-4">
+        <h2 className="text-sm font-semibold">Leaderboard</h2>
+        <p className="mt-1 text-sm text-text-2">
+          Opt in to appear on the{" "}
+          <Link
+            href="/leaderboard"
+            className="font-medium text-text underline underline-offset-2"
+          >
+            board
+          </Link>
+          . Only the name you choose and four numbers — XP, streak, questions
+          answered, accuracy — are shared. Never your email, and never which
+          questions you answered. Leaving deletes the entry outright.
+        </p>
+
+        <form
+          className="mt-3"
+          onSubmit={async (event) => {
+            event.preventDefault();
+            if (!supabase || !user) return;
+            const problem = displayNameError(name);
+            if (problem) {
+              setBoardError(problem);
+              return;
+            }
+            setBoardBusy(true);
+            setBoardError(null);
+            const clean = normaliseDisplayName(name);
+            const failure = await joinBoard(
+              supabase,
+              user.id,
+              clean,
+              leaderboardStats(state, today),
+            );
+            setBoardBusy(false);
+            if (failure) {
+              setBoardError(failure);
+              return;
+            }
+            setBoardRow(await fetchMyRow(supabase, user.id));
+            setName(clean);
+          }}
+        >
+          <label
+            htmlFor="display-name"
+            className="text-sm font-medium text-text-2"
+          >
+            Display name
+          </label>
+          <div className="mt-1.5 flex flex-wrap gap-2">
+            <input
+              id="display-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              maxLength={MAX_NAME}
+              autoComplete="off"
+              placeholder="How you appear on the board"
+              className="min-w-0 flex-1 rounded-control border-[1.5px] border-border bg-bg px-3 py-2 text-sm outline-none focus:border-ink"
+            />
+            <button
+              type="submit"
+              disabled={boardBusy || normaliseDisplayName(name).length === 0}
+              className="btn btn-primary shrink-0 px-3.5 py-2 text-sm disabled:opacity-50"
+            >
+              {boardBusy
+                ? "Saving…"
+                : boardRow
+                  ? "Update name"
+                  : "Join the board"}
+            </button>
+          </div>
+          {boardError ? (
+            <p className="mt-2 text-sm text-red">{boardError}</p>
+          ) : null}
+        </form>
+
+        {boardRow ? (
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
+            <p className="text-sm text-text-2">
+              Listed as{" "}
+              <span className="font-medium text-text">
+                {boardRow.displayName}
+              </span>
+              .
+            </p>
+            <button
+              type="button"
+              disabled={boardBusy}
+              onClick={async () => {
+                if (!supabase || !user) return;
+                setBoardBusy(true);
+                const failure = await leaveBoard(supabase, user.id);
+                setBoardBusy(false);
+                if (failure) {
+                  setBoardError(failure);
+                  return;
+                }
+                setBoardRow(null);
+                setName("");
+              }}
+              className="btn btn-quiet px-3.5 py-2 text-sm text-text-2 hover:border-red hover:text-red"
+            >
+              Leave the board
+            </button>
+          </div>
+        ) : null}
       </section>
 
       <section className="mt-4 rounded-card border border-border p-4">
