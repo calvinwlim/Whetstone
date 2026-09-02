@@ -21,6 +21,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${SITE_URL}/privacy`,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
+    {
+      url: `${SITE_URL}/terms`,
+      changeFrequency: "yearly" as const,
+      priority: 0.3,
+    },
     ...ALL_TOPICS.map((topic) => ({
       url: `${SITE_URL}/topics/${topic.id}`,
       changeFrequency: "monthly" as const,

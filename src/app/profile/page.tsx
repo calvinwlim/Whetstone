@@ -24,7 +24,8 @@ import {
 export default function ProfilePage() {
   const supabase = getBrowserSupabase();
   const router = useRouter();
-  const { state, hydrated, today, accuracy, level, streak } = useProgress();
+  const { state, hydrated, today, accuracy, level, streak, resetProgress } =
+    useProgress();
 
   const [user, setUser] = useState<User | null>(null);
   // Resolution is only ever pending when there is a client to ask. With no
@@ -38,6 +39,10 @@ export default function ProfilePage() {
   const [name, setName] = useState("");
   const [boardBusy, setBoardBusy] = useState(false);
   const [boardError, setBoardError] = useState<string | null>(null);
+
+  const [confirmDelete, setConfirmDelete] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supabase) return;
@@ -329,6 +334,65 @@ export default function ProfilePage() {
             Daily goal, tracks, and resetting progress
           </Link>
         </div>
+      </section>
+
+      <section className="mt-4 rounded-card border-[1.5px] border-red p-4">
+        <h2 className="text-sm font-semibold">Delete this account</h2>
+        <p className="mt-1 text-sm text-text-2">
+          Removes your account, your progress, and any leaderboard entry, all at
+          once and for good. There is no grace period and no way to undo it. If
+          you only want a clean slate, resetting progress in settings keeps the
+          account.
+        </p>
+
+        <label
+          htmlFor="confirm-delete"
+          className="mt-3 block text-sm text-text-2"
+        >
+          Type <span className="inline-code">delete</span> to confirm
+        </label>
+        <div className="mt-1.5 flex flex-wrap gap-2">
+          <input
+            id="confirm-delete"
+            value={confirmDelete}
+            onChange={(event) => setConfirmDelete(event.target.value)}
+            autoComplete="off"
+            className="min-w-0 flex-1 rounded-control border-[1.5px] border-border bg-bg px-3 py-2 text-sm outline-none focus:border-red"
+          />
+          <button
+            type="button"
+            disabled={deleting || confirmDelete.trim().toLowerCase() !== "delete"}
+            onClick={async () => {
+              setDeleting(true);
+              setDeleteError(null);
+              try {
+                const response = await fetch("/api/account", {
+                  method: "DELETE",
+                });
+                if (!response.ok) {
+                  const body = (await response.json()) as { error?: string };
+                  setDeleteError(body.error ?? "Could not delete the account.");
+                  setDeleting(false);
+                  return;
+                }
+              } catch {
+                setDeleteError("Could not reach the server. Nothing was deleted.");
+                setDeleting(false);
+                return;
+              }
+              // The account is gone; clear what this browser was holding too.
+              resetProgress();
+              router.push("/");
+              router.refresh();
+            }}
+            className="btn shrink-0 bg-red px-3.5 py-2 text-sm text-white disabled:opacity-50"
+          >
+            {deleting ? "Deleting…" : "Delete account"}
+          </button>
+        </div>
+        {deleteError ? (
+          <p className="mt-2 text-sm text-red">{deleteError}</p>
+        ) : null}
       </section>
     </div>
   );

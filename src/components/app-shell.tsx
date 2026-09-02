@@ -135,7 +135,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           className="mx-2 mb-2 min-w-0 flex-1 rounded-canvas bg-bg px-4 py-5 sm:px-6 lg:ml-0 lg:mr-3 lg:mb-3"
           style={{ minHeight: `calc(100dvh - ${HEADER} - 0.5rem)` }}
         >
-          <div className="mx-auto w-full max-w-5xl">{children}</div>
+          <div className="mx-auto flex w-full max-w-5xl flex-col">
+            <div className="flex-1">{children}</div>
+            <footer className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-4 text-xs text-text-2">
+              <span>Whetstone</span>
+              <Link href="/about" className="hover:text-text hover:underline">
+                About
+              </Link>
+              <Link href="/privacy" className="hover:text-text hover:underline">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-text hover:underline">
+                Terms
+              </Link>
+            </footer>
+          </div>
         </main>
       </div>
     </div>
