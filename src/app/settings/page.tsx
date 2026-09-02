@@ -196,7 +196,7 @@ export default function SettingsPage() {
         {confirmingReset ? (
           <div className="rounded-card border-[1.5px] border-red bg-red-wash p-3.5">
             <p className="text-sm">
-              This erases {state.attempts.length.toLocaleString()} answers, your{" "}
+              This erases {state.totals.answered.toLocaleString()} answers, your{" "}
               {state.totalXp.toLocaleString()} XP, and your streak. It cannot be
               undone.
             </p>

@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ProgressState } from "@/lib/progress";
-import { isProgressState } from "@/lib/storage";
+import { migrateProgress } from "@/lib/progress";
 
 const TABLE = "progress";
 
@@ -23,7 +23,8 @@ export async function fetchRemoteProgress(
   }
   if (!data) return null;
 
-  return isProgressState(data.state) ? data.state : null;
+  // A save written by an older client upgrades on the way in.
+  return migrateProgress(data.state);
 }
 
 export async function pushRemoteProgress(

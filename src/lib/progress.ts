@@ -13,6 +13,15 @@ import {
  *  stable across a single bad session. */
 const ROLLING_WINDOW = 50;
 
+/** How many recent attempts are kept verbatim. The log feeds the signal
+ *  strips and the rolling accuracy, both of which look at far fewer than this;
+ *  everything that needs to be exact for ever lives in `totals` instead.
+ *
+ *  Unbounded, this array was the whole cost of syncing: an attempt is about
+ *  115 bytes, so a year of ten a day is ~420KB re-uploaded on every debounced
+ *  push. Capped, a save stays under about 60KB no matter how long you use it. */
+export const ATTEMPT_LOG_LIMIT = 500;
+
 export interface Attempt {
   questionId: string;
   topic: string;
@@ -20,6 +29,19 @@ export interface Attempt {
   difficulty: Difficulty;
   correct: boolean;
   at: string;
+}
+
+/** Counts that must survive the attempt log being trimmed. */
+export interface Tally {
+  correct: number;
+  seen: number;
+}
+
+export interface Totals {
+  answered: number;
+  correct: number;
+  byTopic: Record<string, Tally>;
+  byTrack: Record<string, Tally>;
 }
 
 export interface DailyStat {
@@ -31,9 +53,12 @@ export interface DailyStat {
 }
 
 export interface ProgressState {
-  version: 1;
+  version: 2;
   srs: Record<string, SrsState>;
+  /** The most recent answers, capped. For "how many have I ever answered",
+   *  and for per-topic accuracy, read `totals` -- this array forgets. */
   attempts: Attempt[];
+  totals: Totals;
   totalXp: number;
   streak: StreakState;
   dailyGoal: number;
@@ -45,9 +70,10 @@ export interface ProgressState {
 
 export function emptyProgress(): ProgressState {
   return {
-    version: 1,
+    version: 2,
     srs: {},
     attempts: [],
+    totals: { answered: 0, correct: 0, byTopic: {}, byTrack: {} },
     totalXp: 0,
     streak: { current: 0, longest: 0, lastGoalDate: null },
     dailyGoal: 10,
@@ -97,10 +123,15 @@ export function recordAnswer(
     at: now.toISOString(),
   };
 
+  const log = [...state.attempts, attempt];
+
   return {
     ...state,
     srs: { ...state.srs, [question.id]: scheduleNext(previous, correct, now) },
-    attempts: [...state.attempts, attempt],
+    attempts: log.length > ATTEMPT_LOG_LIMIT
+      ? log.slice(log.length - ATTEMPT_LOG_LIMIT)
+      : log,
+    totals: addToTotals(state.totals, attempt),
     totalXp: state.totalXp + earned + bonus,
     streak: justMetGoal ? recordGoalMet(state.streak, date) : state.streak,
     dailyStats: {
@@ -124,29 +155,94 @@ export function overallAccuracy(state: ProgressState): number | undefined {
   return correct / recent.length;
 }
 
-/** Lifetime accuracy per topic. Drives weak-topic weighting and the stats page. */
-export function topicAccuracy(state: ProgressState): Record<string, number> {
-  const totals: Record<string, { correct: number; seen: number }> = {};
-  for (const attempt of state.attempts) {
-    const entry = (totals[attempt.topic] ??= { correct: 0, seen: 0 });
-    entry.seen += 1;
-    if (attempt.correct) entry.correct += 1;
-  }
-
+function ratios(tallies: Record<string, Tally>): Record<string, number> {
   return Object.fromEntries(
-    Object.entries(totals).map(([topic, t]) => [topic, t.correct / t.seen]),
+    Object.entries(tallies).map(([key, t]) => [key, t.correct / t.seen]),
   );
 }
 
+/** Lifetime accuracy per topic. Read from the counters, so it stays exact
+ *  however long ago the answers were given. */
+export function topicAccuracy(state: ProgressState): Record<string, number> {
+  return ratios(state.totals.byTopic);
+}
+
 export function trackAccuracy(state: ProgressState): Record<string, number> {
-  const totals: Record<string, { correct: number; seen: number }> = {};
-  for (const attempt of state.attempts) {
-    const entry = (totals[attempt.track] ??= { correct: 0, seen: 0 });
-    entry.seen += 1;
-    if (attempt.correct) entry.correct += 1;
+  return ratios(state.totals.byTrack);
+}
+
+/** Topics with any history at all, for the "attempted" marks in the table.
+ *  Derived from the counters rather than the log, which forgets. */
+export function attemptedTopics(state: ProgressState): Set<string> {
+  return new Set(Object.keys(state.totals.byTopic));
+}
+
+function bump(tallies: Record<string, Tally>, key: string, correct: boolean) {
+  const previous = tallies[key] ?? { correct: 0, seen: 0 };
+  return {
+    ...tallies,
+    [key]: {
+      correct: previous.correct + (correct ? 1 : 0),
+      seen: previous.seen + 1,
+    },
+  };
+}
+
+function addToTotals(totals: Totals, attempt: Attempt): Totals {
+  return {
+    answered: totals.answered + 1,
+    correct: totals.correct + (attempt.correct ? 1 : 0),
+    byTopic: bump(totals.byTopic, attempt.topic, attempt.correct),
+    byTrack: bump(totals.byTrack, attempt.track, attempt.correct),
+  };
+}
+
+function totalsFromLog(attempts: Attempt[]): Totals {
+  return attempts.reduce<Totals>(addToTotals, {
+    answered: 0,
+    correct: 0,
+    byTopic: {},
+    byTrack: {},
+  });
+}
+
+/** Reads a stored save of any known version, or null if it is unrecognisable.
+ *
+ *  Version 1 kept every attempt for ever and derived per-topic accuracy by
+ *  replaying them. Upgrading computes the counters from the log it still has
+ *  -- which is complete, since nothing ever trimmed it -- and then trims. */
+export function migrateProgress(value: unknown): ProgressState | null {
+  if (typeof value !== "object" || value === null) return null;
+  const candidate = value as Record<string, unknown>;
+
+  const looksRight =
+    typeof candidate.totalXp === "number" &&
+    typeof candidate.dailyGoal === "number" &&
+    Array.isArray(candidate.attempts) &&
+    Array.isArray(candidate.enabledTracks) &&
+    typeof candidate.srs === "object" &&
+    candidate.srs !== null &&
+    typeof candidate.dailyStats === "object" &&
+    candidate.dailyStats !== null &&
+    typeof candidate.streak === "object" &&
+    candidate.streak !== null;
+
+  if (!looksRight) return null;
+
+  if (candidate.version === 2 && typeof candidate.totals === "object") {
+    return candidate as unknown as ProgressState;
   }
 
-  return Object.fromEntries(
-    Object.entries(totals).map(([track, t]) => [track, t.correct / t.seen]),
-  );
+  if (candidate.version !== 1) return null;
+
+  const attempts = candidate.attempts as Attempt[];
+  return {
+    ...(candidate as unknown as ProgressState),
+    version: 2,
+    totals: totalsFromLog(attempts),
+    attempts:
+      attempts.length > ATTEMPT_LOG_LIMIT
+        ? attempts.slice(attempts.length - ATTEMPT_LOG_LIMIT)
+        : attempts,
+  };
 }

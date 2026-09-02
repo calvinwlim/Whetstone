@@ -55,7 +55,7 @@ export default function StatsPage() {
     );
   }
 
-  if (state.attempts.length === 0) {
+  if (state.totals.answered === 0) {
     return (
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Stats</h1>
@@ -84,7 +84,7 @@ export default function StatsPage() {
       <h1 className="text-2xl font-semibold tracking-tight">Stats</h1>
 
       <div className="mt-3 flex flex-wrap items-start gap-x-8 gap-y-3 border-y border-border py-3">
-        <Field label="Answered" value={state.attempts.length.toLocaleString()} />
+        <Field label="Answered" value={state.totals.answered.toLocaleString()} />
         <Field
           label="Accuracy"
           value={accuracy === undefined ? "—" : `${Math.round(accuracy * 100)}%`}

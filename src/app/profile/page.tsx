@@ -136,7 +136,7 @@ export default function ProfilePage() {
         </Field>
         <Field label="XP" value={state.totalXp.toLocaleString()} />
         <Field label="Day streak" value={String(hydrated ? streak : 0)} />
-        <Field label="Answered" value={state.attempts.length.toLocaleString()} />
+        <Field label="Answered" value={state.totals.answered.toLocaleString()} />
         <Field
           label="Accuracy"
           value={accuracy === undefined ? "—" : `${Math.round(accuracy * 100)}%`}
@@ -160,7 +160,7 @@ export default function ProfilePage() {
               </time>
             ) : (
               <span className="text-text-2">
-                {state.attempts.length === 0
+                {state.totals.answered === 0
                   ? "Nothing to save yet"
                   : "Not saved yet"}
               </span>

@@ -6,6 +6,7 @@ import { useProgress } from "@/components/progress-provider";
 import { DifficultySpread } from "@/components/difficulty-pill";
 import { Field } from "@/components/field";
 import { ALL_QUESTIONS, TRACKS } from "@/content";
+import { attemptedTopics } from "@/lib/progress";
 import type { Difficulty, TrackId } from "@/content/types";
 
 type Filter = "all" | TrackId;
@@ -36,7 +37,7 @@ export default function TopicsPage() {
   const [sort, setSort] = useState<{ key: SortKey; desc: boolean } | null>(null);
 
   const rows = useMemo<Row[]>(() => {
-    const attempted = new Set(state.attempts.map((a) => a.topic));
+    const attempted = attemptedTopics(state);
 
     return TRACKS.filter(
       (track) => filter === "all" || track.id === filter,
@@ -53,7 +54,7 @@ export default function TopicsPage() {
         accuracy: byTopic[topic.id],
       })),
     );
-  }, [filter, byTopic, state.attempts]);
+  }, [filter, byTopic, state]);
 
   // Unsorted keeps the authored curriculum order, which is itself meaningful.
   const sorted = useMemo(() => {

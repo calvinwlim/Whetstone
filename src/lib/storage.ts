@@ -1,4 +1,8 @@
-import { emptyProgress, type ProgressState } from "@/lib/progress";
+import {
+  emptyProgress,
+  migrateProgress,
+  type ProgressState,
+} from "@/lib/progress";
 
 export const STORAGE_KEY = "swe-drill-progress-v1";
 
@@ -14,21 +18,7 @@ export interface ProgressStore {
  *  fresh state -- losing local progress is bad, but a crash loop on every page
  *  load is worse, and there is no way to repair an unknown shape. */
 export function isProgressState(value: unknown): value is ProgressState {
-  if (typeof value !== "object" || value === null) return false;
-  const candidate = value as Partial<ProgressState>;
-  return (
-    candidate.version === 1 &&
-    typeof candidate.totalXp === "number" &&
-    typeof candidate.dailyGoal === "number" &&
-    Array.isArray(candidate.attempts) &&
-    Array.isArray(candidate.enabledTracks) &&
-    typeof candidate.srs === "object" &&
-    candidate.srs !== null &&
-    typeof candidate.dailyStats === "object" &&
-    candidate.dailyStats !== null &&
-    typeof candidate.streak === "object" &&
-    candidate.streak !== null
-  );
+  return migrateProgress(value) !== null;
 }
 
 export function createLocalStore(storage: Storage | undefined): ProgressStore {
@@ -39,7 +29,9 @@ export function createLocalStore(storage: Storage | undefined): ProgressStore {
         const raw = storage.getItem(STORAGE_KEY);
         if (!raw) return emptyProgress();
         const parsed: unknown = JSON.parse(raw);
-        return isProgressState(parsed) ? parsed : emptyProgress();
+        // Migrating on read is what upgrades a save written before the
+        // attempt log was capped.
+        return migrateProgress(parsed) ?? emptyProgress();
       } catch {
         // Corrupt JSON, blocked site data, or a private-mode accessor that
         // throws. None of these should stop the app rendering.

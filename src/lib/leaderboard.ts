@@ -23,7 +23,7 @@ export function leaderboardStats(
     // The effective streak. Publishing the stored counter would keep a lapsed
     // streak on the board indefinitely for anyone who stopped drilling.
     streak: streakAsOf(state.streak, today),
-    answered: state.attempts.length,
+    answered: state.totals.answered,
     accuracy: overallAccuracy(state) ?? null,
   };
 }

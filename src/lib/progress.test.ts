@@ -1,6 +1,8 @@
 import { describe, expect, test } from "vitest";
 import {
+  ATTEMPT_LOG_LIMIT,
   emptyProgress,
+  migrateProgress,
   overallAccuracy,
   recordAnswer,
   topicAccuracy,
@@ -180,5 +182,89 @@ describe("accuracy", () => {
   test("omits topics with no attempts", () => {
     const s = recordAnswer(emptyProgress(), q("a", "caching"), true, NOW);
     expect(topicAccuracy(s).sharding).toBeUndefined();
+  });
+});
+
+describe("bounded attempt log", () => {
+  test("keeps only the most recent attempts", () => {
+    let state = emptyProgress();
+    for (let i = 0; i < ATTEMPT_LOG_LIMIT + 25; i++) {
+      state = recordAnswer(state, q(`q-${i}`), true, NOW);
+    }
+
+    expect(state.attempts).toHaveLength(ATTEMPT_LOG_LIMIT);
+    // The newest survives, the oldest is gone.
+    expect(state.attempts.at(-1)?.questionId).toBe(
+      `q-${ATTEMPT_LOG_LIMIT + 24}`,
+    );
+    expect(state.attempts.some((a) => a.questionId === "q-0")).toBe(false);
+  });
+
+  test("counts every answer ever given, past the cap", () => {
+    let state = emptyProgress();
+    for (let i = 0; i < ATTEMPT_LOG_LIMIT + 25; i++) {
+      state = recordAnswer(state, q(`q-${i}`), i % 2 === 0, NOW);
+    }
+
+    expect(state.totals.answered).toBe(ATTEMPT_LOG_LIMIT + 25);
+    expect(state.totals.correct).toBe(Math.ceil((ATTEMPT_LOG_LIMIT + 25) / 2));
+  });
+
+  test("topic accuracy stays exact after the log is trimmed", () => {
+    let state = emptyProgress();
+    // 300 correct on caching, then enough on another topic to push them out.
+    for (let i = 0; i < 300; i++) {
+      state = recordAnswer(state, q(`c-${i}`, "caching"), true, NOW);
+    }
+    for (let i = 0; i < ATTEMPT_LOG_LIMIT; i++) {
+      state = recordAnswer(state, q(`s-${i}`, "sharding"), false, NOW);
+    }
+
+    expect(state.attempts.some((a) => a.topic === "caching")).toBe(false);
+    // The log has forgotten caching; the totals have not.
+    expect(topicAccuracy(state).caching).toBe(1);
+    expect(topicAccuracy(state).sharding).toBe(0);
+  });
+});
+
+describe("migrating stored progress", () => {
+  test("derives totals from a version 1 log", () => {
+    const v1 = {
+      version: 1,
+      srs: {},
+      attempts: [
+        { questionId: "a", topic: "caching", track: "system-design", difficulty: 2, correct: true, at: "2026-06-10" },
+        { questionId: "b", topic: "caching", track: "system-design", difficulty: 2, correct: false, at: "2026-06-10" },
+        { questionId: "c", topic: "sharding", track: "system-design", difficulty: 3, correct: true, at: "2026-06-10" },
+      ],
+      totalXp: 30,
+      streak: { current: 1, longest: 1, lastGoalDate: null },
+      dailyGoal: 10,
+      enabledTracks: ["system-design"],
+      dailyStats: {},
+    };
+
+    const migrated = migrateProgress(v1);
+    expect(migrated).not.toBeNull();
+    expect(migrated!.version).toBe(2);
+    expect(migrated!.totals.answered).toBe(3);
+    expect(migrated!.totals.correct).toBe(2);
+    expect(migrated!.totals.byTopic.caching).toEqual({ correct: 1, seen: 2 });
+    expect(migrated!.totals.byTrack["system-design"]).toEqual({
+      correct: 2,
+      seen: 3,
+    });
+    // Nothing else about the save is disturbed.
+    expect(migrated!.totalXp).toBe(30);
+  });
+
+  test("passes a version 2 save through unchanged", () => {
+    const current = recordAnswer(emptyProgress(), q("a"), true, NOW);
+    expect(migrateProgress(current)).toEqual(current);
+  });
+
+  test("rejects something that is not progress at all", () => {
+    expect(migrateProgress({ hello: "world" })).toBeNull();
+    expect(migrateProgress(null)).toBeNull();
   });
 });

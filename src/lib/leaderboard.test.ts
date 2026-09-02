@@ -18,8 +18,21 @@ function attempt(correct: boolean): Attempt {
   };
 }
 
+/** Keeps the log and the counters consistent, the way recordAnswer does.
+ *  A fixture that sets one without the other is not a state the app can
+ *  actually produce. */
 function stateWith(overrides: Partial<ProgressState>): ProgressState {
-  return { ...emptyProgress(), ...overrides };
+  const base = { ...emptyProgress(), ...overrides };
+  const attempts = base.attempts;
+  return {
+    ...base,
+    totals: overrides.totals ?? {
+      answered: attempts.length,
+      correct: attempts.filter((a) => a.correct).length,
+      byTopic: {},
+      byTrack: {},
+    },
+  };
 }
 
 describe("leaderboardStats", () => {

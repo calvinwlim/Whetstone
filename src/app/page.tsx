@@ -21,7 +21,7 @@ const WEAK_THRESHOLD = 0.7;
 export default function HomePage() {
   const { state, hydrated } = useProgress();
 
-  if (hydrated && state.attempts.length > 0) return <TodayDashboard />;
+  if (hydrated && state.totals.answered > 0) return <TodayDashboard />;
   return <Landing />;
 }
 
@@ -216,7 +216,7 @@ function TodayDashboard() {
             </ul>
           ) : (
             <p className="mt-2 text-sm text-text-2">
-              {state.attempts.length === 0
+              {state.totals.answered === 0
                 ? "Answer a few questions and your weak spots show up here."
                 : "Nothing below 70% yet."}
             </p>
