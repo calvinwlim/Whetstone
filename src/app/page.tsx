@@ -5,7 +5,8 @@ import { useMemo } from "react";
 import { useProgress } from "@/components/progress-provider";
 import { SignalStrip } from "@/components/signal-strip";
 import { DifficultyPill } from "@/components/difficulty-pill";
-import { ALL_QUESTIONS, DEPTH_TOPIC_IDS, getTopic, getTrack } from "@/content";
+import { Field } from "@/components/field";
+import { ALL_QUESTIONS, DEPTH_TOPIC_IDS, getTopic } from "@/content";
 import { composeSession } from "@/lib/session";
 import { isDue } from "@/lib/srs";
 
@@ -39,7 +40,14 @@ export default function TodayPage() {
     byTopic,
   ]);
 
-  const dueCount = useMemo(() => {
+  // Everything due, not just what fits in today's session -- the strip is
+  // reporting the size of the backlog, which is the useful number.
+  const dueTotal = useMemo(() => {
+    const now = new Date();
+    return Object.values(state.srs).filter((srs) => isDue(srs, now)).length;
+  }, [state.srs]);
+
+  const dueInSession = useMemo(() => {
     const now = new Date();
     return session.filter((q) => state.srs[q.id] && isDue(state.srs[q.id], now))
       .length;
@@ -67,20 +75,27 @@ export default function TodayPage() {
   const upNext = session[0];
 
   return (
-    <div className="space-y-4">
-      <section className="rounded-xl border border-border bg-surface p-4">
-        <div className="flex items-baseline justify-between gap-4">
-          <h1 className="text-base font-semibold">Daily goal</h1>
-          <span className="font-mono text-sm tabular-nums text-text-2">
-            {hydrated ? answeredToday : 0} / {state.dailyGoal}
-          </span>
-        </div>
+    <div>
+      <h1 className="text-2xl font-semibold tracking-tight">Today</h1>
 
-        <div className="mt-2 h-3 overflow-hidden rounded-full bg-surface-2">
+      <div className="mt-3 flex flex-wrap items-start gap-x-8 gap-y-3 border-y border-border py-3">
+        <Field
+          label="Answered today"
+          value={`${hydrated ? answeredToday : 0}/${state.dailyGoal}`}
+        />
+        <Field label="Day streak" value={String(hydrated ? state.streak.current : 0)} />
+        <Field label="Due now" value={String(hydrated ? dueTotal : 0)} />
+        <Field label="Level">
+          <span className="font-sans text-base font-semibold">
+            {level.level.title}
+          </span>
+        </Field>
+      </div>
+
+      <section className="mt-5 rounded-card border border-border p-4">
+        <div className="h-2 overflow-hidden rounded-full bg-surface-2">
           <div
-            className={`h-full rounded-full transition-[width] duration-300 ${
-              goalMet ? "bg-green" : "bg-amber"
-            }`}
+            className="h-full rounded-full bg-ink transition-[width] duration-300"
             style={{ width: `${hydrated ? goalPercent : 0}%` }}
           />
         </div>
@@ -98,10 +113,10 @@ export default function TodayPage() {
                   : "Start drill"}
             </Link>
 
-            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-sm text-text-2">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm text-text-2">
               <span>
                 {session.length} question{session.length === 1 ? "" : "s"}
-                {dueCount > 0 ? ` · ${dueCount} due for review` : ""}
+                {dueInSession > 0 ? ` · ${dueInSession} due for review` : ""}
               </span>
               {upNext ? (
                 <span className="flex items-center gap-1.5">
@@ -115,12 +130,15 @@ export default function TodayPage() {
             </div>
           </>
         ) : (
-          <div className="mt-4 rounded-lg border border-border bg-bg p-4 text-sm">
+          <div className="mt-4">
             <p className="font-medium">Nothing due right now</p>
-            <p className="mt-1 text-text-2">
+            <p className="mt-1 text-sm text-text-2">
               You have answered everything available in your enabled tracks.
               Reviews come back as they fall due, or turn on another track in{" "}
-              <Link href="/settings" className="font-medium text-green underline">
+              <Link
+                href="/settings"
+                className="font-medium text-text underline underline-offset-2"
+              >
                 Settings
               </Link>
               .
@@ -129,8 +147,8 @@ export default function TodayPage() {
         )}
       </section>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <section className="rounded-xl border border-border p-4">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <section className="rounded-card border border-border p-4">
           <h2 className="text-sm font-semibold">Needs work</h2>
           {weak.length > 0 ? (
             <ul className="mt-2.5 space-y-0.5">
@@ -141,7 +159,7 @@ export default function TodayPage() {
                   <li key={topicId}>
                     <Link
                       href={`/topics/${topicId}`}
-                      className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-surface"
+                      className="flex items-center justify-between gap-3 rounded-control px-2 py-1.5 text-sm hover:bg-surface"
                     >
                       <span className="truncate">{topic.title}</span>
                       <span className="shrink-0 font-mono text-xs tabular-nums text-red">
@@ -161,7 +179,7 @@ export default function TodayPage() {
           )}
         </section>
 
-        <section className="rounded-xl border border-border p-4">
+        <section className="rounded-card border border-border p-4">
           <h2 className="text-sm font-semibold">Recent answers</h2>
           {recent.length > 0 ? (
             <>
@@ -176,46 +194,23 @@ export default function TodayPage() {
         </section>
       </div>
 
-      <section className="rounded-xl border border-border p-4">
-        <div className="flex items-baseline justify-between gap-4">
-          <h2 className="text-sm font-semibold">{level.level.title}</h2>
-          <span className="font-mono text-xs tabular-nums text-text-2">
-            {level.xpToNext === null
-              ? "Top level"
-              : `${level.xpToNext.toLocaleString()} XP to go`}
-          </span>
-        </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-surface-2">
-          <div
-            className="h-full rounded-full bg-green transition-[width] duration-300"
-            style={{ width: `${hydrated ? Math.max(1, level.progress * 100) : 0}%` }}
+      {/* Level was a card of its own for one progress bar. It is a footer. */}
+      <div className="mt-4 flex items-center gap-3 text-xs text-text-2">
+        <span className="shrink-0 font-medium">{level.level.title}</span>
+        <span className="h-1 flex-1 overflow-hidden rounded-full bg-surface-2">
+          <span
+            className="block h-full rounded-full bg-border-strong"
+            style={{
+              width: `${hydrated ? Math.max(1, level.progress * 100) : 0}%`,
+            }}
           />
-        </div>
-      </section>
-
-      <section className="rounded-xl border border-border p-4">
-        <h2 className="text-sm font-semibold">Tracks</h2>
-        <ul className="mt-2.5 grid gap-0.5 sm:grid-cols-2">
-          {state.enabledTracks.map((trackId) => {
-            const track = getTrack(trackId);
-            if (!track) return null;
-            const count = ALL_QUESTIONS.filter((q) => q.track === trackId).length;
-            return (
-              <li key={trackId}>
-                <Link
-                  href="/topics"
-                  className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-surface"
-                >
-                  <span className="truncate">{track.title}</span>
-                  <span className="shrink-0 font-mono text-xs tabular-nums text-text-2">
-                    {count}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+        </span>
+        <span className="shrink-0 font-mono tabular-nums">
+          {level.xpToNext === null
+            ? "Top level"
+            : `${level.xpToNext.toLocaleString()} XP to go`}
+        </span>
+      </div>
     </div>
   );
 }
