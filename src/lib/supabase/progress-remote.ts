@@ -42,3 +42,20 @@ export async function pushRemoteProgress(
   }
   return true;
 }
+
+/** When the server last accepted a write for this user, or null if it never
+ *  has. Surfaced on the profile page so "is my progress actually saved to my
+ *  account?" is answerable without opening a database console. */
+export async function fetchRemoteSyncedAt(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<string | null> {
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select("updated_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return typeof data.updated_at === "string" ? data.updated_at : null;
+}

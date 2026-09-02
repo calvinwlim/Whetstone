@@ -1,16 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { getBrowserSupabase } from "@/lib/supabase/client";
 
 /** Sign-in state in the header. Renders nothing when Supabase is not
- *  configured, so a local-only deployment shows no dead control. */
+ *  configured, so a local-only deployment shows no dead control.
+ *
+ *  Signed in, this links to the profile rather than signing out: a single
+ *  click on your own avatar should never be able to end the session. Sign out
+ *  lives on the profile page, where it is a deliberate second step. */
 export function AuthChip() {
   const supabase = getBrowserSupabase();
-  const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -51,24 +55,27 @@ export function AuthChip() {
   }
 
   const label = user.email ?? "Account";
+  const active = pathname.startsWith("/profile");
 
   return (
-    <button
-      type="button"
-      title={`Signed in as ${label} — click to sign out`}
-      onClick={async () => {
-        await supabase.auth.signOut();
-        router.refresh();
-      }}
-      className="flex items-center gap-1.5 rounded-control border border-shell-border px-2.5 py-1 text-sm font-medium text-shell-text-2 transition-colors hover:border-shell-text-2 hover:text-shell-text"
+    <Link
+      href="/profile"
+      aria-current={active ? "page" : undefined}
+      title={`Signed in as ${label}`}
+      className={`flex items-center gap-1.5 rounded-control border px-1.5 py-1 text-sm font-medium transition-colors ${
+        active
+          ? "border-shell-text-2 text-shell-text"
+          : "border-shell-border text-shell-text-2 hover:border-shell-text-2 hover:text-shell-text"
+      }`}
     >
       <span
         aria-hidden
-        className="grid h-4 w-4 place-items-center rounded-full bg-shell-text text-[10px] font-bold text-shell"
+        className="grid h-5 w-5 place-items-center rounded-full bg-shell-text text-[10px] font-bold text-shell"
       >
         {label.slice(0, 1).toUpperCase()}
       </span>
-      <span className="hidden sm:inline">Sign out</span>
-    </button>
+      <span className="hidden max-w-[10rem] truncate sm:inline">{label}</span>
+      <span className="sr-only">Your profile</span>
+    </Link>
   );
 }
