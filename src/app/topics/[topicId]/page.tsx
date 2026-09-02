@@ -19,7 +19,37 @@ export async function generateMetadata({
   const { topicId } = await params;
   const topic = getTopic(topicId);
   if (!topic) return { title: "Topic not found" };
-  return { title: `${topic.title} — Whetstone`, description: topic.blurb };
+
+  const url = `/topics/${topic.id}`;
+  return {
+    title: topic.title,
+    description: topic.blurb,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      url,
+      title: topic.title,
+      description: topic.blurb,
+      // Named explicitly so the card carries a per-topic alt. The file
+      // convention would otherwise apply one static string to all 79.
+      images: [
+        {
+          url: `${url}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: `${topic.title} — ${topic.blurb}`,
+        },
+      ],
+    },
+    // The whole twitter object replaces the layout's rather than merging
+    // into it, so the card type has to be restated or it falls back to the
+    // small "summary" thumbnail.
+    twitter: {
+      card: "summary_large_image",
+      title: topic.title,
+      description: topic.blurb,
+    },
+  };
 }
 
 export default async function TopicPage({
