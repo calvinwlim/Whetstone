@@ -64,15 +64,6 @@ function SignIn() {
     setStatus("sent");
   }
 
-  async function signInWithGoogle() {
-    if (!supabase) return;
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    });
-    if (error) setMessage(error.message);
-  }
-
   return (
     <div className="mx-auto max-w-md">
       <h1 className="text-xl font-semibold">Sign in</h1>
@@ -96,44 +87,28 @@ function SignIn() {
           </p>
         </div>
       ) : (
-        <>
+        <form onSubmit={sendMagicLink} className="mt-5">
+          <label htmlFor="email" className="text-sm font-medium text-text-2">
+            Email a sign-in link
+          </label>
+          <input
+            id="email"
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="you@example.com"
+            className="mt-1.5 w-full rounded-lg border-[1.5px] border-border bg-bg px-3.5 py-3 text-[0.9375rem] outline-none focus:border-green"
+          />
           <button
-            type="button"
-            onClick={signInWithGoogle}
-            className="key key-plain mt-5 w-full px-4 py-3"
+            type="submit"
+            disabled={status === "sending"}
+            className="key key-green mt-3 w-full px-4 py-3"
           >
-            Continue with Google
+            {status === "sending" ? "Sending…" : "Send link"}
           </button>
-
-          <div className="my-4 flex items-center gap-3 text-xs text-text-2">
-            <span className="h-px flex-1 bg-border" />
-            or
-            <span className="h-px flex-1 bg-border" />
-          </div>
-
-          <form onSubmit={sendMagicLink}>
-            <label htmlFor="email" className="text-sm font-medium text-text-2">
-              Email a sign-in link
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@example.com"
-              className="mt-1.5 w-full rounded-lg border-[1.5px] border-border bg-bg px-3.5 py-3 text-[0.9375rem] outline-none focus:border-green"
-            />
-            <button
-              type="submit"
-              disabled={status === "sending"}
-              className="key key-green mt-3 w-full px-4 py-3"
-            >
-              {status === "sending" ? "Sending…" : "Send link"}
-            </button>
-          </form>
-        </>
+        </form>
       )}
 
       <Link
