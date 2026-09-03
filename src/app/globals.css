@@ -361,3 +361,13 @@ body {
 .shell-scope *:focus-visible {
   outline-color: var(--shell-text);
 }
+
+/* A primary action sitting on the dark hero. The ordinary .key variants take
+   their colours from the canvas, which flips with the theme -- on a panel that
+   is dark in both themes that turns into a dark button on a dark ground. This
+   one is anchored to the shell scale instead, so it stays light either way. */
+.key-shell {
+  --key-edge: var(--shell-text-2);
+  background: var(--shell-text);
+  color: var(--shell);
+}
