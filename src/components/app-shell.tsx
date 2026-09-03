@@ -132,10 +132,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         ) : null}
 
         <main
-          className="mx-2 mb-2 min-w-0 flex-1 rounded-canvas bg-bg px-4 py-5 sm:px-6 lg:ml-0 lg:mr-3 lg:mb-3"
+          // A query container, so a section inside the content column can
+          // still measure the canvas and bleed to its edges.
+          className="@container mx-2 mb-2 min-w-0 flex-1 rounded-canvas bg-bg lg:mb-3 lg:ml-0 lg:mr-3"
           style={{ minHeight: `calc(100dvh - ${HEADER} - 0.5rem)` }}
         >
-          <div className="mx-auto flex w-full max-w-5xl flex-col">
+          <div className="mx-auto flex w-full max-w-5xl flex-col px-4 py-5 sm:px-6">
             <div className="flex-1">{children}</div>
             <footer className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-4 text-xs text-text-2">
               <span>Whetstone</span>

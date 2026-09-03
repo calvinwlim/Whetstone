@@ -131,11 +131,14 @@ export function Landing() {
 
   return (
     <div>
-      {/* Bleeds past the shell's padding so the opening is a full panel. The
-          giant word behind it is the reference's device: a backdrop made of
-          type rather than an image, which costs no asset and needs no
+{/* Spans the whole canvas at any width rather than stopping at the
+          content column, which made it read as a box floating in the page.
+          100cqw measures the canvas because <main> is the query container.
+
+          The giant word behind it is the reference's device: a backdrop made
+          of type rather than an image, which costs no asset and needs no
           photography we do not have. */}
-      <section className="shell-scope relative -mx-4 -mt-5 overflow-hidden rounded-t-canvas bg-shell px-6 py-16 sm:-mx-6 sm:px-10 sm:py-20 lg:py-24">
+      <section className="shell-scope relative -mt-5 ml-[calc(50%-50cqw)] w-[100cqw] overflow-hidden rounded-t-canvas bg-shell px-6 py-16 sm:px-10 sm:py-20 lg:py-24">
         <span
           aria-hidden
           className="pointer-events-none absolute -bottom-6 -left-4 select-none whitespace-nowrap text-[7rem] font-bold leading-none tracking-tighter text-shell-text opacity-[0.045] sm:text-[12rem] lg:text-[15rem]"
@@ -143,7 +146,7 @@ export function Landing() {
           PRACTICE
         </span>
 
-        <div className="relative grid items-center gap-10 lg:grid-cols-[1.05fr_minmax(0,1fr)] lg:gap-14">
+        <div className="relative mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-[1.05fr_minmax(0,1fr)] lg:gap-14">
           <div>
             <p className="label text-shell-text-2">Daily practice for engineers</p>
 
