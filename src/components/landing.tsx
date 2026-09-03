@@ -20,9 +20,12 @@ function sampleQuestion(): Question | undefined {
 
 const TOPIC_COUNT = TRACKS.reduce((n, track) => n + track.topics.length, 0);
 
-/** A specimen, not a test. Nothing is scored, nothing is saved, and the answer
- *  can be revealed without attempting it -- someone deciding whether to sign
- *  up should not feel they have walked into an assessment. */
+/** The hero's right-hand object. A real question from the bank, on the light
+ *  canvas against the dark panel, so the thing being sold is the thing shown.
+ *
+ *  A specimen, not a test: nothing is scored or saved, and the answer can be
+ *  revealed without attempting it, so nobody deciding whether to sign up feels
+ *  they have walked into an assessment. */
 function SampleQuestion({ question }: { question: Question }) {
   const [response, setResponse] = useState<Response | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -34,14 +37,17 @@ function SampleQuestion({ question }: { question: Question }) {
   const topic = getTopic(question.topic);
 
   return (
-    <div className="rounded-card border border-border bg-surface p-5 sm:p-7">
-      <p className="label">{topic?.title ?? "Sample"}</p>
+    <div className="rounded-card border border-border-strong bg-bg p-5 shadow-lg sm:p-6">
+      <div className="flex items-baseline justify-between gap-4">
+        <p className="label">{topic?.title ?? "Sample"}</p>
+        <p className="text-xs text-text-2">Not scored · nothing saved</p>
+      </div>
 
-      <h3 className="mt-3 text-xl font-semibold leading-snug sm:text-2xl">
+      <h2 className="mt-3 text-lg font-semibold leading-snug">
         {question.prompt}
-      </h3>
+      </h2>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <QuestionInput
           question={question}
           value={response}
@@ -51,7 +57,7 @@ function SampleQuestion({ question }: { question: Question }) {
       </div>
 
       {revealed ? (
-        <div className="mt-6 border-t border-border pt-5">
+        <div className="mt-5 border-t border-border pt-4">
           {attempted ? (
             <p
               className={`text-sm font-semibold ${
@@ -62,21 +68,21 @@ function SampleQuestion({ question }: { question: Question }) {
             </p>
           ) : null}
 
-          <p className="mt-2 leading-relaxed text-text-2">
+          <p className="mt-2 text-sm leading-relaxed text-text-2">
             {question.explanation}
           </p>
 
           {question.concepts.length > 0 ? (
-            <div className="mt-5">
+            <div className="mt-4">
               <p className="label">Worth reading about</p>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {question.concepts.map((concept) => (
                   <a
                     key={concept}
                     href={`https://en.wikipedia.org/w/index.php?search=${encodeURIComponent(concept)}`}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="rounded-chip border border-border bg-bg px-2.5 py-1 text-sm font-medium hover:border-border-strong"
+                    className="rounded-chip border border-border bg-surface px-2 py-0.5 text-xs font-medium hover:border-border-strong"
                   >
                     {concept}
                   </a>
@@ -89,7 +95,7 @@ function SampleQuestion({ question }: { question: Question }) {
         <button
           type="button"
           onClick={() => setRevealed(true)}
-          className="btn btn-quiet mt-6 px-4 py-2.5 text-sm"
+          className="btn btn-quiet mt-4 px-3.5 py-2 text-sm"
         >
           {attempted ? "Check my answer" : "Show me the answer"}
         </button>
@@ -98,53 +104,100 @@ function SampleQuestion({ question }: { question: Question }) {
   );
 }
 
+/** The circled arrow from the reference, drawn rather than imported. */
+function ArrowBadge() {
+  return (
+    <span
+      aria-hidden
+      className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-shell text-shell-text"
+    >
+      <svg
+        viewBox="0 0 16 16"
+        className="h-3.5 w-3.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M3 8h9M8.5 4.5 12.5 8l-4 3.5" />
+      </svg>
+    </span>
+  );
+}
+
 export function Landing() {
   const question = sampleQuestion();
 
   return (
     <div>
-      {/* Bleeds to the canvas edges, cancelling the shell's own padding, so the
-          opening is a full panel rather than a paragraph in a column. */}
-      <section className="shell-scope -mx-4 -mt-5 rounded-t-canvas bg-shell px-6 py-20 sm:-mx-6 sm:px-12 sm:py-28 lg:py-36">
-        <p className="label text-shell-text-2">Daily practice for engineers</p>
+      {/* Bleeds past the shell's padding so the opening is a full panel. The
+          giant word behind it is the reference's device: a backdrop made of
+          type rather than an image, which costs no asset and needs no
+          photography we do not have. */}
+      <section className="shell-scope relative -mx-4 -mt-5 overflow-hidden rounded-t-canvas bg-shell px-6 py-16 sm:-mx-6 sm:px-10 sm:py-20 lg:py-24">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -bottom-6 -left-4 select-none whitespace-nowrap text-[7rem] font-bold leading-none tracking-tighter text-shell-text opacity-[0.045] sm:text-[12rem] lg:text-[15rem]"
+        >
+          PRACTICE
+        </span>
 
-        <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-shell-text sm:text-5xl lg:text-6xl">
-          Stay sharp on what you actually get asked
-        </h1>
+        <div className="relative grid items-center gap-10 lg:grid-cols-[1.05fr_minmax(0,1fr)] lg:gap-14">
+          <div>
+            <p className="label text-shell-text-2">Daily practice for engineers</p>
 
-        <p className="mt-7 max-w-xl text-lg leading-relaxed text-shell-text-2">
-          System design, APIs, SQL and the conversations around them. Ten
-          questions a day, scheduled so the ones you get wrong come back before
-          you forget them.
-        </p>
+            {/* Weight does the work, as in the reference: the demand is heavy,
+                the qualifier is light. */}
+            <h1 className="mt-4 text-4xl leading-[0.95] tracking-tight text-shell-text sm:text-5xl lg:text-6xl">
+              <span className="block font-bold">Stay sharp</span>
+              <span className="mt-1.5 block font-light">
+                on what you actually get asked
+              </span>
+            </h1>
 
-        <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-          <Link
-            href="/drill"
-            className="key key-shell px-7 py-3.5 text-base font-semibold"
-          >
-            Start today&apos;s drill
-          </Link>
-          <Link
-            href="/topics"
-            className="text-base text-shell-text-2 underline underline-offset-4 hover:text-shell-text"
-          >
-            Browse the topics
-          </Link>
+            <p className="mt-6 max-w-md leading-relaxed text-shell-text-2">
+              System design, APIs, SQL and the conversations around them. Ten
+              questions a day, scheduled so the ones you get wrong come back
+              before you forget them.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link
+                href="/drill"
+                className="group inline-flex items-center gap-3 rounded-full bg-shell-text py-1.5 pl-2 pr-6 font-semibold text-shell transition-transform hover:-translate-y-0.5"
+              >
+                <ArrowBadge />
+                Start today&apos;s drill
+              </Link>
+              <Link
+                href="/topics"
+                className="text-shell-text-2 underline underline-offset-4 hover:text-shell-text"
+              >
+                Browse the topics
+              </Link>
+            </div>
+          </div>
+
+          {question ? <SampleQuestion question={question} /> : null}
         </div>
+      </section>
 
-        <p className="mt-10 font-mono text-sm tabular-nums text-shell-text-2">
-          {ALL_QUESTIONS.length.toLocaleString()} questions · {TOPIC_COUNT}{" "}
-          topics · {TRACKS.length} tracks · no account needed
+      <section className="mt-14 flex flex-wrap items-baseline gap-x-10 gap-y-3 border-b border-border pb-8 sm:mt-16">
+        <Stat value={ALL_QUESTIONS.length.toLocaleString()} label="Questions" />
+        <Stat value={String(TOPIC_COUNT)} label="Topics" />
+        <Stat value={String(TRACKS.length)} label="Tracks" />
+        <p className="text-sm text-text-2">
+          Free, and it works without an account.
         </p>
       </section>
 
-      <section className="mt-20 sm:mt-28">
+      <section className="mt-16 sm:mt-20">
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           How it works
         </h2>
 
-        <div className="mt-10 grid gap-10 sm:grid-cols-3 sm:gap-8">
+        <div className="mt-8 grid gap-10 sm:grid-cols-3 sm:gap-8">
           <div>
             <h3 className="text-lg font-semibold">A few minutes a day</h3>
             <p className="mt-2.5 leading-relaxed text-text-2">
@@ -170,23 +223,7 @@ export function Landing() {
         </div>
       </section>
 
-      {question ? (
-        <section className="mt-20 sm:mt-28">
-          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            What a question looks like
-          </h2>
-          <p className="mt-3 max-w-xl leading-relaxed text-text-2">
-            Nothing here is scored or saved. Pick an answer if you fancy it, or
-            skip straight to the explanation.
-          </p>
-
-          <div className="mt-8">
-            <SampleQuestion question={question} />
-          </div>
-        </section>
-      ) : null}
-
-      <section className="mt-20 sm:mt-28">
+      <section className="mt-16 sm:mt-20">
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
           What is covered
         </h2>
@@ -208,21 +245,36 @@ export function Landing() {
         </ul>
       </section>
 
-      <section className="mt-20 rounded-card border border-border px-6 py-12 text-center sm:mt-28 sm:px-12">
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Start with today&apos;s ten
-        </h2>
-        <p className="mx-auto mt-3 max-w-md leading-relaxed text-text-2">
-          Free, and it works without an account — signing in only carries your
-          progress between devices.
-        </p>
-        <Link
-          href="/drill"
-          className="key key-ink mt-8 inline-block px-7 py-3.5 text-base"
-        >
-          Start today&apos;s drill
-        </Link>
+      <section className="mt-16 rounded-card bg-shell px-6 py-12 sm:mt-20 sm:px-12">
+        <div className="shell-scope flex flex-wrap items-center justify-between gap-6">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight text-shell-text sm:text-3xl">
+              Start with today&apos;s ten
+            </h2>
+            <p className="mt-2 max-w-md text-shell-text-2">
+              Signing in only carries your progress between devices.
+            </p>
+          </div>
+          <Link
+            href="/drill"
+            className="inline-flex shrink-0 items-center gap-3 rounded-full bg-shell-text py-1.5 pl-2 pr-6 font-semibold text-shell transition-transform hover:-translate-y-0.5"
+          >
+            <ArrowBadge />
+            Start today&apos;s drill
+          </Link>
+        </div>
       </section>
+    </div>
+  );
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex items-baseline gap-2">
+      <span className="font-mono text-2xl font-medium tabular-nums">
+        {value}
+      </span>
+      <span className="label">{label}</span>
     </div>
   );
 }
