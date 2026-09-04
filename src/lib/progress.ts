@@ -76,7 +76,7 @@ export function emptyProgress(): ProgressState {
     totals: { answered: 0, correct: 0, byTopic: {}, byTrack: {} },
     totalXp: 0,
     streak: { current: 0, longest: 0, lastGoalDate: null },
-    dailyGoal: 10,
+    dailyGoal: 5,
     enabledTracks: [...TRACK_IDS],
     includeDepth: false,
     dailyStats: {},

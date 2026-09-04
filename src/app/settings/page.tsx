@@ -6,8 +6,8 @@ import { ALL_QUESTIONS, TRACKS } from "@/content";
 import type { TrackId } from "@/content/types";
 
 const GOALS = [
-  { value: 5, name: "Casual", note: "~2 min" },
-  { value: 10, name: "Regular", note: "~5 min" },
+  { value: 5, name: "Regular", note: "~2 min" },
+  { value: 10, name: "Focused", note: "~5 min" },
   { value: 20, name: "Intense", note: "~10 min" },
 ] as const;
 
