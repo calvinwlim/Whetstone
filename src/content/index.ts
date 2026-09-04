@@ -17,6 +17,7 @@ import * as depthSystemDesign from "./tracks/depth-system-design";
 import * as depthSkills from "./tracks/depth-skills";
 import * as easySystems from "./tracks/easy-systems";
 import * as easyCraft from "./tracks/easy-craft";
+import * as easyFoundations from "./tracks/easy-foundations";
 
 /** The whole bank, bundled at build time. Nothing here touches a database,
  *  so rendering a question costs zero network round trips. */
@@ -58,6 +59,8 @@ export const ALL_QUESTIONS: Question[] = [
   // dropped into the easy band has a real pool to draw from.
   ...easySystems.questions,
   ...easyCraft.questions,
+  // Band 1-2 depth for the Stage 1 topics on the learning spine.
+  ...easyFoundations.questions,
 ];
 
 /** Topic ids marked as specialist depth, for the session composer and the UI. */
