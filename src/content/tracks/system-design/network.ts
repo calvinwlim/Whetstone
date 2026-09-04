@@ -453,4 +453,82 @@ export const questions: Question[] = [
     concepts: ["Nines", "Availability"],
     tags: ["nines"],
   },
+  {
+    id: "sd-dns-007",
+    type: "multi",
+    track: "system-design",
+    topic: "dns",
+    difficulty: 3,
+    prompt:
+      "Why is round-robin DNS a weak substitute for a load balancer? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "Resolvers and clients cache the answer for the TTL, so traffic does not rebalance promptly",
+      },
+      { id: "b", text: "DNS carries no health signal, so a dead address keeps being handed out" },
+      { id: "c", text: "A client may pin to one returned address rather than rotating through them" },
+      { id: "d", text: "A DNS response cannot contain more than one address record" },
+      { id: "e", text: "DNS runs over UDP, so answers are frequently lost" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Round-robin DNS distributes resolutions, not requests, and you control neither the caching in between nor which of the returned addresses a client picks. It is a reasonable coarse tool for steering traffic between regions; per-request decisions belong to a real balancer behind a single address.",
+    concepts: ["Round-robin DNS", "DNS TTL", "Health check", "Client-side caching"],
+    tags: ["dns-lb", "ttl"],
+  },
+  {
+    id: "sd-proto-007",
+    type: "short",
+    track: "system-design",
+    topic: "protocols",
+    difficulty: 2,
+    context:
+      "A client opens a TCP connection, completes a TLS handshake, sends one request, and closes — and does that again for each of 200 API calls.",
+    prompt:
+      "Which HTTP feature avoids a fresh TCP and TLS handshake on every request? (Either common name is accepted.)",
+    answers: [
+      "keep-alive",
+      "keep alive",
+      "http keep-alive",
+      "persistent connections",
+      "persistent connection",
+      "connection reuse",
+      "connection pooling",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Keep-alive, also described as persistent connections. The handshakes cost at least two round trips before a byte of the request moves, so on a high-latency link the setup can outweigh the request itself. HTTP/1.1 keeps connections open by default; the usual bug is a client library configured with a pool of one.",
+    concepts: ["HTTP keep-alive", "Persistent connection", "TLS handshake", "Connection pooling"],
+    tags: ["keep-alive", "latency"],
+  },
+  {
+    id: "sd-avail-007",
+    type: "multi",
+    track: "system-design",
+    topic: "availability",
+    difficulty: 4,
+    context:
+      "A service measures 99.9% and the team has been asked to reach 99.99%.",
+    prompt:
+      "Which changes actually move a service from 99.9% to 99.99%? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "Removing a hard dependency whose own availability is below the target",
+      },
+      { id: "b", text: "Cutting the time it takes to detect and roll back a bad deploy" },
+      { id: "c", text: "Adding a redundant instance in a separate failure domain" },
+      {
+        id: "d",
+        text: "Adding a second instance in the same rack, on the same power feed and switch",
+      },
+      { id: "e", text: "Publishing a stricter availability figure in the customer SLA" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Redundancy only pays when the copies fail independently — two instances sharing a rack share its failure modes, so the pair is barely better than one. A hard dependency caps you at its own number no matter how much you replicate around it. And most of this gap is not hardware: 99.99% is 52 minutes a year, which one slow rollback spends, so recovery time usually binds first.",
+    concepts: ["Failure domain", "Correlated failure", "Mean time to recovery", "Service level objective"],
+    tags: ["nines", "mttr"],
+  },
 ];

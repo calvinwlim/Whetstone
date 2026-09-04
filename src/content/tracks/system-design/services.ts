@@ -565,4 +565,304 @@ export const questions: Question[] = [
     concepts: ["Symptom-based alerting", "Alert fatigue", "Service level objective"],
     tags: ["alerting", "symptoms"],
   },
+  {
+    id: "sd-q-005",
+    type: "short",
+    track: "system-design",
+    topic: "queues",
+    difficulty: 3,
+    context:
+      "A service writes an order row to its database and then publishes an 'order placed' event to the broker. If it crashes between the two, the order exists and the event was never sent.",
+    prompt:
+      "Which pattern makes the database write and the event publish succeed or fail together? (Two words.)",
+    answers: [
+      "transactional outbox",
+      "outbox",
+      "outbox pattern",
+      "transactional outbox pattern",
+      "the outbox pattern",
+    ],
+    typoTolerance: true,
+    explanation:
+      "The transactional outbox. The event is inserted into an outbox table inside the same database transaction as the order, so either both land or neither does; a separate relay then reads that table and publishes. It replaces a distributed transaction across a database and a broker, which is the thing you are trying to avoid.",
+    concepts: ["Transactional outbox", "Dual write problem", "Change data capture"],
+    tags: ["outbox", "dual-write"],
+  },
+  {
+    id: "sd-q-006",
+    type: "multi",
+    track: "system-design",
+    topic: "queues",
+    difficulty: 4,
+    prompt:
+      "What must hold for a consumer to process one entity's events in the order they were produced? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "Every event for that entity carries the same partition key, so they land on one partition",
+      },
+      { id: "b", text: "Only one consumer instance reads that partition at a time" },
+      {
+        id: "c",
+        text: "A failed event is retried before later events for that entity are processed",
+      },
+      { id: "d", text: "The broker maintains a total order across every partition in the topic" },
+      { id: "e", text: "The producer batches events to raise throughput" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Ordering is a per-partition property, so it is bought with the key design and one reader per partition. Total ordering across a topic would give it to you and costs your entire parallelism, which is why no one does it. The price of (c) is head-of-line blocking: one stuck event stalls its partition, so pair it with a bounded attempt count and a dead letter queue.",
+    concepts: ["Partition key", "Head-of-line blocking", "Consumer group", "Message ordering"],
+    tags: ["ordering", "partitions"],
+  },
+  {
+    id: "sd-q-007",
+    type: "mcq",
+    track: "system-design",
+    topic: "queues",
+    difficulty: 3,
+    context:
+      "A job takes about 90 seconds to process. The queue's visibility timeout is 30 seconds. The job completes correctly, and other workers keep picking up the same message and running it again.",
+    prompt: "Why is one message being processed several times concurrently?",
+    options: [
+      {
+        id: "a",
+        text: "The message becomes visible again before the worker acknowledges it, so the broker hands it to another consumer",
+      },
+      { id: "b", text: "The worker is not acknowledging messages at all" },
+      { id: "c", text: "The queue is configured for fan-out, so every consumer gets a copy" },
+      { id: "d", text: "The dead letter queue is feeding the message back into the main queue" },
+    ],
+    answer: "a",
+    explanation:
+      "A visibility timeout is the broker's bet on how long processing takes. Exceed it and the broker assumes the worker died and re-offers the message, so a slow job manufactures its own duplicates. Set the timeout above the p99 processing time or extend it with a heartbeat — and keep the consumer idempotent, because this is only the most obvious way duplicates arise.",
+    concepts: ["Visibility timeout", "At-least-once delivery", "Idempotent consumer"],
+    tags: ["visibility-timeout", "duplicates"],
+  },
+  {
+    id: "sd-q-008",
+    type: "ordering",
+    track: "system-design",
+    topic: "queues",
+    difficulty: 2,
+    prompt: "Put the journey of a poison message to the dead letter queue in order.",
+    items: [
+      "A consumer receives the message and throws while processing it",
+      "No acknowledgement arrives, so the broker makes the message available again",
+      "The message is redelivered and its receive count increases",
+      "The receive count passes the configured maximum attempts",
+      "The broker moves the message to the dead letter queue",
+      "The main queue resumes delivering the messages queued behind it",
+    ],
+    explanation:
+      "The last step is the point of the whole mechanism. Without a maximum attempt count the loop between redelivery and failure never terminates, and one malformed message holds up every message behind it indefinitely. The dead letter queue then needs an alarm on its depth, or it becomes a place failures go to be forgotten.",
+    concepts: ["Dead letter queue", "Poison message", "Redrive policy"],
+    tags: ["dlq", "failure-handling"],
+  },
+  {
+    id: "sd-q-009",
+    type: "multi",
+    track: "system-design",
+    topic: "queues",
+    difficulty: 4,
+    context:
+      "Consumer lag on a topic is growing steadily. The topic has 6 partitions and the consumer group already runs 6 instances.",
+    prompt:
+      "Which changes would actually reduce consumer lag here? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "Raise the partition count so the group can run more consumers in parallel",
+      },
+      {
+        id: "b",
+        text: "Make per-message work cheaper, for example by batching the downstream writes",
+      },
+      {
+        id: "c",
+        text: "Move a slow side effect out of the consumer into a separate downstream stage",
+      },
+      { id: "d", text: "Add a seventh instance to the same consumer group" },
+      { id: "e", text: "Increase the topic's retention period" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Partition count is the hard ceiling on parallelism within a group, so the seventh instance is assigned nothing and idles — the most common wasted response to lag. Retention governs how long messages are kept, not how fast they are read. Everything else is either more consumers or less work per message, which are the only two levers there are.",
+    concepts: ["Consumer lag", "Partition count", "Consumer group", "Horizontal scaling"],
+    tags: ["lag", "scaling"],
+  },
+  {
+    id: "sd-api-005",
+    type: "mcq",
+    track: "system-design",
+    topic: "api-design",
+    difficulty: 3,
+    context:
+      "Generating an export takes two to ten minutes. The endpoint holds the connection open until it finishes, and clients behind proxies are seeing timeouts.",
+    prompt: "How should an endpoint whose work takes minutes be redesigned?",
+    options: [
+      {
+        id: "a",
+        text: "Return 202 Accepted with a status URL to poll, and the result's location once it is ready",
+      },
+      { id: "b", text: "Raise the client and proxy timeouts to fifteen minutes" },
+      { id: "c", text: "Stream keep-alive whitespace until the work finishes" },
+      { id: "d", text: "Split the work into several synchronous calls the client makes in a loop" },
+    ],
+    answer: "a",
+    explanation:
+      "Make the job itself a resource: the request creates it, the response says where to watch it. Raising timeouts means depending on every intermediary between you and the client, most of which you do not control. Keep-alive whitespace holds a connection and a worker for ten minutes and still dies to any proxy that gives up first.",
+    concepts: ["HTTP 202 Accepted", "Asynchronous request-reply", "Polling"],
+    tags: ["async", "long-running"],
+  },
+  {
+    id: "sd-api-006",
+    type: "multi",
+    track: "system-design",
+    topic: "api-design",
+    difficulty: 3,
+    prompt:
+      "Which properties should an API's error responses have? Select all that apply.",
+    options: [
+      { id: "a", text: "A stable machine-readable code the client can branch on" },
+      { id: "b", text: "A human-readable message aimed at a developer reading logs" },
+      { id: "c", text: "Enough structure to say which field failed and why" },
+      { id: "d", text: "A stack trace so the caller can see where the server failed" },
+      { id: "e", text: "Message wording clients are expected to match against" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Codes are the contract; prose is for humans and must stay free to change. Once clients match on your wording, the wording is an undocumented part of your API and you can never improve it. A stack trace hands an attacker your framework versions and internal paths, and tells the caller nothing they can act on.",
+    concepts: ["Error code", "Problem Details for HTTP APIs", "Information disclosure"],
+    tags: ["errors", "contracts"],
+  },
+  {
+    id: "sd-api-007",
+    type: "short",
+    track: "system-design",
+    topic: "api-design",
+    difficulty: 3,
+    context:
+      "To render one screen a mobile client fetches the user, then their orders, then the line items for each order — a dozen sequential round trips before anything appears.",
+    prompt: "What term describes an API that forces this many small round trips?",
+    answers: ["chatty", "chatty api", "chattiness", "chatty interface", "too chatty"],
+    typoTolerance: true,
+    explanation:
+      "A chatty API. Each hop pays a full round-trip time, which dominates everything else on a mobile network, and the trips are sequential because each depends on the last. The fixes are a coarser endpoint, a backend-for-frontend that composes the calls server-side, or letting the client state the shape it wants.",
+    concepts: ["Chatty API", "Backend for Frontend", "Round-trip time", "Over-fetching"],
+    tags: ["granularity", "mobile"],
+  },
+  {
+    id: "sd-api-008",
+    type: "ordering",
+    track: "system-design",
+    topic: "api-design",
+    difficulty: 3,
+    prompt:
+      "Put the steps of removing a response field from a public API in order.",
+    items: [
+      "Add the replacement field and populate both on every response",
+      "Announce the deprecation and publish a removal date",
+      "Serve a Sunset header on responses that still include the old field",
+      "Wait out the deprecation window while callers migrate",
+      "Confirm from telemetry that no caller still reads the old field",
+      "Remove the old field and release the change",
+    ],
+    explanation:
+      "This is expand and contract: the two versions coexist so no caller is ever forced to change on your schedule. The step teams omit is the telemetry — without per-field usage you are guessing about who breaks, and an announcement is not evidence that anyone read it.",
+    concepts: ["Expand and contract migration", "Deprecation window", "Sunset header"],
+    tags: ["versioning", "deprecation"],
+  },
+  {
+    id: "sd-api-009",
+    type: "mcq",
+    track: "system-design",
+    topic: "api-design",
+    difficulty: 4,
+    context:
+      "A bulk endpoint accepts 500 records. Twelve fail validation; the other 488 have already been written.",
+    prompt: "How should the response report a partly applied bulk request?",
+    options: [
+      {
+        id: "a",
+        text: "A per-record status list, so the client can retry exactly the twelve that failed",
+      },
+      { id: "b", text: "400 Bad Request for the whole call, since part of the payload was invalid" },
+      { id: "c", text: "200 with a count of successes, leaving the client to work out the rest" },
+      { id: "d", text: "500, so the client's existing retry logic resends the batch" },
+    ],
+    answer: "a",
+    explanation:
+      "The response has to describe what actually happened. A blanket 400 or 500 tells the client nothing was applied, so its retry double-applies 488 records; a success count is honest but not actionable, because the client cannot tell which twelve to fix. If you would rather keep the response simple, make the operation atomic instead — and then apply nothing.",
+    concepts: ["Partial failure", "HTTP 207 Multi-Status", "Idempotency key", "Atomicity"],
+    tags: ["bulk", "partial-failure"],
+  },
+  {
+    id: "sd-ms-005",
+    type: "short",
+    track: "system-design",
+    topic: "microservices",
+    difficulty: 3,
+    context:
+      "A team is replacing a monolith one capability at a time. A routing layer in front sends each migrated path to its new service and everything else to the monolith, until nothing is left to route.",
+    prompt: "What is this incremental replacement pattern called? (Two words.)",
+    answers: [
+      "strangler fig",
+      "strangler",
+      "strangler pattern",
+      "strangler fig pattern",
+      "strangler application",
+    ],
+    typoTolerance: true,
+    explanation:
+      "The strangler fig, named for the vine that grows around a tree until the tree is gone. Its value is that every step ships and every step is reversible. A big-bang rewrite has no working intermediate state, so it cannot be de-risked incrementally and cannot be abandoned halfway without losing everything.",
+    concepts: ["Strangler fig pattern", "Incremental migration", "Facade"],
+    tags: ["migration", "monolith"],
+  },
+  {
+    id: "sd-obs-005",
+    type: "matching",
+    track: "system-design",
+    topic: "observability",
+    difficulty: 2,
+    prompt:
+      "Match each observability signal to the question it answers best.",
+    pairs: [
+      { left: "Metrics", right: "Is the error rate rising, and since when?" },
+      { left: "Logs", right: "What exactly happened inside this one failed request?" },
+      { left: "Distributed traces", right: "Which service in the chain spent the time?" },
+      { left: "Profiles", right: "Which function inside one process is burning CPU?" },
+    ],
+    explanation:
+      "They are not interchangeable, and using the wrong one is expensive. Answering a metrics question with logs means storing and scanning terabytes to compute a number a counter would have given you for free; answering a tracing question with logs means reconstructing causality by hand from timestamps across five services.",
+    concepts: ["Distributed tracing", "Structured logging", "Continuous profiling", "Cardinality"],
+    tags: ["signals", "pillars"],
+  },
+  {
+    id: "sd-obs-006",
+    type: "short",
+    track: "system-design",
+    topic: "observability",
+    difficulty: 3,
+    context:
+      "A request crosses five services. Each one emits spans, but the backend shows five separate single-service traces rather than one connected tree.",
+    prompt:
+      "What must each service forward on its outgoing calls to link those spans into one trace?",
+    answers: [
+      "trace context",
+      "trace id",
+      "traceid",
+      "trace-id",
+      "traceparent",
+      "traceparent header",
+      "trace context header",
+      "w3c trace context",
+      "correlation id",
+    ],
+    typoTolerance: true,
+    explanation:
+      "The trace context — carried as the W3C traceparent header, holding the trace id and the current span id so the callee can parent its spans correctly. Generating spans is the easy half; propagating context across every client library, queue, and thread pool is the half that actually breaks, which is why traces silently fragment at exactly one service.",
+    concepts: ["Trace context propagation", "W3C Trace Context", "Span", "Distributed tracing"],
+    tags: ["tracing", "propagation"],
+  },
 ];

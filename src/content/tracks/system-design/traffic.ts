@@ -12,6 +12,10 @@ export const topics: Topic[] = [
 
 **Getting data out.** TTL expiry is the workhorse: cheap, and you accept bounded staleness. Explicit invalidation on write gives tighter consistency, but you have to find every key a write affects, which is where most cache bugs live. Versioned keys sidestep invalidation entirely by making new data write to a new key.
 
+**Where it lives.** The same request usually passes several caches: the browser, a CDN edge, an application cache such as Redis, and the database's own buffer pool. Each layer you add cuts load on the one behind it and adds another place stale data can hide, so decide deliberately which layer owns freshness rather than setting a TTL at every level and hoping they agree.
+
+**Eviction and hit rate.** A cache is bounded, so something has to leave. *LRU* evicts the least recently used entry and suits a working set that moves over time. *LFU* keeps what is popular over a longer horizon, so a one-off scan of cold keys cannot flush everything useful — the failure LRU is prone to. Watch the hit rate, but read it next to what a miss costs: a 90% hit rate on a 2ms query is worth less than a 60% hit rate on a 400ms one. And when the working set genuinely does not fit in memory, more memory helps and a cleverer eviction policy does not.
+
 **How it fails.** A *cache stampede* (or thundering herd) happens when a hot key expires and every concurrent request misses at once, all hammering the origin together. Fixes: coalesce duplicate in-flight requests behind a single origin call, expire probabilistically a little early so one unlucky request refreshes before the deadline, or serve stale data while refreshing in the background.`,
     resources: [
       {
@@ -60,6 +64,10 @@ export const topics: Topic[] = [
 **What controls it.** Cache-Control is the contract. *max-age* tells browsers how long to cache; *s-maxage* overrides it for shared caches like the CDN, which lets you cache aggressively at the edge while keeping browsers on a short leash. *stale-while-revalidate* serves the stale copy instantly and refreshes in the background, and is the single highest-leverage header for perceived performance. *private* keeps a response out of shared caches entirely, which is what you want for anything user-specific.
 
 **Invalidation.** Purging is slow and globally eventually-consistent, so the robust pattern is *content-addressed URLs*: put a hash in the filename (app.9f2c1b.js) and cache it forever. New deploy, new filename, no purge needed. Reserve purging for the HTML entry point, which you keep on a short TTL.
+
+**When the origin is unwell.** \`stale-if-error\` lets the edge keep serving the last good response when the origin returns a 5xx or times out, which turns a short origin outage into something most users never notice. Error responses need a decision of their own: cache a 404 briefly and a mistaken deploy propagates to every edge, cache it not at all and a crawler walking missing paths reaches your origin on every request.
+
+**Knowing whether it works.** The number to watch is *offload* — the share of bytes served without touching the origin — rather than raw hit rate, because a single large uncached asset can dominate origin traffic while barely moving a request-counted percentage. Hit rate falls for a small set of reasons, and they are worth checking in order: a cache key that varies more than it needs to, TTLs shorter than the gap between requests for the same object, and responses the origin marked \`private\` or \`no-store\` without meaning to.
 
 **Beyond static.** Modern CDNs cache dynamic responses too, keyed on whatever varies. But the Vary header fragments your cache once per distinct value, so *Vary: User-Agent* can shred a hit rate. An *origin shield* adds a mid-tier cache so a miss at fifty edges becomes one origin request instead of fifty.`,
     resources: [
@@ -476,5 +484,155 @@ export const questions: Question[] = [
       "Each instance counts only what it sees, so the real ceiling is limit x instances — and it shifts every time you autoscale. A shared store (usually Redis) gives one global count at the cost of a network hop per request. The common compromise is a local limiter for cheap protection plus a shared one for correctness.",
     concepts: ["Distributed rate limiting", "Shared counter", "Autoscaling"],
     tags: ["distributed", "scaling"],
+  },
+  {
+    id: "sd-lb-005",
+    type: "short",
+    track: "system-design",
+    topic: "load-balancing",
+    difficulty: 3,
+    context:
+      "Rather than tracking every backend, the balancer picks two at random and sends the request to whichever has fewer in-flight requests. The distribution it achieves is close to checking all of them, at the cost of checking two.",
+    prompt:
+      "What is this load balancing strategy called? (Either common name is accepted.)",
+    answers: [
+      "power of two choices",
+      "power of two random choices",
+      "the power of two choices",
+      "two random choices",
+      "power of 2 choices",
+      "p2c",
+    ],
+    typoTolerance: true,
+    explanation:
+      "The power of two choices. Exact least-connections needs global state that every balancer must read and update, which is a bottleneck at scale; sampling two backends removes the coordination and still avoids the pathological case random alone produces, where one unlucky backend collects a queue nobody notices.",
+    concepts: ["Power of two choices", "Least connections", "Randomised load balancing"],
+    tags: ["algorithms", "p2c"],
+  },
+  {
+    id: "sd-lb-006",
+    type: "multi",
+    track: "system-design",
+    topic: "load-balancing",
+    difficulty: 3,
+    prompt:
+      "Which are genuine costs of pinning users to a backend with sticky sessions? Select all that apply.",
+    options: [
+      { id: "a", text: "Restarting a backend logs out every user pinned to it" },
+      {
+        id: "b",
+        text: "Load stays uneven, because a long-lived user cannot be moved to a quieter backend",
+      },
+      {
+        id: "c",
+        text: "New capacity from autoscaling only receives new sessions, not existing ones",
+      },
+      { id: "d", text: "The balancer can no longer terminate TLS" },
+      { id: "e", text: "Health checks stop working for pinned backends" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "All three costs come from the same root: state living on one machine. TLS termination and health checking are unaffected — stickiness only changes which backend is chosen. The fix is almost never better stickiness; it is moving session state to a shared store so any backend can serve any request.",
+    concepts: ["Sticky session", "Session affinity", "Stateless service"],
+    tags: ["sticky-sessions", "state"],
+  },
+  {
+    id: "sd-lb-007",
+    type: "mcq",
+    track: "system-design",
+    topic: "load-balancing",
+    difficulty: 4,
+    context:
+      "An autoscaler adds a backend to a least-connections pool. It immediately takes a burst of traffic, its caches and JIT are cold, latency spikes, and it briefly fails its health check.",
+    prompt:
+      "Why does least-connections routing punish a freshly added backend, and what fixes it?",
+    options: [
+      {
+        id: "a",
+        text: "It starts with zero in-flight requests, so it wins every choice at once — ramp it in with slow start",
+      },
+      { id: "b", text: "Its health check interval is too short — probe less often" },
+      { id: "c", text: "Least connections requires an even number of backends" },
+      { id: "d", text: "The autoscaler should add backends in pairs so the load splits" },
+    ],
+    answer: "a",
+    explanation:
+      "Least connections reads an empty queue as spare capacity, so the newest and coldest backend is the most attractive one to every concurrent request. Slow start ramps its weight up over a warm-up period. Probing less often only delays noticing the problem, and the count of backends is irrelevant.",
+    concepts: ["Slow start", "Least connections", "Cold start", "Warm-up period"],
+    tags: ["autoscaling", "slow-start"],
+  },
+  {
+    id: "sd-lb-008",
+    type: "ordering",
+    track: "system-design",
+    topic: "load-balancing",
+    difficulty: 2,
+    prompt:
+      "Put the steps of draining a backend during a rolling deploy in order.",
+    items: [
+      "The instance is deregistered from the pool, or starts failing its health check on purpose",
+      "The load balancer stops sending it new requests",
+      "Requests already in flight on the instance run to completion",
+      "The drain timeout expires and any remaining connections are closed",
+      "The process exits and the new version starts in its place",
+    ],
+    explanation:
+      "The order is what makes a deploy invisible. Failing the health check before shutting down is the step teams skip, and it is why deploys produce a burst of 502s: the balancer keeps routing to a process that has already stopped accepting work. The drain timeout is a ceiling, not a target.",
+    concepts: ["Connection draining", "Graceful shutdown", "Rolling deployment"],
+    tags: ["deploys", "draining"],
+  },
+  {
+    id: "sd-lb-009",
+    type: "matching",
+    track: "system-design",
+    topic: "load-balancing",
+    difficulty: 2,
+    prompt: "Match each load balancing algorithm to the situation it suits.",
+    pairs: [
+      {
+        left: "Round robin",
+        right: "Uniform requests across identical backends",
+      },
+      {
+        left: "Least connections",
+        right: "Request durations vary widely and unpredictably",
+      },
+      {
+        left: "Weighted round robin",
+        right: "Backends have deliberately different capacities",
+      },
+      {
+        left: "Consistent hashing",
+        right: "Each backend holds a per-key cache worth keeping warm",
+      },
+    ],
+    explanation:
+      "The choice follows from what varies. Round robin assumes requests cost the same; least connections drops that assumption; weighting drops the assumption that backends are identical; consistent hashing gives up even distribution in exchange for sending a key to the same place every time.",
+    concepts: ["Round robin", "Least connections", "Weighted round robin", "Consistent hashing"],
+    tags: ["algorithms"],
+  },
+  {
+    id: "sd-rl-005",
+    type: "mcq",
+    track: "system-design",
+    topic: "rate-limiting",
+    difficulty: 3,
+    context:
+      "An API limits by source IP. Corporate customers behind one NAT gateway are being throttled as if they were a single user, while an abusive client rotating through a cloud provider's address range never trips the limit.",
+    prompt: "What does this reveal about rate limiting on source IP?",
+    options: [
+      {
+        id: "a",
+        text: "IP is a weak identity — limit on the authenticated principal, and keep an IP limit only for unauthenticated traffic",
+      },
+      { id: "b", text: "The limit is set too low and should simply be raised" },
+      { id: "c", text: "A longer window would let the NAT traffic average out" },
+      { id: "d", text: "Moving clients to IPv6 would resolve both symptoms" },
+    ],
+    answer: "a",
+    explanation:
+      "One address can be thousands of users and one user can be thousands of addresses, so an IP limit is too strict and too loose at the same time — raising it worsens the abuse side while barely helping the NAT side. Once you know who is calling, key on that; IP is the fallback for the pre-authentication surface, where it is the only identity you have.",
+    concepts: ["Rate limit key", "Carrier-grade NAT", "Principal identity"],
+    tags: ["keying", "nat"],
   },
 ];

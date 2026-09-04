@@ -63,7 +63,13 @@ The honest rule: do not shard until you must. A single well-indexed database wit
 
 **Multi-leader** lets several nodes accept writes, which helps across regions and creates write conflicts you must resolve. Last-write-wins is easy and silently discards data. **Leaderless** (Dynamo-style) uses quorums: with N replicas, if W + R > N, reads and writes overlap on at least one node and you read the latest value.
 
-**Failover** is where the sharp edges are. Promoting a follower that was behind loses writes. Two nodes both believing they are leader is *split-brain*, and it corrupts data quietly rather than loudly.`,
+**Failover** is where the sharp edges are. Promoting a follower that was behind loses writes. Two nodes both believing they are leader is *split-brain*, and it corrupts data quietly rather than loudly.
+
+**What actually travels.** *Statement-based* replication ships the SQL and re-runs it, which is compact and breaks on anything non-deterministic — \`NOW()\`, a random value, an auto-increment race. *Row-based* (logical) replication ships the resulting row changes, which survives differing schemas and versions and is what makes change-data-capture pipelines possible. *Physical* (WAL) replication ships storage-level changes, which is the fastest and requires the replica to be a byte-compatible copy of the same engine version.
+
+**Replication is not a backup.** A replica faithfully applies whatever the leader did, including the \`DELETE\` with the missing \`WHERE\` clause, and it applies it within seconds. Replication protects you from a machine dying. Backups and point-in-time recovery protect you from a person or a deploy, and the only meaningful test of a backup is a restore you have actually performed.
+
+**Read replicas do not scale writes.** Every replica applies the entire write stream, so adding one raises read capacity, leaves write throughput exactly where it was, and adds load to the leader feeding it. When writes are the constraint, more copies is the wrong shape of answer; partitioning is the right one.`,
     resources: [
       {
         label: "Designing Data-Intensive Applications — Replication",
@@ -89,6 +95,10 @@ The honest rule: do not shard until you must. A single well-indexed database wit
 *Causal*: operations that are causally related appear in order everywhere; unrelated ones may not. Enough for most collaborative applications.
 *Read-your-writes*: you always see your own writes. Others may lag.
 *Eventual*: given no new writes, replicas converge. Says nothing about when.
+
+**Session guarantees** are the practical middle of that ladder, and the ones a user would actually notice missing: *monotonic reads* (time never runs backwards, so a value that was there does not disappear on the next read), *read-your-writes* (your own change is always visible to you), and *consistent prefix reads* (you never see an effect before its cause — a reply before the message it answers). Each is cheap, usually bought by pinning a session to one replica or having the client carry the version it last saw, and together they cover most of what strong consistency is reached for.
+
+**Isolation is a different axis.** The C in ACID is not the C in CAP. Isolation levels describe how concurrent transactions on one database are allowed to interleave; consistency models describe what a read on one replica may say about a write accepted by another. They are orthogonal, which is why a serializable database still hands you a stale read from a follower — and why "we use a strongly consistent database" settles less than the people saying it usually think.
 
 **Choose per operation, not per system.** A payment must be linearizable. The like count on a post can be eventual and nobody will ever notice. Teams that pick one consistency level for an entire system either overpay everywhere or underpay somewhere that matters.
 
@@ -117,7 +127,13 @@ The honest rule: do not shard until you must. A single well-indexed database wit
 
 **Uploads** should not proxy through your API. Issue a *presigned URL* so the client uploads straight to object storage; your server only signs and records. This removes your API from the bandwidth path entirely.
 
-**Modelling.** Normalise until joins hurt, then denormalise deliberately, and know that a denormalised copy is a consistency obligation you have taken on. Soft deletes preserve history and mean every query must remember to filter. Append-only event tables give you an audit trail and unbounded growth to manage.`,
+**Modelling.** Normalise until joins hurt, then denormalise deliberately, and know that a denormalised copy is a consistency obligation you have taken on. Soft deletes preserve history and mean every query must remember to filter. Append-only event tables give you an audit trail and unbounded growth to manage.
+
+**Durability is not availability.** Object storage advertises eleven nines of durability and considerably fewer of availability. Those are separate promises: the first says the bytes will still exist, the second says you can fetch them right now. A design that treats a storage read as infallible has quietly bet on the weaker of the two.
+
+**Classes and lifecycle.** Tiers trade retrieval cost and latency against storage price, so data written once and read almost never — old logs, raw event archives, backups past their restore window — belongs on a colder tier. Make that a lifecycle rule rather than a chore someone remembers, because storage bills grow quietly and no one looks at a bucket until it is expensive.
+
+**Deletion is a design decision.** Overwriting a key in an object store is a new version rather than an edit, and versioning plus object lock is what stops a bad deploy erasing production data. The same mechanism means bytes you told a user you deleted are still there until the lifecycle rule catches up, which matters the moment you have promised anyone a deletion deadline in writing.`,
     resources: [
       {
         label: "AWS — Presigned URLs",
@@ -492,5 +508,89 @@ export const questions: Question[] = [
       "Denormalisation buys read speed and sells consistency. You now own keeping the copies in sync, detecting drift, and migrating both when the shape changes. Reads get faster, not slower — that is the entire point — and foreign keys elsewhere are unaffected.",
     concepts: ["Denormalisation", "Data consistency", "Backfill"],
     tags: ["modelling", "denormalisation"],
+  },
+  {
+    id: "sd-db-005",
+    type: "multi",
+    track: "system-design",
+    topic: "databases",
+    difficulty: 3,
+    prompt:
+      "Which query patterns stop a B-tree index on a single column from being used? Select all that apply.",
+    options: [
+      { id: "a", text: "Wrapping the column in a function, as in WHERE lower(email) = ?" },
+      { id: "b", text: "A leading wildcard, as in WHERE name LIKE '%son'" },
+      {
+        id: "c",
+        text: "Comparing the column to a different type, forcing an implicit cast on the column",
+      },
+      { id: "d", text: "A range comparison, as in WHERE created_at > ?" },
+      { id: "e", text: "Sorting the results by that same column" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "An index stores the column's values, not the result of something applied to them, so any transformation of the column side makes it unusable — the cure is an expression index, or moving the work to the literal side. A leading wildcard has no prefix to seek on. Ranges and ordering are precisely what a B-tree is for, because it keeps values sorted.",
+    concepts: ["Sargable predicate", "Expression index", "Implicit type conversion", "B-tree index"],
+    tags: ["indexes", "sargability"],
+  },
+  {
+    id: "sd-repl-005",
+    type: "multi",
+    track: "system-design",
+    topic: "replication",
+    difficulty: 4,
+    prompt:
+      "Which anomalies can a client observe when its reads are spread across asynchronously updated followers? Select all that apply.",
+    options: [
+      { id: "a", text: "A value the client just wrote is missing from its next read" },
+      { id: "b", text: "A value visible on one read has disappeared by the next one" },
+      { id: "c", text: "A reply appears before the message it is replying to" },
+      { id: "d", text: "A write the leader committed is silently rolled back on the leader" },
+      { id: "e", text: "A follower returns a value no client ever wrote" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Each is a named guarantee going missing: read-your-writes, monotonic reads, and consistent prefix reads respectively. All three come from consecutive reads landing on replicas at different points in the stream — which is why pinning a session to one replica fixes all three at once. Replicas may lag, but they do not invent or unwind committed data.",
+    concepts: ["Read-your-writes consistency", "Monotonic reads", "Consistent prefix reads", "Replication lag"],
+    tags: ["anomalies", "session-guarantees"],
+  },
+  {
+    id: "sd-repl-006",
+    type: "ordering",
+    track: "system-design",
+    topic: "replication",
+    difficulty: 3,
+    prompt: "Put the steps of an automated leader failover in order.",
+    items: [
+      "Followers stop receiving heartbeats from the leader",
+      "A quorum of nodes agrees the leader is gone",
+      "The follower with the most complete log is elected leader",
+      "Remaining followers follow the new leader and discard writes it never saw",
+      "The routing layer points clients at the new leader",
+    ],
+    explanation:
+      "The two dangerous steps are the middle ones. Requiring a quorum is what stops a partition producing two leaders that both accept writes, and discarding divergent writes is silent data loss — so asynchronous replication plus automatic failover is a durability decision, not an operational convenience.",
+    concepts: ["Failover", "Leader election", "Split-brain", "Quorum"],
+    tags: ["failover", "elections"],
+  },
+  {
+    id: "sd-stor-004",
+    type: "ordering",
+    track: "system-design",
+    topic: "storage",
+    difficulty: 3,
+    prompt:
+      "Put the steps of a presigned direct-to-object-storage upload in order.",
+    items: [
+      "The client asks your API to upload a file of a given name, type, and size",
+      "Your API authorises the user and signs a short-lived upload URL for one key",
+      "The client sends the bytes straight to object storage using that URL",
+      "Object storage confirms the upload, to the client or by event notification",
+      "Your service records the object key against the owning row",
+    ],
+    explanation:
+      "Your server signs and records; it never carries the bytes, so upload bandwidth stops scaling with your API tier. The step most often dropped is the last one: until the key is stored against a row, the object is orphaned — which is how buckets accumulate files nothing references and why a lifecycle rule for unclaimed uploads is worth having.",
+    concepts: ["Presigned URL", "Object storage", "Orphaned object", "Lifecycle policy"],
+    tags: ["uploads", "presigned"],
   },
 ];
