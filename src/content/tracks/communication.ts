@@ -16,6 +16,10 @@ const topics: Topic[] = [
 
 **Write assumptions down** where the interviewer can see them. It makes them correctable, and an interviewer correcting an assumption early is the cheapest feedback you will get.
 
+**Separate the constraints from the preferences.** "It has to survive Black Friday" is a constraint and it changes the design. "It should use the same database as the other service" is often a preference wearing a constraint's clothes, and it is worth establishing which before you design around it. The question that settles it is what happens if we do not: a constraint has a specific answer, and a preference has a shrug.
+
+**The same move works outside an interview,** where the ambiguity is larger and nobody is grading you. A ticket reading "make the export faster" is the identical shape of problem: who is asking, how slow is it now, how fast is fast enough, and which exports actually matter. Half an hour turning that into a bounded problem routinely saves a week of building the wrong thing — and it is the part of the job most easily mistaken for not having started.
+
 The underlying signal: can you turn an ambiguous request into a bounded problem? That is the job, at work and in the interview.`,
     resources: [
       {
