@@ -474,4 +474,84 @@ export const questions: Question[] = [
     concepts: ["Practical significance", "Statistical significance", "Effect size"],
     tags: ["practical-significance"],
   },
+  {
+    id: "an-metric-006",
+    type: "ordering",
+    track: "sql-analytics",
+    topic: "product-metrics",
+    difficulty: 3,
+    prompt: "Put the steps of defining a new product metric in order.",
+    items: [
+      "State the decision this metric is meant to inform",
+      "Write the definition precisely enough that two teams would compute it identically",
+      "Decide the population, the time window, and how deleted and test accounts are handled",
+      "Compute it historically and check it moved when you would expect it to",
+      "Publish the definition alongside the number, and version it whenever it changes",
+    ],
+    explanation:
+      "Starting from the decision is what prevents a metric nobody ever acts on. The historical check catches definitions that are technically correct and useless: a number that stayed flat through a launch and an outage is not measuring what you believe it is.",
+    concepts: ["Metric definition", "Instrumentation", "Actionable metric", "Metric versioning"],
+    tags: ["definition", "method"],
+  },
+  {
+    id: "an-stat-007",
+    type: "multi",
+    track: "sql-analytics",
+    topic: "statistics-basics",
+    difficulty: 4,
+    prompt:
+      "Which statements about a 95% confidence interval are correct? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "It comes from a procedure that captures the true value 95% of the time across repeated samples",
+      },
+      { id: "b", text: "A wider interval means less certainty about where the true value sits" },
+      { id: "c", text: "An interval that includes zero is consistent with there being no effect" },
+      { id: "d", text: "There is a 95% probability the true value lies inside this particular interval" },
+      { id: "e", text: "95% of the observed data points fall inside it" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The fourth is the near-universal misreading, and the distinction is real: what varies across samples is the interval, not the true value, which is fixed and either inside this one or not. The fifth confuses a confidence interval with a prediction interval — one is about the estimate, the other about the data.",
+    concepts: ["Confidence interval", "Frequentist inference", "Prediction interval", "Statistical significance"],
+    tags: ["intervals", "misreadings"],
+  },
+  {
+    id: "an-ab-007",
+    type: "ordering",
+    track: "sql-analytics",
+    topic: "ab-testing",
+    difficulty: 3,
+    prompt: "Put the steps of running a valid experiment in order.",
+    items: [
+      "State the hypothesis and the single metric that will decide it",
+      "Choose the smallest effect worth detecting, and compute the sample size that requires",
+      "Pick the guardrail metrics that would block a ship even on a win",
+      "Run until the planned sample size is reached, without stopping early on a result",
+      "Analyse once, against the metric declared at the start",
+      "Decide, and record the decision with the numbers behind it",
+    ],
+    explanation:
+      "Every step before the run exists to remove a decision you would otherwise make after seeing the data, which is where most invalid experiments come from. Fixing the sample size in advance is what makes the p-value mean what it claims; stopping the moment it dips below 0.05 turns a 5% false positive rate into something far larger.",
+    concepts: ["Minimum detectable effect", "Pre-registration", "Peeking problem", "Guardrail metric"],
+    tags: ["experiment-design", "process"],
+  },
+  {
+    id: "an-ab-008",
+    type: "short",
+    track: "sql-analytics",
+    topic: "ab-testing",
+    difficulty: 4,
+    context:
+      "A test runs on 400 users and reports no significant difference, and the team concludes the change had no effect. Nobody worked out in advance how large an effect this sample could have detected.",
+    prompt:
+      "Which property of a test determines its ability to detect a real effect? (One word.)",
+    answers: ["power", "statistical power", "test power"],
+    typoTolerance: true,
+    explanation:
+      "Power — the probability of detecting an effect that genuinely exists. An underpowered test returns a non-significant result whether or not the effect is there, so it cannot tell the two apart, and 'no significant difference' gets reported as 'no difference'. Work out the detectable effect first; if it exceeds anything you care about, do not run it.",
+    concepts: ["Statistical power", "Type II error", "Minimum detectable effect", "Underpowered study"],
+    tags: ["power", "sample-size"],
+  },
 ];

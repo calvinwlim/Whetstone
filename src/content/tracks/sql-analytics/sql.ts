@@ -658,4 +658,306 @@ export const questions: Question[] = [
     concepts: ["Keyset pagination", "OFFSET", "Deep pagination"],
     tags: ["pagination", "offset"],
   },
+  {
+    id: "sq-join-006",
+    type: "multi",
+    track: "sql-analytics",
+    topic: "sql-joins",
+    difficulty: 3,
+    prompt:
+      "Which are correct ways to find users who have never placed an order? Select all that apply.",
+    options: [
+      { id: "a", text: "LEFT JOIN orders, then filter WHERE orders.id IS NULL" },
+      { id: "b", text: "WHERE NOT EXISTS (SELECT 1 FROM orders WHERE orders.user_id = users.id)" },
+      { id: "c", text: "EXCEPT against the set of user ids appearing in orders" },
+      { id: "d", text: "WHERE users.id NOT IN (SELECT user_id FROM orders)" },
+      { id: "e", text: "INNER JOIN orders, then filter WHERE orders.id IS NULL" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "These are the three spellings of an anti-join, and a planner usually treats the first two identically. NOT IN is the trap: a single NULL in the subquery makes the predicate unknown for every row, so the query returns nothing at all, with no error. An INNER JOIN discards exactly the rows you were looking for.",
+    concepts: ["Anti-join", "NOT EXISTS", "Three-valued logic", "EXCEPT"],
+    tags: ["anti-join", "nulls"],
+  },
+  {
+    id: "sq-join-007",
+    type: "ordering",
+    track: "sql-analytics",
+    topic: "sql-joins",
+    difficulty: 3,
+    prompt:
+      "Put the steps of diagnosing a query that returns too many rows in order.",
+    items: [
+      "Count the rows the base table returns on its own",
+      "Add one join at a time, re-counting after each",
+      "Find the join where the count jumps, and check that join's cardinality",
+      "Confirm whether the join key is actually unique on the side that multiplied",
+      "Aggregate the many side first, then join the single row back",
+    ],
+    explanation:
+      "Row multiplication produces a plausible number rather than an error, so it has to be found by counting rather than by reading the query. The last step is the general fix: collapse the many side in a CTE before joining, so any aggregate afterwards runs over one row per entity.",
+    concepts: ["Join fan-out", "Cardinality", "Common table expression", "Row multiplication"],
+    tags: ["fan-out", "diagnosis"],
+  },
+  {
+    id: "sq-join-008",
+    type: "short",
+    track: "sql-analytics",
+    topic: "sql-joins",
+    difficulty: 4,
+    context:
+      "For every customer you need their three most recent orders — not the three most recent overall. An ordinary join cannot express this, because the subquery would have to see each outer row.",
+    prompt:
+      "Which JOIN keyword lets a subquery reference columns from the row on its left? (One word.)",
+    answers: ["lateral", "lateral join", "cross apply", "apply", "outer apply"],
+    typoTolerance: true,
+    explanation:
+      "LATERAL, spelled CROSS APPLY in SQL Server. Without it a subquery in the FROM clause is evaluated once, independently, so it cannot depend on the outer row. The portable alternative for top-N per group is a window function — ROW_NUMBER partitioned by customer, filtered in an outer query — which is often faster too.",
+    concepts: ["LATERAL join", "Top-N per group", "Correlated subquery", "CROSS APPLY"],
+    tags: ["lateral", "top-n"],
+  },
+  {
+    id: "sq-agg-006",
+    type: "mcq",
+    track: "sql-analytics",
+    topic: "sql-aggregation",
+    difficulty: 3,
+    context:
+      "A dashboard sums yesterday's revenue. On a day with no orders the tile renders blank, and a downstream calculation that divides by it fails.",
+    prompt:
+      "What does SUM return over zero rows, and how should the query handle it?",
+    options: [
+      { id: "a", text: "NULL rather than 0 — wrap the aggregate in COALESCE to get a numeric zero" },
+      { id: "b", text: "0, so the blank must come from a different bug" },
+      { id: "c", text: "An error, which the driver renders as a blank" },
+      { id: "d", text: "NULL, and the fix is to make the underlying column NOT NULL" },
+    ],
+    answer: "a",
+    explanation:
+      "SUM over an empty set is NULL because there is nothing to add, while COUNT over an empty set is 0 because there is definitely nothing to count. The inconsistency is deliberate and catches people out every quiet Sunday. COALESCE the aggregate, not the column — the column's nullability is a different question.",
+    concepts: ["NULL semantics", "COALESCE", "Empty set aggregation", "COUNT versus SUM"],
+    tags: ["nulls", "aggregates"],
+  },
+  {
+    id: "sq-agg-007",
+    type: "short",
+    track: "sql-analytics",
+    topic: "sql-aggregation",
+    difficulty: 3,
+    context:
+      "One query must return, per country, both the total number of orders and the number that were refunded — without running two queries and joining the results.",
+    prompt:
+      "What is the technique of putting a condition inside an aggregate called? (Two words.)",
+    answers: [
+      "conditional aggregation",
+      "conditional aggregate",
+      "filtered aggregation",
+      "filtered aggregate",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Conditional aggregation — a SUM over a CASE expression, or the clearer FILTER clause where the engine supports it. It replaces a self-join or a pair of subqueries with one pass over the data, and it is how you pivot rows into columns in plain SQL: one aggregate per column you want out.",
+    concepts: ["Conditional aggregation", "FILTER clause", "CASE expression", "Pivot"],
+    tags: ["case", "pivot"],
+  },
+  {
+    id: "sq-win-006",
+    type: "ordering",
+    track: "sql-analytics",
+    topic: "sql-window-functions",
+    difficulty: 3,
+    prompt:
+      "Put the steps of selecting the latest row per group with a window function in order.",
+    items: [
+      "Choose the column that defines the group, and PARTITION BY it",
+      "Choose the column that defines recency, and ORDER BY it descending",
+      "Assign ROW_NUMBER() over that window",
+      "Wrap the whole thing in a CTE or subquery",
+      "Filter the outer query to the rows numbered 1",
+    ],
+    explanation:
+      "The wrapping step is not stylistic. Window functions are evaluated after WHERE, so the row number does not exist yet when WHERE runs — which is why filtering on it in the same query is an error, and why every top-N-per-group recipe has an outer query wrapped around it.",
+    concepts: ["ROW_NUMBER", "PARTITION BY", "Logical query processing order", "Top-N per group"],
+    tags: ["top-n", "row-number"],
+  },
+  {
+    id: "sq-win-007",
+    type: "multi",
+    track: "sql-analytics",
+    topic: "sql-window-functions",
+    difficulty: 3,
+    prompt:
+      "Which results can a window function produce that GROUP BY cannot? Select all that apply.",
+    options: [
+      { id: "a", text: "Each row shown alongside its group's total" },
+      { id: "b", text: "Each row's difference from the previous row in an order" },
+      { id: "c", text: "A per-row rank within its partition" },
+      { id: "d", text: "One row per group carrying that group's total" },
+      { id: "e", text: "A filter that removes rows before aggregation happens" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The defining property is that a window function does not collapse rows: every input row survives and gains a computed column. That is what makes running totals, per-row ranks, and row-to-row comparisons expressible in one pass, where GROUP BY would need a self-join back to the detail rows.",
+    concepts: ["Window function", "PARTITION BY", "Running total", "Aggregate function"],
+    tags: ["windows", "group-by"],
+  },
+  {
+    id: "sq-win-008",
+    type: "matching",
+    track: "sql-analytics",
+    topic: "sql-window-functions",
+    difficulty: 3,
+    prompt: "Match each window function to what it returns for a row.",
+    pairs: [
+      { left: "LAG", right: "The value from an earlier row in the window's order" },
+      { left: "LEAD", right: "The value from a later row in the window's order" },
+      { left: "FIRST_VALUE", right: "The value from the first row of the frame" },
+      { left: "NTILE(4)", right: "Which quarter of the partition this row falls into" },
+      { left: "SUM() OVER ()", right: "The total across every row, repeated on each row" },
+    ],
+    explanation:
+      "LAST_VALUE is absent for a good reason: with the default frame it returns the current row rather than the partition's final row, because the frame ends at the current row unless you say otherwise. Every window function is a function plus a frame, and the frame is where the bugs live.",
+    concepts: ["LAG", "LEAD", "NTILE", "Window frame"],
+    tags: ["functions", "frames"],
+  },
+  {
+    id: "sq-cte-005",
+    type: "ordering",
+    track: "sql-analytics",
+    topic: "sql-subqueries",
+    difficulty: 4,
+    prompt: "Put the parts of a recursive CTE in the order they execute.",
+    items: [
+      "The anchor member runs once, producing the starting rows",
+      "The recursive member runs against the rows the previous step produced",
+      "Its output is added to the result and becomes the next step's input",
+      "The recursive member runs again, and keeps running while it returns rows",
+      "It returns no rows, and the recursion stops",
+    ],
+    explanation:
+      "The termination condition is emergent rather than declared — recursion ends when the recursive member produces nothing, which is precisely why a cyclic graph makes it run forever. Guard it with a depth column and a limit, or by carrying the path visited so far and excluding anything already in it.",
+    concepts: ["Recursive CTE", "Anchor member", "Termination condition", "Cycle detection"],
+    tags: ["recursion", "hierarchies"],
+  },
+  {
+    id: "sq-cte-006",
+    type: "multi",
+    track: "sql-analytics",
+    topic: "sql-subqueries",
+    difficulty: 4,
+    prompt:
+      "Which statements about common table expressions are accurate? Select all that apply.",
+    options: [
+      { id: "a", text: "A CTE can be referenced more than once in the same query" },
+      { id: "b", text: "A CTE can be recursive, which a plain subquery cannot" },
+      {
+        id: "c",
+        text: "On some engines a CTE acts as an optimisation fence, so outer predicates are not pushed into it",
+      },
+      { id: "d", text: "A CTE is always materialised into a temporary table" },
+      { id: "e", text: "A CTE persists after the query finishes, in the way a view does" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The fence is the practical trap and it is engine-specific: where it applies, a WHERE clause outside the CTE cannot filter rows before it runs, so a readable rewrite quietly becomes a slow one. Modern PostgreSQL inlines CTEs by default and offers MATERIALIZED to force the old behaviour — check yours before assuming either way.",
+    concepts: ["Common table expression", "Optimisation fence", "Predicate pushdown", "Derived table"],
+    tags: ["ctes", "planner"],
+  },
+  {
+    id: "sq-cte-007",
+    type: "short",
+    track: "sql-analytics",
+    topic: "sql-subqueries",
+    difficulty: 3,
+    context:
+      "A SELECT list contains a subquery that references a column from the outer row and returns one value, so it is evaluated once per row of the outer result.",
+    prompt: "What is a subquery that depends on the outer row called? (Two words.)",
+    answers: [
+      "correlated subquery",
+      "correlated sub-query",
+      "correlated subqueries",
+      "correlated",
+    ],
+    typoTolerance: true,
+    explanation:
+      "A correlated subquery. It reads well and can execute once per outer row, so its cost scales with the size of the outer result — instant on a hundred rows, unusable on a million. Planners sometimes rewrite them into joins; when yours does not, a window function or a joined aggregate is the usual replacement.",
+    concepts: ["Correlated subquery", "Scalar subquery", "Query plan", "Window function"],
+    tags: ["subqueries", "cost"],
+  },
+  {
+    id: "sq-perf-005",
+    type: "short",
+    track: "sql-analytics",
+    topic: "sql-performance",
+    difficulty: 3,
+    context:
+      "A page lists 200 posts. Fetching the list takes one query, and rendering each post's author issues one more — 201 queries where two would do.",
+    prompt: "What is this query pattern called?",
+    answers: [
+      "n+1",
+      "n + 1",
+      "n+1 query",
+      "n+1 problem",
+      "n+1 query problem",
+      "n plus 1",
+      "n+1 selects",
+    ],
+    typoTolerance: true,
+    explanation:
+      "The N+1 query problem. Each query is individually fast, which is why it survives review and any profiling that only looks for slow queries — the cost is 200 network round trips, not 200 slow reads. Fix it by loading the authors in one query keyed on the collected ids, which is what eager loading does for you.",
+    concepts: ["N+1 query problem", "Eager loading", "Batch loading", "Round-trip latency"],
+    tags: ["n-plus-one", "orm"],
+  },
+  {
+    id: "sq-perf-006",
+    type: "matching",
+    track: "sql-analytics",
+    topic: "sql-performance",
+    difficulty: 4,
+    prompt: "Match each join strategy to the situation a planner chooses it for.",
+    pairs: [
+      {
+        left: "Nested loop join",
+        right: "One side is tiny, or the other has an index on the join key",
+      },
+      {
+        left: "Hash join",
+        right: "Both sides are large and unindexed, and one fits in memory",
+      },
+      {
+        left: "Merge join",
+        right: "Both inputs already arrive sorted on the join key",
+      },
+      {
+        left: "Index-only scan",
+        right: "Every column needed is in the index, so the table is never read",
+      },
+    ],
+    explanation:
+      "A nested loop over two large unindexed tables in a plan is the classic symptom of stale statistics — the planner chose it believing one side was small. That is why running ANALYZE is a genuine fix for a slow query: the plan was reasonable given wrong information about the data.",
+    concepts: ["Nested loop join", "Hash join", "Merge join", "Query planner statistics"],
+    tags: ["planner", "joins"],
+  },
+  {
+    id: "sq-perf-007",
+    type: "multi",
+    track: "sql-analytics",
+    topic: "sql-performance",
+    difficulty: 3,
+    context: "An index exists on (tenant_id, created_at), in that order.",
+    prompt:
+      "Which queries can use an index on (tenant_id, created_at)? Select all that apply.",
+    options: [
+      { id: "a", text: "WHERE tenant_id = ?" },
+      { id: "b", text: "WHERE tenant_id = ? AND created_at > ?" },
+      { id: "c", text: "WHERE tenant_id = ? ORDER BY created_at" },
+      { id: "d", text: "WHERE created_at > ?" },
+      { id: "e", text: "WHERE created_at > ? ORDER BY tenant_id" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "A composite index is sorted by its first column, then within that by the second — a phone book by surname, then first name. You can look up a surname, or a surname and a first name, never a first name alone. The third case earns its keep quietly: rows already arrive ordered within each tenant, so the sort costs nothing.",
+    concepts: ["Composite index", "Leftmost prefix rule", "Sort elimination", "Index ordering"],
+    tags: ["composite-index", "ordering"],
+  },
 ];
