@@ -498,4 +498,166 @@ export const questions: Question[] = [
     concepts: ["Invariant", "Make illegal states unrepresentable", "Encapsulation"],
     tags: ["ddd", "invariants"],
   },
+  {
+    id: "cc-conc-007",
+    type: "mcq",
+    track: "code-craft",
+    topic: "concurrency",
+    difficulty: 4,
+    context:
+      "A single-threaded server handles thousands of concurrent requests happily. One endpoint runs a synchronous CPU-bound calculation taking 400ms, and every other request's latency degrades while it runs.",
+    prompt:
+      "Why does one CPU-bound handler degrade every other request on a single-threaded server?",
+    options: [
+      {
+        id: "a",
+        text: "The event loop is the only thread — while it computes, no other callback runs, however ready it is",
+      },
+      { id: "b", text: "The calculation holds a lock that every other handler needs" },
+      { id: "c", text: "The runtime deprioritises requests arriving during a long operation" },
+      { id: "d", text: "Garbage collection runs after every long operation" },
+    ],
+    answer: "a",
+    explanation:
+      "Async concurrency interleaves waiting, not computing. It is excellent while the work is I/O, because the thread is free during the wait, and it has nothing whatsoever to offer when the work is arithmetic. Move CPU-bound work to a worker thread, a separate process, or a queue, and leave the loop to orchestrate waits.",
+    concepts: ["Event loop", "Concurrency versus parallelism", "CPU-bound versus I/O-bound", "Worker thread"],
+    tags: ["event-loop", "blocking"],
+  },
+  {
+    id: "cc-conc-008",
+    type: "multi",
+    track: "code-craft",
+    topic: "concurrency",
+    difficulty: 4,
+    context:
+      "Every request handler in a pool of 20 threads calls a downstream service that has become slow but not unavailable.",
+    prompt:
+      "Why does one slow dependency take out a service with plenty of spare CPU? Select all that apply.",
+    options: [
+      { id: "a", text: "Every thread ends up blocked on the same call, leaving none for unrelated requests" },
+      { id: "b", text: "With no timeout on the call, a blocked thread is never returned to the pool" },
+      { id: "c", text: "Requests keep arriving and time out while queued for a thread" },
+      { id: "d", text: "The slow dependency consumes the caller's CPU while the caller waits" },
+      { id: "e", text: "The thread pool automatically shrinks under load" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "This is resource exhaustion rather than a capacity problem, which is why adding CPU changes nothing and adding threads only postpones it. The defences are a timeout on every outbound call, a bulkhead so one dependency can consume only part of the pool, and a circuit breaker that stops making the call once it is clearly failing.",
+    concepts: ["Thread pool exhaustion", "Bulkhead pattern", "Timeout", "Circuit breaker"],
+    tags: ["exhaustion", "pools"],
+  },
+  {
+    id: "cc-err-007",
+    type: "matching",
+    track: "code-craft",
+    topic: "error-handling",
+    difficulty: 3,
+    prompt: "Match each failure to the response it deserves.",
+    pairs: [
+      {
+        left: "A user submitted an invalid email address",
+        right: "Reject with a clear message — this is expected input",
+      },
+      {
+        left: "A downstream call timed out",
+        right: "Retry with backoff, then degrade or fail the request",
+      },
+      {
+        left: "A required configuration value is missing at startup",
+        right: "Refuse to start at all",
+      },
+      {
+        left: "An invariant the code guarantees is violated",
+        right: "Crash loudly, because continuing would corrupt data",
+      },
+      {
+        left: "A non-essential recommendation service is down",
+        right: "Render the page without it and carry on",
+      },
+    ],
+    explanation:
+      "The useful split is expected against unexpected. Expected failures are part of the domain and belong in the return type; unexpected ones mean an assumption you rely on is broken, and the safest thing is to stop. The damage comes from treating them alike — crashing on a bad email, or continuing past a broken invariant.",
+    concepts: ["Expected versus unexpected failure", "Fail fast", "Graceful degradation", "Invariant"],
+    tags: ["classification", "response"],
+  },
+  {
+    id: "cc-err-008",
+    type: "multi",
+    track: "code-craft",
+    topic: "error-handling",
+    difficulty: 3,
+    prompt:
+      "What should an error message shown to a user contain? Select all that apply.",
+    options: [
+      { id: "a", text: "What went wrong, in terms of what the user was trying to do" },
+      { id: "b", text: "What they can do about it, if anything" },
+      { id: "c", text: "An identifier they can quote, which correlates to the logs" },
+      { id: "d", text: "The exception class and the line it was raised on" },
+      { id: "e", text: "An apology, and nothing further" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The identifier is the piece most often missing, and it is what turns an unhelpful report into a searchable one: the user sees a reference, the log holds the detail, and neither leaks into the other. Internals in a user-facing message help an attacker and nobody else, and an apology with no next step is a dead end.",
+    concepts: ["Error message design", "Correlation id", "Information disclosure", "Actionable error"],
+    tags: ["messages", "users"],
+  },
+  {
+    id: "cc-err-009",
+    type: "short",
+    track: "code-craft",
+    topic: "error-handling",
+    difficulty: 3,
+    context:
+      "A component tree renders and one component throws. Instead of the whole page going blank, a wrapper catches the error, reports it, and renders a fallback in that component's place.",
+    prompt: "What is this containment mechanism called? (Two words.)",
+    answers: ["error boundary", "error boundaries", "errorboundary", "error-boundary"],
+    typoTolerance: true,
+    explanation:
+      "An error boundary — fault isolation applied to a component tree, so a thrown error costs you one subtree instead of the whole page. Place them where a partial page is still useful, around a widget rather than around everything: a boundary only at the root converts a blank page into a slightly nicer blank page.",
+    concepts: ["Error boundary", "Fault isolation", "Bulkhead pattern", "Graceful degradation"],
+    tags: ["containment", "ui"],
+  },
+  {
+    id: "cc-dom-007",
+    type: "short",
+    track: "code-craft",
+    topic: "domain-modelling",
+    difficulty: 4,
+    context:
+      "Rather than checking that a string is a valid email and passing the string along, a function takes the string and returns an EmailAddress type — so anything holding one carries proof it was checked, and the check happens once, at the edge.",
+    prompt: "What principle does this describe? (Three words.)",
+    answers: [
+      "parse don't validate",
+      "parse dont validate",
+      "parse, don't validate",
+      "parse not validate",
+      "parse rather than validate",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Parse, don't validate. A validation returns a boolean and throws the knowledge away, so every function downstream must either re-check or trust a comment. Parsing returns a new type carrying the proof, which pushes the check to the boundary and makes the unchecked case impossible to construct rather than merely unlikely.",
+    concepts: ["Parse, don't validate", "Type-driven design", "Make illegal states unrepresentable", "Value object"],
+    tags: ["types", "boundaries"],
+  },
+  {
+    id: "cc-dom-008",
+    type: "multi",
+    track: "code-craft",
+    topic: "domain-modelling",
+    difficulty: 3,
+    prompt:
+      "Which rules belong in the domain model rather than at the HTTP boundary? Select all that apply.",
+    options: [
+      { id: "a", text: "An order cannot be dispatched before it has been paid for" },
+      { id: "b", text: "A discount cannot exceed the order total" },
+      { id: "c", text: "A subscription cannot be cancelled twice" },
+      { id: "d", text: "The request body is valid JSON" },
+      { id: "e", text: "The date field parses as a date" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The split is whether a rule concerns the shape of a message or the meaning of the business. Shape checks belong at the edge and change when the API does. The other three are true however the request arrived, so leaving them in a controller means the next caller — a background job, a CLI, an import — quietly gets to break them.",
+    concepts: ["Invariant", "Domain model", "Boundary validation", "Anaemic domain model"],
+    tags: ["validation", "layering"],
+  },
 ];

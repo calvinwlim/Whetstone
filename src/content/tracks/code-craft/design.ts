@@ -477,4 +477,158 @@ export const questions: Question[] = [
     concepts: ["Cyclomatic complexity", "Goodhart's law", "Code metrics"],
     tags: ["metrics"],
   },
+  {
+    id: "cc-spec-006",
+    type: "ordering",
+    track: "code-craft",
+    topic: "spec-driven-development",
+    difficulty: 2,
+    prompt:
+      "Put the steps of turning a vague request into a workable specification in order.",
+    items: [
+      "Restate the problem in the requester's own words and confirm you have it right",
+      "Name who the change is for and what they will be able to do afterwards",
+      "Write the acceptance criteria as concrete examples with expected outcomes",
+      "List the cases you are deliberately not handling",
+      "Take it back to the requester and check the examples match what they meant",
+    ],
+    explanation:
+      "The examples are the load-bearing part, because prose hides disagreement and an example cannot: two people can both agree that 'search should handle typos' and disagree about every single input. The final step exists because a specification's characteristic failure is being internally consistent and about the wrong problem.",
+    concepts: ["Acceptance criteria", "Specification by example", "Non-goals", "Given-When-Then"],
+    tags: ["method", "examples"],
+  },
+  {
+    id: "cc-spec-007",
+    type: "multi",
+    track: "code-craft",
+    topic: "spec-driven-development",
+    difficulty: 3,
+    prompt:
+      "Which belong in a specification rather than in an implementation plan? Select all that apply.",
+    options: [
+      { id: "a", text: "The observable behaviour a user should get" },
+      { id: "b", text: "The boundary cases, including what happens on invalid input" },
+      { id: "c", text: "What is explicitly out of scope" },
+      { id: "d", text: "Which database tables will be added" },
+      { id: "e", text: "Which library will parse the input" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "A specification describes the outside of the system, which is what lets it stay true when the inside is rewritten — and that is the whole reason it is worth keeping. Naming tables and libraries freezes decisions before you have the information to make them well, and turns every later change into a specification revision.",
+    concepts: ["Specification", "Black-box behaviour", "Implementation detail", "Non-goals"],
+    tags: ["scope", "what-versus-how"],
+  },
+  {
+    id: "cc-spec-008",
+    type: "matching",
+    track: "code-craft",
+    topic: "spec-driven-development",
+    difficulty: 3,
+    prompt: "Match each specification artefact to the question it settles.",
+    pairs: [
+      {
+        left: "Acceptance criteria",
+        right: "How will we know this is finished and correct?",
+      },
+      {
+        left: "Non-goals",
+        right: "What are we deliberately not doing in this piece of work?",
+      },
+      {
+        left: "Architecture decision record",
+        right: "Why did we choose this, and what did we reject?",
+      },
+      { left: "Spike", right: "What do we not yet know well enough to plan?" },
+      {
+        left: "Glossary of domain terms",
+        right: "What does each of these words mean here, precisely?",
+      },
+    ],
+    explanation:
+      "Each exists because one specific argument keeps recurring. The glossary is the least written and often the most valuable: a large share of requirement disputes turn out to be two people using one word for two different things, and no amount of detail elsewhere resolves that.",
+    concepts: ["Acceptance criteria", "Architecture decision record", "Non-goals", "Ubiquitous language"],
+    tags: ["artefacts", "clarity"],
+  },
+  {
+    id: "cc-pat-007",
+    type: "multi",
+    track: "code-craft",
+    topic: "design-patterns",
+    difficulty: 3,
+    context:
+      "A base class has grown to five levels of subclass. A behaviour that two unrelated leaves both need has nowhere to live except the base.",
+    prompt:
+      "Why is composition usually preferred to deep inheritance? Select all that apply.",
+    options: [
+      { id: "a", text: "Behaviours combine freely, rather than only along one chain of ancestors" },
+      { id: "b", text: "A subclass inherits everything, including what it does not want and cannot remove" },
+      { id: "c", text: "The relationship is chosen at runtime rather than fixed by the class hierarchy" },
+      { id: "d", text: "Composition removes the need for interfaces" },
+      { id: "e", text: "Inheritance always performs worse at runtime" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Inheritance forces every axis of variation through one hierarchy, so the moment two axes are independent, the tree must duplicate or the base must absorb both. Composition gives each axis its own object. The tell is a subclass overriding a method to do nothing — it inherited something unwanted, which is a Liskov violation waiting to be found.",
+    concepts: ["Composition over inheritance", "Liskov Substitution principle", "Fragile base class", "Strategy pattern"],
+    tags: ["inheritance", "composition"],
+  },
+  {
+    id: "cc-pat-008",
+    type: "short",
+    track: "code-craft",
+    topic: "design-patterns",
+    difficulty: 3,
+    context:
+      "Callers are littered with checks for absence. So instead of returning nothing, the source returns an object with the same interface that harmlessly does nothing — an empty collection, a logger that discards, a discount of zero.",
+    prompt: "What is this pattern called? (Two words.)",
+    answers: ["null object", "null object pattern", "nullobject", "the null object pattern"],
+    typoTolerance: true,
+    explanation:
+      "The Null Object pattern. It deletes a branch from every caller by making absence a valid value of the same type, which is why returning an empty list rather than null is the version most people already use without naming it. It is wrong wherever absence is genuinely exceptional and doing nothing quietly would hide a bug.",
+    concepts: ["Null object pattern", "Special case pattern", "Cyclomatic complexity", "Defensive programming"],
+    tags: ["absence", "branching"],
+  },
+  {
+    id: "cc-qual-008",
+    type: "multi",
+    track: "code-craft",
+    topic: "code-quality",
+    difficulty: 3,
+    prompt: "Which comments earn their place in a codebase? Select all that apply.",
+    options: [
+      { id: "a", text: "Why a non-obvious approach was chosen over the obvious one" },
+      { id: "b", text: "A link to the ticket or standard behind an odd-looking requirement" },
+      {
+        id: "c",
+        text: "A constraint the code cannot express, such as a caller that must already hold a lock",
+      },
+      { id: "d", text: "A restatement of what the next line does" },
+      { id: "e", text: "A record of who changed the line and when" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Every comment that survives says something the code cannot. A restatement is worse than nothing: it can go stale while the code stays correct, at which point it actively misleads. Version control records authorship better than a comment ever will. If you find yourself explaining what, rename something instead.",
+    concepts: ["Code comment", "Self-documenting code", "Comment rot", "Naming"],
+    tags: ["comments", "documentation"],
+  },
+  {
+    id: "cc-qual-009",
+    type: "ordering",
+    track: "code-craft",
+    topic: "code-quality",
+    difficulty: 3,
+    prompt:
+      "Put the steps of safely changing code you do not fully understand in order.",
+    items: [
+      "Write tests that pin the current behaviour, including the parts that look wrong",
+      "Refactor without changing behaviour, until the change you want becomes easy",
+      "Make the change",
+      "Run the tests, which now cover the old behaviour and the new",
+      "Remove the scaffolding the refactor no longer needs",
+    ],
+    explanation:
+      "This is Kent Beck's rule — make the change easy, then make the easy change — and the first step is what makes it safe rather than brave. Characterisation tests pin behaviour rather than assert correctness, deliberately including behaviour that looks like a bug, because something may depend on it and you are not changing it yet.",
+    concepts: ["Characterisation test", "Refactoring", "Behaviour preservation", "Legacy code"],
+    tags: ["legacy", "refactoring"],
+  },
 ];
