@@ -354,4 +354,254 @@ export const questions: Question[] = [
     concepts: ["Alt text", "Decorative image", "Screen reader"],
     tags: ["images", "alt-text"],
   },
+  {
+    id: "fe-sec-008",
+    type: "matching",
+    track: "frontend",
+    topic: "frontend-security",
+    difficulty: 3,
+    prompt: "Match each cookie attribute to what it actually does.",
+    pairs: [
+      {
+        left: "SameSite=Strict",
+        right: "Never sent on a cross-site request, not even when following a link",
+      },
+      {
+        left: "SameSite=Lax",
+        right: "Sent on top-level navigations, withheld from cross-site POSTs",
+      },
+      {
+        left: "SameSite=None",
+        right: "Sent on every cross-site request, and only valid alongside Secure",
+      },
+      { left: "httpOnly", right: "Unreadable from JavaScript, so injected script cannot exfiltrate it" },
+      { left: "Secure", right: "Only ever transmitted over HTTPS" },
+    ],
+    explanation:
+      "Lax is the modern browser default and removes most classic CSRF by itself, because the dangerous case — a cross-site form POST — is exactly what it withholds. Strict is stronger and breaks the ordinary case of arriving from an external link already signed in. None re-opens what Lax closed, so anything using it still needs a CSRF token.",
+    concepts: ["SameSite cookie", "Cross-site request forgery", "httpOnly cookie", "Secure attribute"],
+    tags: ["cookies", "samesite"],
+  },
+  {
+    id: "fe-sec-009",
+    type: "multi",
+    track: "frontend",
+    topic: "frontend-security",
+    difficulty: 3,
+    context:
+      "A build inlines environment variables into the JavaScript bundle that ships to browsers.",
+    prompt:
+      "Which values are safe to inline into a client bundle? Select all that apply.",
+    options: [
+      { id: "a", text: "A public API base URL" },
+      { id: "b", text: "A publishable key whose permissions are enforced server-side" },
+      { id: "c", text: "A feature flag's default value" },
+      { id: "d", text: "A third-party API secret used to sign outgoing requests" },
+      { id: "e", text: "A database connection string containing credentials" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Everything in a bundle is public — minification is not obfuscation and the network tab shows it regardless. What separates the safe values is not sensitivity but where authority lives: a publishable key works because the server decides what that key may do. A signing secret carries its own authority, so holding it is permission.",
+    concepts: ["Publishable key", "Secret management", "Client-side exposure", "Principle of least privilege"],
+    tags: ["secrets", "bundles"],
+  },
+  {
+    id: "fe-sec-010",
+    type: "short",
+    track: "frontend",
+    topic: "frontend-security",
+    difficulty: 3,
+    context:
+      "A login page accepts ?next=/dashboard and sends the user there after sign-in. The value is never validated, so ?next=https://evil.example works too — and the link genuinely begins on your domain.",
+    prompt: "What is this vulnerability called? (Two words.)",
+    answers: ["open redirect", "open redirection", "open-redirect", "unvalidated redirect"],
+    typoTolerance: true,
+    explanation:
+      "An open redirect. It rarely does damage on its own, which is why it gets deprioritised, and it is valuable to an attacker for exactly that reason: the link starts on a domain the victim trusts and a mail filter allows through. Permit only relative paths or an allowlist of destinations — never a blocklist of hostnames.",
+    concepts: ["Open redirect", "Allowlist validation", "Phishing"],
+    tags: ["redirects", "validation"],
+  },
+  {
+    id: "fe-sec-011",
+    type: "mcq",
+    track: "frontend",
+    topic: "frontend-security",
+    difficulty: 4,
+    context:
+      "A marketing team adds an analytics script from a third-party domain to every page, checkout included.",
+    prompt: "What access does that third-party script actually have?",
+    options: [
+      {
+        id: "a",
+        text: "Everything your own code has — the DOM, any JavaScript-readable cookie, and requests made as the user",
+      },
+      { id: "b", text: "Only the events it registers listeners for" },
+      { id: "c", text: "Nothing outside its own sandbox" },
+      { id: "d", text: "Read access to the DOM, but no way to send data anywhere" },
+    ],
+    answer: "a",
+    explanation:
+      "A script tag is not a sandbox; it runs with your origin's full authority, so a compromised or swapped third-party file can read the card form and post it wherever it likes. That is why the defences are structural — a Content Security Policy bounding where scripts load from and connect to, subresource integrity pinning the exact file, or an iframe on a different origin.",
+    concepts: ["Supply chain attack", "Subresource integrity", "Content Security Policy", "Same-origin policy"],
+    tags: ["third-party", "supply-chain"],
+  },
+  {
+    id: "fe-sec-012",
+    type: "ordering",
+    track: "frontend",
+    topic: "frontend-security",
+    difficulty: 3,
+    prompt:
+      "Put the steps of adding a Content Security Policy to an existing site in order.",
+    items: [
+      "Deploy the policy in report-only mode, so nothing is blocked yet",
+      "Collect violation reports from real production traffic",
+      "Work through them, allowing what is legitimate and removing what is not",
+      "Replace inline scripts with nonces or hashes so unsafe-inline can be dropped",
+      "Switch the policy to enforcing",
+      "Keep the reporting endpoint live, so new violations still surface",
+    ],
+    explanation:
+      "Report-only exists because a policy written from reading the codebase always misses something — a marketing tag, an inline handler in a template nobody owns. Going straight to enforcing breaks the site for exactly the traffic you did not think of. Dropping unsafe-inline is the step that makes the policy worth having.",
+    concepts: ["Content Security Policy", "Report-only mode", "CSP nonce", "unsafe-inline"],
+    tags: ["csp", "rollout"],
+  },
+  {
+    id: "fe-a11y-007",
+    type: "multi",
+    track: "frontend",
+    topic: "accessibility",
+    difficulty: 3,
+    prompt:
+      "Which accessibility problems can an automated checker not detect? Select all that apply.",
+    options: [
+      { id: "a", text: "Alt text that is present but describes the wrong thing" },
+      { id: "b", text: "A tab order that is technically valid and makes no sense to a user" },
+      { id: "c", text: "A label correctly associated with a field and meaningless to read" },
+      { id: "d", text: "An image element with no alt attribute at all" },
+      { id: "e", text: "Text whose contrast ratio falls below the threshold" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Automated tools cover what is machine-decidable — presence, association, computed contrast — which is roughly a third of the WCAG criteria. Everything about whether the result is comprehensible needs a person, and the fastest available person is you, with the mouse unplugged, tabbing through the page.",
+    concepts: ["WCAG", "Automated accessibility testing", "Manual testing", "Accessible name"],
+    tags: ["testing", "limits"],
+  },
+  {
+    id: "fe-a11y-008",
+    type: "short",
+    track: "frontend",
+    topic: "accessibility",
+    difficulty: 3,
+    context:
+      "A form submits without reloading. On failure an error appears above it. A sighted user sees it at once; a screen reader user hears nothing, because focus never moved and the reader was never told anything changed.",
+    prompt:
+      "Which ARIA mechanism announces content that appears after page load? (Two words.)",
+    answers: [
+      "live region",
+      "live regions",
+      "aria live region",
+      "aria-live region",
+      "aria live",
+      "aria-live",
+    ],
+    typoTolerance: true,
+    explanation:
+      "A live region — a container marked aria-live, so a screen reader announces changes inside it without focus moving. Use polite for status updates so it waits for a natural pause, and assertive only when the message genuinely interrupts. The container has to exist in the DOM before the message arrives, or there is nothing being watched.",
+    concepts: ["ARIA live region", "Screen reader", "Assertive versus polite", "Dynamic content"],
+    tags: ["aria", "announcements"],
+  },
+  {
+    id: "fe-a11y-009",
+    type: "mcq",
+    track: "frontend",
+    topic: "accessibility",
+    difficulty: 2,
+    context:
+      "Required form fields are marked by turning their labels red. Invalid fields turn red too, in a slightly darker shade.",
+    prompt: "Why does distinguishing required from invalid by colour alone fail?",
+    options: [
+      {
+        id: "a",
+        text: "Colour is not perceivable by every user, and two shades of red are not distinguishable even by those who see colour well",
+      },
+      { id: "b", text: "Red text always fails the contrast ratio requirement" },
+      { id: "c", text: "Screen readers announce colour, so the information is duplicated" },
+      { id: "d", text: "Colour is acceptable as long as the contrast ratio passes" },
+    ],
+    answer: "a",
+    explanation:
+      "Colour may carry meaning, never carry it alone. Around one in twelve men has some colour vision deficiency, and the design fails for everyone else too, because 'slightly darker red' is not a distinction anyone can act on. Add a second channel: an asterisk and a required attribute, an error message in text, an icon.",
+    concepts: ["Use of colour", "Colour vision deficiency", "Redundant encoding", "WCAG"],
+    tags: ["colour", "perceivability"],
+  },
+  {
+    id: "fe-a11y-010",
+    type: "ordering",
+    track: "frontend",
+    topic: "accessibility",
+    difficulty: 2,
+    prompt: "Put the steps of a keyboard-only pass over a new page in order.",
+    items: [
+      "Put the mouse aside and press Tab from the top of the page",
+      "Check that every interactive element is reachable, and that nothing else is",
+      "Check that the focus ring is actually visible on each one",
+      "Check that the focus order matches the visual order on screen",
+      "Activate each control with Enter or Space and confirm it behaves as clicking does",
+      "Open anything modal and confirm focus enters it, stays in it, and returns on close",
+    ],
+    explanation:
+      "Two minutes of this catches most of what automated tools cannot see. The two failures it turns up most often are a custom control that cannot be reached at all — a div behaving as a button — and a focus ring removed in CSS for looking untidy, which leaves keyboard users with no idea where they are.",
+    concepts: ["Keyboard accessibility", "Focus indicator", "Tab order", "Focus trap"],
+    tags: ["keyboard", "testing"],
+  },
+  {
+    id: "fe-a11y-011",
+    type: "matching",
+    track: "frontend",
+    topic: "accessibility",
+    difficulty: 2,
+    prompt:
+      "Match each native HTML element to the accessibility behaviour it provides for free.",
+    pairs: [
+      {
+        left: "button",
+        right: "Focusable, activated by Enter and Space, announced as a button",
+      },
+      {
+        left: "label with a for attribute",
+        right: "Clicking it focuses the field, and the field gains an accessible name",
+      },
+      { left: "nav", right: "Announced as a landmark a screen reader can jump straight to" },
+      { left: "h1 to h6", right: "Builds the outline users navigate by heading" },
+      { left: "input type=email", right: "The right on-screen keyboard and built-in validation" },
+    ],
+    explanation:
+      "Every one of these is behaviour you would otherwise write, get subtly wrong, and then maintain. This is what 'use the platform' means in practice, and why the first question about any custom control is whether a native element would have done the job.",
+    concepts: ["Semantic HTML", "Landmark region", "Accessible name", "Document outline"],
+    tags: ["semantics", "native-elements"],
+  },
+  {
+    id: "fe-a11y-012",
+    type: "multi",
+    track: "frontend",
+    topic: "accessibility",
+    difficulty: 4,
+    context:
+      "A team builds a custom dropdown out of div elements, because the native select cannot be styled the way the design requires.",
+    prompt:
+      "What must the custom dropdown now implement itself? Select all that apply.",
+    options: [
+      { id: "a", text: "Keyboard interaction — arrow keys, Enter, Escape, and type-ahead" },
+      { id: "b", text: "Roles and states, so it is announced as a collapsed listbox" },
+      { id: "c", text: "Focus management between the trigger and the option list" },
+      { id: "d", text: "A fallback so the control still works with JavaScript disabled" },
+      { id: "e", text: "A contrast ratio double the normal requirement" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "This is the real price of replacing a native control, and it is almost always underestimated: the visual design took an afternoon and the behaviour is a specification. The honest choices are to use the native element and live with its styling, or to adopt a tested headless component that has already implemented the pattern.",
+    concepts: ["ARIA authoring practices", "Combobox pattern", "Roving tabindex", "Semantic HTML"],
+    tags: ["custom-controls", "aria"],
+  },
 ];
