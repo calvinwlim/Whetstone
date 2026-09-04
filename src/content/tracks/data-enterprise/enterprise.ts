@@ -367,4 +367,120 @@ export const questions: Question[] = [
     concepts: ["Noisy neighbour", "Per-tenant rate limiting", "Resource isolation"],
     tags: ["noisy-neighbour"],
   },
+  {
+    id: "de-id-005",
+    type: "ordering",
+    track: "data-enterprise",
+    topic: "enterprise-identity",
+    difficulty: 3,
+    prompt: "Put an OpenID Connect authorisation code sign-in in order.",
+    items: [
+      "The application redirects the browser to the identity provider with a client id and a state value",
+      "The user authenticates with the identity provider directly",
+      "The provider redirects back to the application's callback carrying a one-time code",
+      "The application checks that the returned state matches the one it sent",
+      "The application exchanges the code for tokens over a back-channel request",
+      "The application validates the ID token's signature, issuer, and audience",
+    ],
+    explanation:
+      "The code exists so tokens never travel through the browser's address bar, where they would end up in history and referrer headers. The two validation steps are the ones hand-rolled clients skip: state defends the callback against cross-site request forgery, and an ID token whose signature and audience go unchecked is a token anybody can mint.",
+    concepts: ["Authorisation code flow", "OpenID Connect", "State parameter", "ID token validation"],
+    tags: ["oidc", "sso"],
+  },
+  {
+    id: "de-id-006",
+    type: "short",
+    track: "data-enterprise",
+    topic: "enterprise-identity",
+    difficulty: 3,
+    context:
+      "A new employee signs in through the corporate identity provider for the first time. No account existed in the application beforehand; one is created from the assertion at that moment.",
+    prompt:
+      "What is this account creation pattern called? (Three words, or its abbreviation.)",
+    answers: [
+      "just in time provisioning",
+      "just-in-time provisioning",
+      "jit provisioning",
+      "just in time",
+      "jit",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Just-in-time provisioning. It handles onboarding neatly and does nothing for offboarding: an account created on first sign-in is never told about the leaver, so it survives until something else removes it. That is why enterprises ask for SCIM as well — JIT creates, SCIM keeps the directories in step and deletes.",
+    concepts: ["Just-in-time provisioning", "SCIM", "Deprovisioning", "Identity provider"],
+    tags: ["provisioning", "lifecycle"],
+  },
+  {
+    id: "de-int-006",
+    type: "multi",
+    track: "data-enterprise",
+    topic: "enterprise-integration",
+    difficulty: 3,
+    prompt:
+      "Which are genuine reasons to make an integration asynchronous rather than a direct call? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "The receiving system is periodically unavailable and the sender must not fail with it",
+      },
+      { id: "b", text: "The work takes longer than any caller is willing to wait" },
+      {
+        id: "c",
+        text: "Several systems need the same event and the sender should not have to know about all of them",
+      },
+      { id: "d", text: "The caller needs the result before it can answer its own user" },
+      { id: "e", text: "The two systems happen to be owned by the same team" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The test is whether the caller needs the answer in order to proceed. If it does, asynchrony only moves the waiting somewhere harder to see. If it does not, decoupling buys availability — the sender works through the receiver's outage — and it buys fan-out, since adding a fourth consumer stops being a change to the sender.",
+    concepts: ["Asynchronous integration", "Temporal coupling", "Publish-subscribe", "Fan-out"],
+    tags: ["coupling", "async"],
+  },
+  {
+    id: "de-tenant-005",
+    type: "multi",
+    track: "data-enterprise",
+    topic: "multi-tenancy",
+    difficulty: 4,
+    prompt:
+      "Where does tenant isolation most often leak in a shared-schema system? Select all that apply.",
+    options: [
+      { id: "a", text: "A cache key that omits the tenant id" },
+      { id: "b", text: "A background job that queries without the tenant filter" },
+      { id: "c", text: "A generated export whose filename is guessable across tenants" },
+      { id: "d", text: "The tenant id column being an integer rather than a UUID" },
+      { id: "e", text: "Two tenants having users with the same email address" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Every one of these leaks is somewhere the tenant filter was not applied because no request context existed — which is why background jobs and caches dominate the list, and why enforcing isolation once in the database with row-level security beats remembering a WHERE clause in every query. A sequential id eases enumeration but is not itself the leak.",
+    concepts: ["Tenant isolation", "Cache key design", "Row-level security", "Insecure direct object reference"],
+    tags: ["isolation", "leaks"],
+  },
+  {
+    id: "de-tenant-006",
+    type: "mcq",
+    track: "data-enterprise",
+    topic: "multi-tenancy",
+    difficulty: 3,
+    context:
+      "A product runs one database per tenant across 400 tenants. A schema change now has to reach all of them.",
+    prompt:
+      "What does database-per-tenant cost at migration time that a shared schema does not?",
+    options: [
+      {
+        id: "a",
+        text: "The migration runs 400 times and can succeed on some tenants while failing on others",
+      },
+      { id: "b", text: "The migration can no longer be expressed in SQL" },
+      { id: "c", text: "Each tenant's schema drifts automatically over time" },
+      { id: "d", text: "Shared-schema migrations need no testing by comparison" },
+    ],
+    answer: "a",
+    explanation:
+      "Database-per-tenant buys the strongest isolation and the simplest per-tenant restore, and it turns every schema change into a fleet operation with partial-failure states — some tenants migrated, some not, and code that has to work against both for longer than anyone wants. Building and running that tooling is the model's real cost.",
+    concepts: ["Database per tenant", "Partial failure", "Schema drift", "Fleet migration"],
+    tags: ["migrations", "isolation-models"],
+  },
 ];

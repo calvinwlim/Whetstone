@@ -477,4 +477,331 @@ export const questions: Question[] = [
     concepts: ["Data minimisation", "Personally identifiable information"],
     tags: ["minimisation"],
   },
+  {
+    id: "de-schema-005",
+    type: "multi",
+    track: "data-enterprise",
+    topic: "schema-design",
+    difficulty: 3,
+    prompt:
+      "Which are sound reasons to make columns NOT NULL by default? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "NULL propagates through comparisons and aggregates in ways that surprise query authors",
+      },
+      { id: "b", text: "A nullable column forces every reader to decide what absence means" },
+      {
+        id: "c",
+        text: "Relaxing the constraint later is instant; tightening it later means backfilling every row",
+      },
+      { id: "d", text: "The database treats NULL and an empty string as equal" },
+      { id: "e", text: "A NOT NULL constraint also prevents duplicate values" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The direction of the migration is the practical argument: loosening a constraint is a metadata change, tightening one means finding and fixing every existing row while writes continue. NULL is not a value but 'unknown', which is why NULL = NULL is not true, and why NOT IN against a set containing one returns nothing at all.",
+    concepts: ["NOT NULL constraint", "Three-valued logic", "Nullable column", "Backfill"],
+    tags: ["nulls", "constraints"],
+  },
+  {
+    id: "de-schema-006",
+    type: "mcq",
+    track: "data-enterprise",
+    topic: "schema-design",
+    difficulty: 3,
+    context:
+      "A payments table stores amounts in a double precision column. Reconciliation reports drift by fractions of a penny, and the drift accumulates over millions of rows.",
+    prompt: "Why is a floating point column the wrong type for money?",
+    options: [
+      {
+        id: "a",
+        text: "Binary floating point cannot represent most decimal fractions exactly, so every value is slightly wrong and the errors compound",
+      },
+      { id: "b", text: "Floating point columns cannot be indexed" },
+      { id: "c", text: "Floating point has too few significant digits for large amounts" },
+      { id: "d", text: "Comparing floating point values is slower than comparing integers" },
+    ],
+    answer: "a",
+    explanation:
+      "0.1 has no exact binary representation, in the same way one third has no exact decimal one. Each stored amount is a hair off, and summing millions of them accumulates into a discrepancy an auditor will find. Use an exact decimal type, or an integer count of the smallest unit — pence or cents — and format for display.",
+    concepts: ["Floating point representation", "Decimal type", "Minor units", "Rounding error"],
+    tags: ["money", "types"],
+  },
+  {
+    id: "de-schema-007",
+    type: "matching",
+    track: "data-enterprise",
+    topic: "schema-design",
+    difficulty: 2,
+    prompt: "Match each relationship to how it is modelled relationally.",
+    pairs: [
+      {
+        left: "One user has one profile",
+        right: "A foreign key on either table, with a unique constraint",
+      },
+      {
+        left: "One order has many line items",
+        right: "A foreign key on the many side, pointing back at the order",
+      },
+      {
+        left: "Many students take many courses",
+        right: "A separate join table holding both foreign keys",
+      },
+      {
+        left: "An employee reports to another employee",
+        right: "A self-referencing foreign key on the same table",
+      },
+      {
+        left: "A comment belongs to a post or a photo",
+        right: "Separate nullable foreign keys, or separate tables entirely",
+      },
+    ],
+    explanation:
+      "The last is the one people get wrong, usually by storing a type name plus a bare id. The database cannot enforce a foreign key against that, so referential integrity quietly becomes the application's problem — and orphaned rows arrive without an error. Every other row here is a constraint the database will hold for you.",
+    concepts: ["Join table", "Self-referencing foreign key", "Polymorphic association", "Referential integrity"],
+    tags: ["cardinality", "modelling"],
+  },
+  {
+    id: "de-schema-008",
+    type: "short",
+    track: "data-enterprise",
+    topic: "schema-design",
+    difficulty: 4,
+    context:
+      "To let customers define their own fields, a schema stores one row per attribute — an entity id, an attribute name, and a value column typed as text. Every read pivots those rows back into columns.",
+    prompt:
+      "What is this schema pattern called? (Three words, or its abbreviation.)",
+    answers: [
+      "entity attribute value",
+      "entity-attribute-value",
+      "eav",
+      "eav model",
+      "entity attribute value model",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Entity-Attribute-Value. It buys arbitrary user-defined fields by giving up everything a relational database was for: no types, no constraints, no useful indexes, and one join per attribute to reconstruct a single row. Where the requirement is real, a JSON column is usually the better trade — the real columns stay real and the flexibility is confined.",
+    concepts: ["Entity-Attribute-Value", "Schemaless design", "Type safety", "Query complexity"],
+    tags: ["antipattern", "flexibility"],
+  },
+  {
+    id: "de-schema-009",
+    type: "mcq",
+    track: "data-enterprise",
+    topic: "schema-design",
+    difficulty: 4,
+    context:
+      "A scheduling feature stores appointment times without time zone information, in whatever the server's local time happened to be. The service later moves region, and daylight saving shifts some appointments by an hour.",
+    prompt: "What should a timestamp column store to avoid this?",
+    options: [
+      {
+        id: "a",
+        text: "An absolute instant in UTC, keeping the user's intended time zone alongside it whenever local wall time is what was agreed",
+      },
+      { id: "b", text: "Local time together with a fixed numeric offset from UTC" },
+      { id: "c", text: "UTC only, converting for display using the viewer's browser time zone" },
+      { id: "d", text: "A Unix epoch integer, which has no time zone problem at all" },
+    ],
+    answer: "a",
+    explanation:
+      "An instant and a wall-clock intention are different facts. 'This happened at 14:03' is an instant, and UTC captures it completely. 'The meeting is at 09:00 in Berlin next March' is an intention, and storing only the instant means a change to Germany's daylight saving rules silently moves the meeting. An offset is not a zone, because offsets change.",
+    concepts: ["UTC", "IANA time zone database", "Daylight saving time", "Wall clock time"],
+    tags: ["time", "types"],
+  },
+  {
+    id: "de-mig-005",
+    type: "multi",
+    track: "data-enterprise",
+    topic: "migrations",
+    difficulty: 3,
+    context:
+      "A new column has to be populated for 40 million existing rows while the service keeps taking writes.",
+    prompt:
+      "Which practices make a large backfill safe to run in production? Select all that apply.",
+    options: [
+      { id: "a", text: "Process in bounded batches, committing each batch" },
+      { id: "b", text: "Pause between batches so replication lag and load can recover" },
+      { id: "c", text: "Make it resumable, so a failure halfway does not mean starting again" },
+      { id: "d", text: "Wrap the whole backfill in one transaction so it is atomic" },
+      { id: "e", text: "Disable the table's indexes for the duration" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The instinct to make it atomic is precisely what breaks it: one transaction across 40 million rows holds locks for hours, bloats the write-ahead log, and cannot be interrupted without losing all of it. Batching gives up atomicity deliberately — which is why the backfill must be idempotent and the code must tolerate both the filled and unfilled state.",
+    concepts: ["Batched backfill", "Replication lag", "Long-running transaction", "Idempotency"],
+    tags: ["backfill", "batching"],
+  },
+  {
+    id: "de-mig-006",
+    type: "mcq",
+    track: "data-enterprise",
+    topic: "migrations",
+    difficulty: 4,
+    context:
+      "A migration adds a NOT NULL column with a default to a 200-million-row table. On an older database version this rewrites every row under an exclusive lock; on a newer one it returns almost instantly.",
+    prompt:
+      "Why can adding a defaulted NOT NULL column be instant on one version and a full rewrite on another?",
+    options: [
+      {
+        id: "a",
+        text: "Newer versions store the default as metadata and apply it on read, so no existing row is touched",
+      },
+      { id: "b", text: "Newer versions do the rewrite in the background after the migration returns" },
+      { id: "c", text: "Older versions do not support default values on new columns" },
+      { id: "d", text: "The difference comes from the storage engine's page size" },
+    ],
+    answer: "a",
+    explanation:
+      "The behaviour depends on engine and version, which is the actual lesson: a migration that is instant on your laptop can be an outage in production. Check what your specific version does with the specific operation, and when unsure do it manually — add the column nullable, backfill in batches, then add the constraint.",
+    concepts: ["Online schema change", "Exclusive lock", "Table rewrite", "Expand and contract"],
+    tags: ["locks", "versions"],
+  },
+  {
+    id: "de-mig-007",
+    type: "multi",
+    track: "data-enterprise",
+    topic: "migrations",
+    difficulty: 4,
+    prompt:
+      "Which properties must a migration have to be safe under a rolling deploy? Select all that apply.",
+    options: [
+      { id: "a", text: "The old code keeps working against the new schema" },
+      { id: "b", text: "The new code keeps working against the old schema" },
+      { id: "c", text: "Re-running it produces the same result rather than an error" },
+      { id: "d", text: "It runs in the application's start-up path, so it cannot be forgotten" },
+      { id: "e", text: "It completes inside a single transaction, whatever its size" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "During a rolling deploy both versions of the code run at once against one database, so a migration is only safe when it is compatible in both directions — which is exactly what forces schema and code changes into separate deploys. Migrating at start-up means every replica races to run it, and a failure takes down the deploy rather than just the migration.",
+    concepts: ["Rolling deployment", "Backwards compatibility", "Idempotent migration", "Expand and contract"],
+    tags: ["rolling-deploy", "compatibility"],
+  },
+  {
+    id: "de-dbsec-005",
+    type: "mcq",
+    track: "data-enterprise",
+    topic: "db-security",
+    difficulty: 3,
+    context:
+      "A query is assembled by escaping quotes in user input and concatenating it into the SQL string. The team argues that the escaping is thorough.",
+    prompt: "Why are parameterised queries safer than escaping input into SQL?",
+    options: [
+      {
+        id: "a",
+        text: "A parameter is never parsed as SQL — the statement's structure is fixed before the value is supplied",
+      },
+      { id: "b", text: "Parameterised queries escape the input more thoroughly than hand-written escaping" },
+      { id: "c", text: "Parameterised queries are validated against the schema before execution" },
+      { id: "d", text: "The database refuses any query containing user-supplied input" },
+    ],
+    answer: "a",
+    explanation:
+      "Escaping tries to make dangerous input safe, so it fails on any case you did not anticipate — an encoding, a quoting mode, a numeric context where quotes are not required. Parameters delete the category instead: the statement is planned first and the value arrives as data, so no path exists by which it can become syntax.",
+    concepts: ["SQL injection", "Parameterised query", "Prepared statement", "Input escaping"],
+    tags: ["injection", "queries"],
+  },
+  {
+    id: "de-dbsec-006",
+    type: "matching",
+    track: "data-enterprise",
+    topic: "db-security",
+    difficulty: 2,
+    prompt: "Match each database protection to the threat it actually addresses.",
+    pairs: [
+      {
+        left: "Encryption at rest",
+        right: "Someone obtains the physical disk or a storage snapshot",
+      },
+      {
+        left: "Encryption in transit",
+        right: "Someone reads or alters traffic between application and database",
+      },
+      {
+        left: "Row-level security",
+        right: "A query on a legitimate connection reaches another tenant's rows",
+      },
+      {
+        left: "Least-privilege roles",
+        right: "A compromised application account can do more than it needs to",
+      },
+      {
+        left: "Audit logging",
+        right: "You need to establish afterwards who read or changed what",
+      },
+    ],
+    explanation:
+      "They do not substitute for one another, which is why 'the database is encrypted' answers so little. Encryption at rest is transparent to any authenticated connection, so it does nothing about an application that is already compromised — that is what the last three are for.",
+    concepts: ["Encryption at rest", "Row-level security", "Least privilege", "Audit log"],
+    tags: ["threat-model", "controls"],
+  },
+  {
+    id: "de-dbsec-007",
+    type: "multi",
+    track: "data-enterprise",
+    topic: "db-security",
+    difficulty: 4,
+    prompt:
+      "Which practices reduce the damage from a leaked database credential? Select all that apply.",
+    options: [
+      { id: "a", text: "Short-lived credentials issued on demand instead of a static password" },
+      { id: "b", text: "A separate credential per service, so a leak can be attributed and revoked narrowly" },
+      { id: "c", text: "Network rules that accept connections only from known sources" },
+      { id: "d", text: "Storing the credential encrypted in the repository and decrypting it at build time" },
+      { id: "e", text: "Rotating one shared credential once a year" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Each of the first three shortens either the exposure window or the blast radius, which are the only two things still under your control once a credential is out. An encrypted secret in the repository puts ciphertext in history permanently and plaintext into every build artefact, and annual rotation means a January leak stays live until December.",
+    concepts: ["Credential rotation", "Short-lived credentials", "Network allowlist", "Blast radius"],
+    tags: ["credentials", "rotation"],
+  },
+  {
+    id: "de-priv-005",
+    type: "ordering",
+    track: "data-enterprise",
+    topic: "data-privacy",
+    difficulty: 3,
+    prompt: "Put the steps of honouring a data deletion request in order.",
+    items: [
+      "Verify that the requester is who they claim to be",
+      "Locate every store holding their data, including backups, logs, and analytics exports",
+      "Decide what must be retained under a legal obligation, and record why",
+      "Delete or irreversibly anonymise everything else",
+      "Propagate the deletion to processors and third parties who received the data",
+      "Record what was done and when, so the deletion can be evidenced",
+    ],
+    explanation:
+      "Verification comes first because a deletion request is itself an attack surface — an unverified one is a way to erase somebody else's account. The step most often missed is propagation: data you sent to an analytics or support vendor is still your responsibility, and their deletion does not happen on its own.",
+    concepts: ["Right to erasure", "Data inventory", "Data processor", "Retention exception"],
+    tags: ["erasure", "process"],
+  },
+  {
+    id: "de-priv-006",
+    type: "multi",
+    track: "data-enterprise",
+    topic: "data-privacy",
+    difficulty: 3,
+    prompt:
+      "Which techniques genuinely reduce a dataset's privacy risk while keeping it useful? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "Aggregating to a level where no group is small enough to identify an individual",
+      },
+      {
+        id: "b",
+        text: "Replacing direct identifiers with tokens held in a separate, tightly controlled store",
+      },
+      { id: "c", text: "Adding calibrated statistical noise to query results" },
+      { id: "d", text: "Dropping the name column while keeping postcode, date of birth, and sex" },
+      { id: "e", text: "Hashing each email address with an unsalted hash" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The two rejected options are the ones teams reach for and then describe as anonymisation. Postcode, date of birth and sex together identify most of a population, and an unsalted hash of an email is reversed by anyone willing to hash a list of addresses — so both leave you holding personal data you have stopped protecting.",
+    concepts: ["Pseudonymisation", "Differential privacy", "Re-identification", "k-anonymity"],
+    tags: ["anonymisation", "risk"],
+  },
 ];
