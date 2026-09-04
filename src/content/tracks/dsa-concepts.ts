@@ -43,6 +43,10 @@ const topics: Topic[] = [
 
 **Union-find** — near-constant merging and connectivity checks over disjoint sets. Connected components and cycle detection in an undirected graph.
 
+**Do not skip the plain array.** A contiguous array is the fastest thing on real hardware for anything you scan, because the values sit next to one another and the prefetcher stays ahead of you. Asymptotic analysis assumes every memory access costs the same, which stopped being true decades ago, so a linear scan of a small array routinely beats the hash map or linked list that should have won — often up to a few hundred elements. Where two candidates share a complexity, prefer the contiguous one.
+
+**The interesting structures are usually two simple ones joined** at the operation each is good at. An LRU cache is a hash map for lookup plus a doubly linked list for recency; a top-k over a stream is a heap plus whatever holds the stream. So when no single structure has every operation you need fast, that is a signal to compose rather than to compromise on the one you already know.
+
 **The interview move** is to state the requirement first: "I need the minimum repeatedly and I don't need full ordering, so a heap." That sentence is worth more than the name alone, because it shows the choice was derived rather than recalled.`,
     resources: [
       {
@@ -94,6 +98,10 @@ Say the pattern out loud when you spot it: "this is a sliding window, because we
 **Hashing for lookup** — building a set of seen values costs O(n) memory and converts an O(n²) nested scan into O(n). This is the single most common optimisation in interviews, and it is worth saying "I'll trade O(n) space for O(n) time" as you do it.
 
 **When memory is the constraint** the trade reverses. Sorting in place at O(n log n) beats hashing when you cannot afford the extra array. Streaming algorithms give approximate answers in bounded memory — HyperLogLog estimates distinct counts in kilobytes rather than storing every value, and a Bloom filter answers "definitely not present" or "probably present" in a fraction of the space of a real set.
+
+**Measure before you trade.** Each resource is only worth spending where it is genuinely scarce, and intuition about which one is scarce here is unreliable — a cache that introduces an invalidation bug to save two milliseconds is a bad trade made confidently. Profile first, and prefer the version of the trade that is easy to undo when the measurement changes.
+
+**There is a third resource, and it is often the largest.** Every precomputed copy is complexity somebody maintains: a cache is a consistency obligation, a denormalised column is an update path, a memo table is a lifetime question nobody asked. None of that appears in a comparison of two Big-O expressions, and it is usually what decides whether the optimisation survives the next six months. The simplest version that is fast enough beats the fastest version nobody dares change.
 
 **The real-world version** is the same reasoning: a denormalised table, a materialised view, and a cache are all precomputation. The cost is memory plus a consistency obligation. Recognising that a database index is a space-for-time trade is the point where these two tracks meet.`,
     resources: [
