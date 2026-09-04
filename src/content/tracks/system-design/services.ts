@@ -16,7 +16,11 @@ That makes **idempotency** the consumer's job, not the broker's. Give each messa
 
 **Failure handling.** A message that always fails will be redelivered forever and block progress, so a *dead letter queue* catches messages after N attempts for human inspection. Retries need exponential backoff and jitter — synchronised retries are how a brief blip becomes a sustained outage.
 
-**Ordering** is weaker than people expect. Most brokers guarantee order only within a partition or message group, so if order matters, it must be part of the key design.`,
+**Ordering** is weaker than people expect. Most brokers guarantee order only within a partition or message group, so if order matters, it must be part of the key design.
+
+**Asynchrony has a cost, and the caller pays it.** The producer stops waiting, and in exchange nothing tells it whether the work succeeded. That means a status it can poll, or a notification, or an accepted-then-failed state somebody has to reconcile — none of which existed while the call was synchronous. If the caller genuinely needs the answer before it can respond, a queue does not remove the waiting, it moves it somewhere harder to see.
+
+**Watch the queue, not only the consumers.** Depth and the age of the oldest message are the two numbers that matter: depth says whether you are keeping up, age says how stale the worst case already is. A consumer that is running, healthy, and falling steadily behind looks identical to a healthy one on a CPU dashboard. Alert on lag, and alert on dead letter queue depth separately, or failures pile up somewhere nobody is looking.`,
     resources: [
       {
         label: "AWS — SQS dead letter queues",
@@ -68,7 +72,11 @@ That makes **idempotency** the consumer's job, not the broker's. Give each messa
 
 **Distributed failure.** Every call can now be slow, fail, or fail partially. Timeouts are mandatory: without one, a slow dependency exhausts your thread pool and your service dies of someone else's problem. *Circuit breakers* stop hammering a failing dependency and let it recover. *Bulkheads* isolate resource pools so one bad dependency cannot consume every connection.
 
-**Transactions across services** do not exist. The patterns are *sagas* — a sequence of local transactions with compensating actions for rollback — or the *outbox pattern*, where you write the event to a table in the same transaction as the data change, then publish it asynchronously. Both trade atomicity for eventual consistency, deliberately.`,
+**Transactions across services** do not exist. The patterns are *sagas* — a sequence of local transactions with compensating actions for rollback — or the *outbox pattern*, where you write the event to a table in the same transaction as the data change, then publish it asynchronously. Both trade atomicity for eventual consistency, deliberately.
+
+**The contract between services is the hard part.** Once a call crosses a network it crosses a team boundary too, so every change to a response shape is a change to somebody else's release schedule. Stay additive, version explicitly when you cannot, and verify with consumer-driven contract tests rather than hoping — a mock both sides trust and neither verifies is how an integration breaks in staging.
+
+**Budget for the operational tax.** A distributed system needs things a monolith gets for nothing: distributed tracing to answer which hop was slow, correlated logs to reconstruct one request, per-service dashboards and on-call rotas, and a deploy pipeline repeated across every repository. None of it is optional and none of it is interesting, which is why it tends to be discovered rather than planned. A team that cannot absorb that cost has bought a liability rather than a boundary.`,
     resources: [
       {
         label: "Martin Fowler — Microservice trade-offs",
@@ -94,7 +102,11 @@ That makes **idempotency** the consumer's job, not the broker's. Give each messa
 
 **Keeping it fresh.** The search index is a denormalised copy, so it needs an update path and it will drift. Options are dual writes (simple, silently drifts on partial failure), change data capture from the database log (robust, more infrastructure), or periodic full reindexing (simple, stale between runs).
 
-**Vector search** matches on embedding similarity rather than exact terms, which finds semantically related results that share no words. Hybrid search combines both, because pure vector search is weak at exact identifiers like SKUs or error codes.`,
+**Vector search** matches on embedding similarity rather than exact terms, which finds semantically related results that share no words. Hybrid search combines both, because pure vector search is weak at exact identifiers like SKUs or error codes.
+
+**Measure relevance, or you are guessing.** Search quality is not something you can eyeball from a handful of queries you invented yourself. Build a judgement set — real queries paired with the results that should have come back — and track precision and recall against it, so a tuning change that helps one query while quietly breaking nine becomes visible. Click-through and abandonment from real traffic supply the rest, and they are the only signal reflecting what people actually wanted.
+
+**Design for the queries you will really get.** They are short, misspelt, and frequently not sentences: a part number, half a product name, an error string pasted from a screen. Edit-distance tolerance handles typos, synonym lists close the gap between what you call something and what a customer calls it, and the no-results path deserves real design — a search that silently returns nothing is where people leave.`,
     resources: [
       {
         label: "Elasticsearch — Analysis",
@@ -119,7 +131,11 @@ That makes **idempotency** the consumer's job, not the broker's. Give each messa
 
 **The four golden signals** — latency, traffic, errors, saturation — cover most of what you need from a service dashboard. **Alert on symptoms, not causes.** "Checkout error rate above 2%" tells you users are hurting. "CPU above 80%" might be perfectly healthy, and paging a human for it teaches them to ignore pages, which is how real alerts get missed.
 
-**Cardinality** is the hidden cost. Every distinct label combination on a metric creates a new time series, so adding a user id as a label can multiply your metrics bill by millions. High-cardinality data belongs in logs and traces.`,
+**Cardinality** is the hidden cost. Every distinct label combination on a metric creates a new time series, so adding a user id as a label can multiply your metrics bill by millions. High-cardinality data belongs in logs and traces.
+
+**Service level objectives** turn all of this into a decision rule. An SLO states a target — 99.9% of checkout requests served under 300ms over 30 days — and the *error budget* is whatever remains: 0.1%, or roughly 43 minutes a month. Spending it gradually is normal; spending it in one afternoon is a signal to stop shipping features and fix reliability instead. The value is that it converts an argument about whether the service is fast enough into arithmetic both sides already agreed to.
+
+**Make the data usable before you need it.** Log structured events rather than prose, so a field can be filtered instead of grepped for. Attach a request id to everything and propagate it, or you cannot join a log line to the trace it belongs to. And sample deliberately: keeping every trace at volume is unaffordable, while a flat 1% throws away the rare slow request you most wanted, so sample errors and slow requests far more heavily than successes.`,
     resources: [
       {
         label: "Google SRE — Monitoring distributed systems",

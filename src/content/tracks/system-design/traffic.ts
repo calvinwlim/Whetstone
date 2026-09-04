@@ -94,7 +94,11 @@ export const topics: Topic[] = [
 
 **Token bucket** refills tokens at a steady rate up to a cap, and each request spends one. It permits bursts up to the bucket size while bounding the sustained rate, which usually matches what you actually want from an API. **Leaky bucket** drains at a fixed rate and smooths bursts away entirely, which is better when the thing downstream genuinely cannot absorb a spike.
 
-**Distributed limiting** is where it gets hard. Per-instance counters let the real limit drift to *limit x instances*. A shared store (typically Redis) gives one global count at the cost of a network hop on every request. Return 429 with a Retry-After header so well-behaved clients back off instead of hammering.`,
+**Distributed limiting** is where it gets hard. Per-instance counters let the real limit drift to *limit x instances*. A shared store (typically Redis) gives one global count at the cost of a network hop on every request. Return 429 with a Retry-After header so well-behaved clients back off instead of hammering.
+
+**Not every request costs the same.** A limit counted in requests is easy to reason about and wrong for an API where one call reads a row and another runs a report. *Cost-based limiting* charges a weight per operation against the same bucket, which is what GraphQL query-cost limits and cloud provider quotas do. It takes more work to calibrate, and it is the only approach that stops your single most expensive endpoint from being the whole attack surface.
+
+**Decide in advance what happens when the limiter itself fails.** If the shared counter is unreachable, failing *closed* rejects legitimate traffic because a component that exists purely to protect you is down; failing *open* removes the protection at exactly the moment load is unusual. Most services fail open and drop back to a coarse per-instance limit, which bounds the worst case without letting a Redis blip become an outage. Either is defensible; choosing by accident is not.`,
     resources: [
       {
         label: "Cloudflare — Rate limiting",

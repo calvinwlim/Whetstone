@@ -38,6 +38,10 @@ export const topics: Topic[] = [
 
 **What you lose.** Cross-shard joins and transactions become application problems. Unique constraints stop being free. Rebalancing means moving data while serving traffic, which is why consistent hashing and virtual nodes are so common — they bound how much moves.
 
+**Hotspots survive a good hash.** An even distribution of keys is not an even distribution of load: one celebrity account, one enormous tenant, or one product on the front page puts a disproportionate share of traffic on whichever shard happens to hold it. The answers are a composite key that spreads a single logical entity across several partitions, a cache in front of the keys you know are hot, or moving the largest tenants onto shards of their own.
+
+**Plan the resharding you promise never to do.** The cheapest insurance is *logical shards*: hash into a large fixed number of buckets — a thousand or so — and keep a small table mapping buckets to machines. Growing then moves buckets rather than rehashing keys, and the mapping is something you can change. Teams that hash directly onto the machine count discover that adding capacity means recomputing the placement of every row.
+
 The honest rule: do not shard until you must. A single well-indexed database with a read replica handles far more than most teams assume, and unsharding is much harder than sharding.`,
     resources: [
       {
