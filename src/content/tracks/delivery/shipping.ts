@@ -440,4 +440,176 @@ export const questions: Question[] = [
     concepts: ["Lockfile", "Reproducible build", "Dependency resolution"],
     tags: ["lockfile", "fundamentals"],
   },
+  {
+    id: "dl-cloud-007",
+    type: "ordering",
+    track: "delivery",
+    topic: "cloud-deployment",
+    difficulty: 3,
+    prompt: "Put the steps a process should take on receiving a shutdown signal in order.",
+    items: [
+      "The process receives SIGTERM",
+      "It starts failing its readiness probe, so no new traffic is routed to it",
+      "It finishes the requests already in flight",
+      "It closes database connections and flushes buffers",
+      "It exits cleanly, before the grace period runs out",
+    ],
+    explanation:
+      "The second step is the one teams miss, and skipping it is why deploys emit a burst of errors: SIGTERM and the load balancer's deregistration are not synchronised, so a process that exits immediately drops requests already routed to it. Exiting before the grace period matters too — after it, SIGKILL finishes nothing.",
+    concepts: ["Graceful shutdown", "SIGTERM", "Readiness probe", "Grace period"],
+    tags: ["shutdown", "deploys"],
+  },
+  {
+    id: "dl-cloud-008",
+    type: "multi",
+    track: "delivery",
+    topic: "cloud-deployment",
+    difficulty: 4,
+    prompt:
+      "Which conditions have to hold for horizontal autoscaling to actually work? Select all that apply.",
+    options: [
+      { id: "a", text: "Instances are stateless, so any of them can serve any request" },
+      { id: "b", text: "Startup is fast enough that new capacity arrives before the spike passes" },
+      { id: "c", text: "Downstream dependencies can absorb the extra connections" },
+      { id: "d", text: "The scale-up threshold is set as low as possible, so it reacts early" },
+      { id: "e", text: "CPU is the scaling signal, whatever the service actually spends time on" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The third is what turns a scaling event into an outage: doubling the application tier doubles the connections against a database whose limit did not move. A threshold set too low produces thrashing, and CPU is the wrong signal for a service that spends its time waiting on I/O, where queue depth or latency says far more.",
+    concepts: ["Horizontal autoscaling", "Connection pool exhaustion", "Scaling signal", "Thrashing"],
+    tags: ["autoscaling", "capacity"],
+  },
+  {
+    id: "dl-cloud-009",
+    type: "short",
+    track: "delivery",
+    topic: "cloud-deployment",
+    difficulty: 3,
+    context:
+      "Someone edits a security group by hand in the console to unblock an incident. It is never written back into the Terraform configuration, so the next apply silently reverts it.",
+    prompt:
+      "What is this divergence between declared and actual infrastructure called? (Two words.)",
+    answers: [
+      "configuration drift",
+      "config drift",
+      "infrastructure drift",
+      "state drift",
+      "drift",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Configuration drift. The manual change is usually not the mistake — unblocking an incident by hand is often right — the mistake is not closing the loop afterwards, which leaves the code lying about production. Run a plan on a schedule and alert on any diff, so drift surfaces in hours rather than during an unrelated deploy weeks later.",
+    concepts: ["Configuration drift", "Infrastructure as code", "Declarative configuration", "Reconciliation"],
+    tags: ["iac", "drift"],
+  },
+  {
+    id: "dl-flag-006",
+    type: "mcq",
+    track: "delivery",
+    topic: "feature-flags",
+    difficulty: 4,
+    context:
+      "A percentage rollout evaluates a fresh random number on every request. Users see the new interface on one page load and the old one on the next.",
+    prompt: "What is wrong with evaluating a percentage rollout randomly per request?",
+    options: [
+      {
+        id: "a",
+        text: "Assignment must be a deterministic hash of a stable identifier, so a user always lands in the same bucket",
+      },
+      { id: "b", text: "The random number generator is not uniform enough for this" },
+      { id: "c", text: "The rollout percentage is too low to be stable" },
+      { id: "d", text: "The flag should be evaluated on the client rather than the server" },
+    ],
+    answer: "a",
+    explanation:
+      "A percentage rollout is a sampling decision, and it has to be the same decision every time for the same user — otherwise you get neither a coherent experience nor a usable measurement, because the treatment and control groups reshuffle continuously and no comparison between them means anything. Hash the user id together with the flag key.",
+    concepts: ["Deterministic bucketing", "Percentage rollout", "Sticky assignment", "Experiment validity"],
+    tags: ["rollout", "bucketing"],
+  },
+  {
+    id: "dl-flag-007",
+    type: "ordering",
+    track: "delivery",
+    topic: "feature-flags",
+    difficulty: 2,
+    prompt: "Put the life of a release toggle in order.",
+    items: [
+      "Add the flag defaulting to off, and ship the code behind it",
+      "Turn it on for the team internally and check the behaviour",
+      "Roll it out to a small percentage of users and watch the metrics",
+      "Raise the percentage in stages until it reaches everyone",
+      "Delete the flag and the old code path once it has been fully on for a while",
+    ],
+    explanation:
+      "The final step is the one that never happens, and it is where flag debt comes from: every surviving flag doubles the number of code paths anyone reasoning about the system has to hold at once. Give release toggles an expiry date when you create them, and treat an expired flag as a bug rather than a preference.",
+    concepts: ["Release toggle", "Flag debt", "Progressive delivery", "Code path explosion"],
+    tags: ["lifecycle", "rollout"],
+  },
+  {
+    id: "dl-flag-008",
+    type: "multi",
+    track: "delivery",
+    topic: "feature-flags",
+    difficulty: 3,
+    prompt:
+      "Which changes are worth putting behind a feature flag? Select all that apply.",
+    options: [
+      { id: "a", text: "A rewrite of a critical path, so it can be switched off instantly" },
+      { id: "b", text: "A change whose effect you want to measure against current behaviour" },
+      { id: "c", text: "An integration with a third party that may need disabling during their outage" },
+      { id: "d", text: "A typo fix in a button label" },
+      { id: "e", text: "A migration that has already dropped the old column" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "A flag earns its keep when you would genuinely want to change the answer at runtime without deploying. A typo fix has nothing worth toggling and adds a code path forever. The migration is the instructive one: a flag switches between two things that both still work, so it cannot protect you once the alternative has been destroyed.",
+    concepts: ["Feature flag", "Kill switch", "Reversibility", "Flag debt"],
+    tags: ["when-to-flag", "reversibility"],
+  },
+  {
+    id: "dl-dep-007",
+    type: "multi",
+    track: "delivery",
+    topic: "dependencies",
+    difficulty: 3,
+    prompt:
+      "What is worth checking before adding a dependency to a project? Select all that apply.",
+    options: [
+      { id: "a", text: "How much of it you need, against how much you would have to write yourself" },
+      { id: "b", text: "Whether it is maintained, and what happens to you if it stops being" },
+      { id: "c", text: "What it pulls in transitively, and what those packages run at install time" },
+      { id: "d", text: "How many stars it has on its repository" },
+      { id: "e", text: "Whether its author has published other popular packages" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The question is what you are taking on, not how popular it is: every dependency is code you will ship, patch, and eventually migrate off. The transitive check matters most and is done least — one small package can bring dozens of others, and an install script in any of them runs with your developer's permissions.",
+    concepts: ["Transitive dependency", "Install script", "Maintenance burden", "Supply chain attack"],
+    tags: ["evaluation", "adding"],
+  },
+  {
+    id: "dl-dep-008",
+    type: "mcq",
+    track: "delivery",
+    topic: "dependencies",
+    difficulty: 4,
+    context:
+      "A scanner reports a critical vulnerability in a package four levels down the dependency tree. The advisory concerns a parsing function your application never calls.",
+    prompt: "How should a critical advisory in an unreachable code path be handled?",
+    options: [
+      {
+        id: "a",
+        text: "Assess reachability, upgrade on the normal cadence, and record why it was not urgent",
+      },
+      { id: "b", text: "Ship an emergency patch, because the severity rating is critical" },
+      { id: "c", text: "Suppress the alert permanently, because the code is not reachable" },
+      { id: "d", text: "Remove the top-level dependency that pulled it in" },
+    ],
+    answer: "a",
+    explanation:
+      "Severity describes the vulnerability, not your exposure — a critical flaw in a path you never execute is not a critical risk to you. Treating every advisory as an emergency exhausts a team and teaches it to ignore the scanner, which is how the reachable one gets missed. Record the reasoning, because reachability changes the moment someone calls that function.",
+    concepts: ["Reachability analysis", "CVE severity", "Vulnerability triage", "Alert fatigue"],
+    tags: ["cve", "triage"],
+  },
 ];

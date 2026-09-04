@@ -511,4 +511,183 @@ export const questions: Question[] = [
     concepts: ["Canary release", "Error budget", "Statistical significance"],
     tags: ["ci-cd", "canary"],
   },
+  {
+    id: "dl-vcs-007",
+    type: "multi",
+    track: "delivery",
+    topic: "version-control",
+    difficulty: 3,
+    prompt:
+      "What makes a commit message useful to someone reading it a year later? Select all that apply.",
+    options: [
+      { id: "a", text: "A subject line saying what changed, readable in a one-line log" },
+      { id: "b", text: "A body explaining why, since the diff already shows what" },
+      { id: "c", text: "A reference to the issue or incident that prompted it" },
+      { id: "d", text: "A list of every file the commit touches" },
+      { id: "e", text: "The author's name and the date the change was made" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The commit log is the only documentation guaranteed to still exist and still be attached to the code. Its value is almost entirely in the why, because the what is recoverable from the diff and the metadata is recorded for you. The test: would someone running git blame on a confusing line learn anything?",
+    concepts: ["Commit message", "git blame", "Atomic commit", "Change rationale"],
+    tags: ["commits", "history"],
+  },
+  {
+    id: "dl-vcs-008",
+    type: "matching",
+    track: "delivery",
+    topic: "version-control",
+    difficulty: 3,
+    prompt: "Match each Git operation to what it does to history.",
+    pairs: [
+      { left: "git revert", right: "Adds a new commit that undoes an earlier one" },
+      {
+        left: "git reset --hard",
+        right: "Moves the branch pointer and discards the working tree",
+      },
+      {
+        left: "git rebase",
+        right: "Replays commits onto a new base, giving them new ids",
+      },
+      { left: "git merge", right: "Joins two histories with a commit that has two parents" },
+      {
+        left: "git commit --amend",
+        right: "Replaces the most recent commit with a different one",
+      },
+    ],
+    explanation:
+      "The dividing line is whether the operation is append-only. Revert and merge add; reset, rebase, and amend rewrite, producing commits with new ids. Rewriting is fine on a branch only you have. On a shared branch it forces everyone else to reconcile against a history that no longer matches the one they pulled.",
+    concepts: ["git revert", "git rebase", "History rewriting", "Force push"],
+    tags: ["history", "commands"],
+  },
+  {
+    id: "dl-vcs-009",
+    type: "ordering",
+    track: "delivery",
+    topic: "version-control",
+    difficulty: 2,
+    prompt: "Put the steps of resolving a merge conflict in order.",
+    items: [
+      "Read both sides and work out what each change was trying to do",
+      "Decide what the combined behaviour should be, rather than picking a side",
+      "Edit the file to that result and remove the conflict markers",
+      "Mark the file resolved and complete the merge",
+      "Run the tests, because a cleanly merged file can still be semantically wrong",
+    ],
+    explanation:
+      "The last step exists because Git merges text, not meaning. Two changes can merge with no conflict at all and still break together — one renames a function, the other adds a call to the old name in a file the first never touched — and that is exactly the case a conflict-free merge will not warn you about.",
+    concepts: ["Merge conflict", "Semantic conflict", "Conflict markers", "Continuous integration"],
+    tags: ["merging", "conflicts"],
+  },
+  {
+    id: "dl-test-008",
+    type: "short",
+    track: "delivery",
+    topic: "testing",
+    difficulty: 4,
+    context:
+      "Instead of a handful of hand-picked cases, a test states an invariant — reversing a list twice returns the original — and the framework generates hundreds of random inputs, shrinking any failure to its smallest form.",
+    prompt: "What style of testing is this? (Two words.)",
+    answers: [
+      "property based testing",
+      "property-based testing",
+      "property based",
+      "property testing",
+      "property based tests",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Property-based testing. It finds the inputs you would never have thought of, which is exactly the set your example tests are missing — empty collections, boundary values, awkward Unicode. Shrinking is what makes it usable in practice: a failure on a 400-element list is reported as the two-element case that actually breaks.",
+    concepts: ["Property-based testing", "Invariant", "Shrinking", "Fuzzing"],
+    tags: ["properties", "generative"],
+  },
+  {
+    id: "dl-test-009",
+    type: "multi",
+    track: "delivery",
+    topic: "testing",
+    difficulty: 3,
+    prompt: "Which practices make a test suite deterministic? Select all that apply.",
+    options: [
+      { id: "a", text: "Injecting the clock, so 'now' is a value the test controls" },
+      { id: "b", text: "Seeding the random number generator, or injecting the source of randomness" },
+      { id: "c", text: "Having each test set up and tear down its own data rather than sharing a fixture" },
+      { id: "d", text: "Adding a short sleep before assertions that sometimes fail" },
+      { id: "e", text: "Retrying a failing test up to three times before reporting it" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The two rejected options are how a flaky test becomes permanent: a sleep makes the race less likely without removing it, and an automatic retry converts a real intermittent bug into a green pipeline. Both work by hiding the signal. The first three remove the non-determinism, by turning ambient state into an explicit input.",
+    concepts: ["Deterministic test", "Dependency injection", "Test isolation", "Flaky test"],
+    tags: ["determinism", "flakiness"],
+  },
+  {
+    id: "dl-test-010",
+    type: "mcq",
+    track: "delivery",
+    topic: "testing",
+    difficulty: 4,
+    context:
+      "Two services are each tested against a mock of the other. Both suites are green, and the integration breaks in staging because the mocks encode an agreement neither service actually keeps.",
+    prompt: "What kind of test catches a mock that has drifted from the real service?",
+    options: [
+      {
+        id: "a",
+        text: "A contract test, where the consumer's expectations are verified against the real provider",
+      },
+      { id: "b", text: "More unit tests on both sides of the boundary" },
+      { id: "c", text: "A snapshot test of each service's response body" },
+      { id: "d", text: "A higher coverage threshold enforced on both services" },
+    ],
+    answer: "a",
+    explanation:
+      "A mock records one team's belief about another team's behaviour, and nothing verifies that belief. A contract test makes it executable: the consumer publishes what it depends on, and the provider's pipeline fails the moment it stops honouring that. An end-to-end suite catches this too — later, more slowly, and with a far worse failure message.",
+    concepts: ["Consumer-driven contract testing", "Test double", "Integration test", "Service boundary"],
+    tags: ["contracts", "mocks"],
+  },
+  {
+    id: "dl-ci-008",
+    type: "multi",
+    track: "delivery",
+    topic: "ci-cd",
+    difficulty: 3,
+    prompt:
+      "Which properties make a CI pipeline worth trusting? Select all that apply.",
+    options: [
+      { id: "a", text: "A red build means something is genuinely broken, every time" },
+      { id: "b", text: "Re-running the same commit produces the same result" },
+      { id: "c", text: "It is fast enough that people wait for it rather than route around it" },
+      { id: "d", text: "Every check is advisory, so a red build never blocks a merge" },
+      { id: "e", text: "It runs only on the main branch, after the merge has landed" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "These are one property in three forms: the pipeline has to be believed. A suite with known-flaky tests trains people to re-run until green, which is the same as having no suite. A slow one trains them to merge and check later. Running only after merge makes main the place breakage is discovered, once everyone has pulled it.",
+    concepts: ["Build reproducibility", "Flaky test", "Pipeline latency", "Merge gate"],
+    tags: ["trust", "pipelines"],
+  },
+  {
+    id: "dl-ci-009",
+    type: "mcq",
+    track: "delivery",
+    topic: "ci-cd",
+    difficulty: 4,
+    context:
+      "A deploy goes out at 17:00 and error rates climb. The team believes it knows the cause, and that a fix would take twenty minutes to write and test.",
+    prompt: "Should the team roll back, or roll forward with the fix?",
+    options: [
+      {
+        id: "a",
+        text: "Roll back — it is the change with a known outcome, and the fix can ship calmly afterwards",
+      },
+      { id: "b", text: "Roll forward, because a rollback would also revert the other changes in the release" },
+      { id: "c", text: "Roll forward, because twenty minutes beats the time a rollback usually takes" },
+      { id: "d", text: "Wait, to see whether the error rate settles on its own" },
+    ],
+    answer: "a",
+    explanation:
+      "A rollback returns you to a state that was demonstrably working an hour ago, which is the only outcome here you can predict. Twenty minutes is an estimate made under pressure by someone who has just been wrong about this code once. Roll forward only when rolling back is genuinely impossible — which is an argument for making rollback cheap.",
+    concepts: ["Rollback", "Roll forward", "Mean time to recovery", "Irreversible migration"],
+    tags: ["incidents", "deploys"],
+  },
 ];
