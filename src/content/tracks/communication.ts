@@ -427,6 +427,246 @@ const questions: Question[] = [
     concepts: ["Steelmanning", "Confidence calibration", "Falsifiable claim"],
     tags: ["framing"],
   },
+  {
+    id: "cm-scope-004",
+    type: "matching",
+    track: "communication",
+    topic: "scoping",
+    difficulty: 3,
+    prompt: "Match each scoping question to what its answer actually decides.",
+    pairs: [
+      {
+        left: "How many users, and how active are they?",
+        right: "Whether one database will do, and for how long",
+      },
+      {
+        left: "How stale may this data be?",
+        right: "Whether caching and read replicas are available to you",
+      },
+      {
+        left: "What happens if this is down for an hour?",
+        right: "How much redundancy is worth paying for",
+      },
+      {
+        left: "Who is allowed to see what?",
+        right: "Whether tenancy and authorisation shape the data model",
+      },
+      {
+        left: "How long must this be kept?",
+        right: "Whether storage growth and deletion become design problems",
+      },
+    ],
+    explanation:
+      "Each of these earns its place by ruling something out. A scoping question whose answer cannot change your design is small talk, however sensible it sounds — and that is the test worth applying before you ask one, particularly when the clock is running.",
+    concepts: ["Non-functional requirements", "Scoping", "Design constraint", "Data retention"],
+    tags: ["questions", "requirements"],
+  },
+  {
+    id: "cm-scope-005",
+    type: "multi",
+    track: "communication",
+    topic: "scoping",
+    difficulty: 3,
+    context:
+      "Your design depends on a question you cannot get answered — the person who knows is not available.",
+    prompt:
+      "What should you do with a question you cannot get answered? Select all that apply.",
+    options: [
+      { id: "a", text: "State the assumption explicitly and keep designing from it" },
+      { id: "b", text: "Say what you would change if the assumption turned out to be wrong" },
+      { id: "c", text: "Note which answers would change the design most, so the question gets prioritised" },
+      { id: "d", text: "Design for every possible answer, so no assumption is needed" },
+      { id: "e", text: "Choose the most technically interesting answer, since it shows more" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "A stated assumption turns an unknown into something someone can correct, which is the entire point; an unstated one is a landmine dressed as a decision. Designing for every branch produces something that serves none of them well, and reads as an inability to commit rather than as thoroughness.",
+    concepts: ["Stated assumption", "Design constraint", "Confidence calibration", "Decision reversibility"],
+    tags: ["assumptions", "unknowns"],
+  },
+  {
+    id: "cm-struct-004",
+    type: "multi",
+    track: "communication",
+    topic: "structuring",
+    difficulty: 3,
+    prompt:
+      "What should a written status update on a piece of work contain? Select all that apply.",
+    options: [
+      { id: "a", text: "Whether it is on track, in the first line" },
+      { id: "b", text: "What has changed since the last update" },
+      { id: "c", text: "What you need from someone else, and by when" },
+      { id: "d", text: "A list of everything you did this week" },
+      { id: "e", text: "A reassurance that it is going well, with detail available on request" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "An update exists so someone can decide whether to intervene, which is why the status belongs first and the ask has to be unmissable. An activity log makes the reader derive the status themselves and most will not bother; reassurance without evidence is the format people quietly learn to skip.",
+    concepts: ["Bottom line up front", "Status reporting", "Signposting", "Actionable request"],
+    tags: ["updates", "writing"],
+  },
+  {
+    id: "cm-struct-005",
+    type: "matching",
+    track: "communication",
+    topic: "structuring",
+    difficulty: 2,
+    prompt: "Match each communication format to what it is best at.",
+    pairs: [
+      {
+        left: "A short written summary",
+        right: "Reaching people asynchronously, in their own time",
+      },
+      {
+        left: "A meeting",
+        right: "Resolving something where the positions are still moving",
+      },
+      {
+        left: "A design document",
+        right: "Getting considered feedback before the work gets expensive",
+      },
+      {
+        left: "A diagram",
+        right: "Showing a structure that prose would make the reader assemble",
+      },
+      { left: "A demo", right: "Establishing that the thing genuinely works" },
+    ],
+    explanation:
+      "Most communication failures are a format mismatch rather than a wording problem: a decision argued in a comment thread, a status broadcast in a meeting, an architecture described in three paragraphs of prose. Choose the format from what the exchange has to accomplish, not from habit.",
+    concepts: ["Synchronous versus asynchronous communication", "Design document", "Diagramming", "Audience adaptation"],
+    tags: ["formats", "channel"],
+  },
+  {
+    id: "cm-trade-004",
+    type: "matching",
+    track: "communication",
+    topic: "tradeoffs",
+    difficulty: 2,
+    prompt: "Match each design choice to the axis it trades along.",
+    pairs: [
+      { left: "Adding a cache", right: "Freshness given up for latency and load" },
+      { left: "Denormalising a table", right: "Write complexity accepted for read speed" },
+      { left: "Sharding a database", right: "Operational complexity accepted for capacity" },
+      {
+        left: "Putting a queue between two services",
+        right: "Immediate consistency given up for availability",
+      },
+      { left: "Buying rather than building", right: "Control given up for time" },
+    ],
+    explanation:
+      "Naming the axis is what turns an opinion into an argument, because it makes explicit what you are willing to lose. It also exposes the cases where nothing is being traded: if a change appears to cost nothing on any axis, you have either found free value or not yet found the axis.",
+    concepts: ["Trade-off analysis", "Design rationale", "Build versus buy", "Denormalisation"],
+    tags: ["axes", "naming"],
+  },
+  {
+    id: "cm-trade-005",
+    type: "short",
+    track: "communication",
+    topic: "tradeoffs",
+    difficulty: 3,
+    context:
+      "Some decisions can be undone cheaply if they prove wrong, and deserve a fast call from whoever is closest. Others are effectively permanent — a data model, a public API, a vendor holding your data — and deserve far more scrutiny.",
+    prompt: "What is this distinction between reversible and irreversible decisions called?",
+    answers: [
+      "one-way door",
+      "two-way door",
+      "one way door",
+      "two way door",
+      "one-way and two-way doors",
+      "door decisions",
+      "reversibility",
+    ],
+    typoTolerance: true,
+    explanation:
+      "One-way and two-way doors. The value is in calibrating how much process a decision earns: applying one-way scrutiny to everything is how organisations become slow, and applying two-way speed to a data model is how they end up with one they cannot change. Most decisions are two-way doors being treated as one-way.",
+    concepts: ["One-way door decision", "Reversibility", "Decision speed", "Blast radius"],
+    tags: ["reversibility", "calibration"],
+  },
+  {
+    id: "cm-aud-003",
+    type: "ordering",
+    track: "communication",
+    topic: "audience",
+    difficulty: 3,
+    context:
+      "You need approval to spend three weeks paying down infrastructure debt, from someone who does not own the code.",
+    prompt:
+      "Put the parts of a proposal to a non-technical decision-maker in order.",
+    items: [
+      "The decision you are asking them to make, in one sentence",
+      "What happens if nothing is done, stated concretely rather than as risk in general",
+      "The option you recommend, with its cost and timeline",
+      "One alternative you are not recommending, and why",
+      "What you need from them, and by when",
+    ],
+    explanation:
+      "Leading with the ask is what stops the proposal being read as background. The alternative matters more than it looks: one option makes the choice 'yes or no to you', while two make it a decision between options — which is the decision they are equipped and willing to make.",
+    concepts: ["Executive communication", "Decision framing", "Risk framing", "Bottom line up front"],
+    tags: ["proposals", "stakeholders"],
+  },
+  {
+    id: "cm-aud-004",
+    type: "short",
+    track: "communication",
+    topic: "audience",
+    difficulty: 3,
+    context:
+      "An engineer explains their service to a new joiner in terms specific to the system, cannot tell which parts are confusing, and genuinely cannot reconstruct what it was like not to know them.",
+    prompt:
+      "What is this difficulty in imagining not knowing something called? (Three words.)",
+    answers: [
+      "curse of knowledge",
+      "the curse of knowledge",
+      "curse of expertise",
+      "knowledge curse",
+    ],
+    typoTolerance: true,
+    explanation:
+      "The curse of knowledge. You cannot detect it by introspection, which is exactly what makes it durable, so the fix has to be external: ask the listener to explain it back, watch where they hesitate, and treat every undefined term as a candidate. Writing for yourself from two years ago is the usable approximation.",
+    concepts: ["Curse of knowledge", "Audience adaptation", "Jargon", "Onboarding"],
+    tags: ["expertise", "bias"],
+  },
+  {
+    id: "cm-dis-004",
+    type: "multi",
+    track: "communication",
+    topic: "disagreement",
+    difficulty: 3,
+    prompt:
+      "When is dropping a technical disagreement the right call? Select all that apply.",
+    options: [
+      { id: "a", text: "The decision is cheap to reverse and trying it teaches you more than arguing" },
+      {
+        id: "b",
+        text: "You have made the argument clearly and what remains is judgement rather than facts",
+      },
+      { id: "c", text: "The cost of being wrong is small and the cost of the argument is not" },
+      { id: "d", text: "You are outranked, whatever the consequences of the decision" },
+      { id: "e", text: "You still believe the decision risks data loss or a security exposure" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The deciding variable is the cost of being wrong, never who prevailed. Reversible decisions are better settled by trying them, and repeating an argument already made spends credibility you will want later. Rank alone is not a reason — and the final case is the one where persisting, in writing, is the job.",
+    concepts: ["Disagree and commit", "Reversible decision", "Escalation", "Professional obligation"],
+    tags: ["letting-go", "judgement"],
+  },
+  {
+    id: "cm-dis-005",
+    type: "short",
+    track: "communication",
+    topic: "disagreement",
+    difficulty: 3,
+    context:
+      "The team picks the approach you argued against. You support it fully — and you write into the design doc what you expected to go wrong, plus the specific metric and threshold that would show it.",
+    prompt:
+      "What is a pre-agreed signal that would reopen a settled decision called? (One word.)",
+    answers: ["tripwire", "trip wire", "tripwires", "trigger"],
+    typoTolerance: true,
+    explanation:
+      "A tripwire. It converts 'I think this will not scale' from an opinion into a testable claim with a threshold attached, which is what lets you commit honestly instead of waiting to be proved right. It protects the team too: without one, a decision gets reopened whenever somebody feels uneasy.",
+    concepts: ["Tripwire", "Disagree and commit", "Falsifiable claim", "Decision record"],
+    tags: ["commitment", "signals"],
+  },
 ];
 
 export const track: Track = {
