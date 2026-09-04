@@ -99,6 +99,10 @@ const topics: Topic[] = [
 
 **Root cause is usually plural.** "The deploy broke it" is where analysis starts. Why did review pass? Why did staging not catch it? Why did alerting take eleven minutes? Each is a separate improvement.
 
+**Declare early, and downgrade freely.** Declaring an incident that turns out to be minor costs a few minutes of several people's attention. Not declaring one costs an hour of a single engineer quietly working a problem nobody else knows about. Agree the severity levels in advance and tie them to user impact rather than to how alarming the graph looks, so the decision during an incident is a lookup rather than a negotiation.
+
+**Long incidents need handover.** Fatigue degrades exactly the judgement an incident demands, and the errors start well before anyone admits to being tired. A handover needs the timeline, the current hypothesis, what has already been ruled out, and who has been told what — which is one more reason the running timeline is not optional. Customer communication is a separate role for a reason: it moves at a different pace from the investigation, and one person attempting both does neither.
+
 **Action items need owners and dates,** or the postmortem was theatre. Fewer real items beat a long aspirational list.`,
     resources: [
       {
