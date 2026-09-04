@@ -456,4 +456,166 @@ export const questions: Question[] = [
     concepts: ["Replay attack", "Timestamp validation", "HMAC signature"],
     tags: ["replay", "security"],
   },
+  {
+    id: "api-style-007",
+    type: "matching",
+    track: "api-integration",
+    topic: "rest-soap",
+    difficulty: 2,
+    prompt:
+      "Match each HTTP method to its safety and idempotency properties.",
+    pairs: [
+      { left: "GET", right: "Safe and idempotent — it should change nothing at all" },
+      { left: "PUT", right: "Not safe, but idempotent — repeating it lands the same state" },
+      { left: "DELETE", right: "Not safe, but idempotent — the second call finds it already gone" },
+      { left: "POST", right: "Neither safe nor idempotent — repeating it creates another" },
+      { left: "PATCH", right: "Not safe, and idempotent only if the patch is written to be" },
+    ],
+    explanation:
+      "These properties are what let infrastructure act without asking you: a proxy may cache a GET, a client library may retry a PUT after a timeout, and neither may do that to a POST. Break them — a GET that mutates — and something in the chain will eventually do the wrong thing on your behalf.",
+    concepts: ["Safe method", "Idempotent method", "HTTP semantics", "Retry safety"],
+    tags: ["http", "methods"],
+  },
+  {
+    id: "api-style-008",
+    type: "multi",
+    track: "api-integration",
+    topic: "rest-soap",
+    difficulty: 3,
+    prompt: "Which are sound REST resource design choices? Select all that apply.",
+    options: [
+      { id: "a", text: "Plural nouns for collections, with the identifier as a path segment" },
+      { id: "b", text: "Nesting only as deep as ownership requires, then linking by id" },
+      {
+        id: "c",
+        text: "Modelling a non-CRUD action as a resource of its own, such as a refund",
+      },
+      { id: "d", text: "Verbs in the path, such as /getUser and /deleteUser" },
+      { id: "e", text: "A single /api endpoint taking an action name in the request body" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The verb is already in the method, so repeating it in the path discards everything HTTP gives you free — caching, retry semantics, and a reader's ability to guess what an endpoint does. The third is where people get stuck: when an operation is not obviously CRUD, model the record of it as a resource rather than reaching for a verb.",
+    concepts: ["Resource modelling", "REST", "URI design", "RPC over HTTP"],
+    tags: ["naming", "resources"],
+  },
+  {
+    id: "api-contract-006",
+    type: "short",
+    track: "api-integration",
+    topic: "api-contracts",
+    difficulty: 3,
+    context:
+      "A provider adds a field to a response and treats it as non-breaking. A consumer that deserialises strictly throws on the unrecognised field, and the integration breaks.",
+    prompt:
+      "What is the consumer-side practice of ignoring unknown fields called? (Either common name is accepted.)",
+    answers: [
+      "tolerant reader",
+      "tolerant reader pattern",
+      "robustness principle",
+      "postels law",
+      "postel's law",
+      "be liberal in what you accept",
+    ],
+    typoTolerance: true,
+    explanation:
+      "The tolerant reader, an application of the robustness principle. Additive change is only non-breaking when consumers are built to tolerate it, so this is half of a bargain rather than something a provider can enforce alone. The counter-argument is real too: tolerance hides genuine mismatches, so validate the fields you depend on and ignore the rest.",
+    concepts: ["Tolerant reader", "Robustness principle", "Schema evolution", "Backwards compatibility"],
+    tags: ["compatibility", "consumers"],
+  },
+  {
+    id: "api-contract-007",
+    type: "multi",
+    track: "api-integration",
+    topic: "api-contracts",
+    difficulty: 3,
+    prompt:
+      "What should a specification carry beyond the shape of each request and response? Select all that apply.",
+    options: [
+      { id: "a", text: "Realistic examples for each operation, including at least one error" },
+      { id: "b", text: "The error schema and the set of codes a client may receive" },
+      { id: "c", text: "Authentication requirements and the scopes each operation needs" },
+      { id: "d", text: "The database schema sitting behind each resource" },
+      { id: "e", text: "The provider's internal service topology" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "A shape tells a consumer what fits, not what to expect, which is why examples and a catalogue of errors do more for integration speed than any amount of per-field documentation. Internal structure does not belong in a contract at all: publish it and consumers depend on it, and then you cannot change it.",
+    concepts: ["OpenAPI", "Error schema", "API documentation", "Implementation leakage"],
+    tags: ["specs", "examples"],
+  },
+  {
+    id: "api-contract-008",
+    type: "matching",
+    track: "api-integration",
+    topic: "api-contracts",
+    difficulty: 3,
+    prompt: "Match each field state to what it should mean to a consumer.",
+    pairs: [
+      {
+        left: "Absent from the response",
+        right: "The provider is not telling you anything about this field",
+      },
+      { left: "Present and null", right: "The value is known, and it is empty or unset" },
+      { left: "Present and an empty array", right: "There are zero items, and that is a fact" },
+      {
+        left: "Optional in a request",
+        right: "You may omit it, and the server applies its default",
+      },
+      {
+        left: "Nullable in a request",
+        right: "You may send null, and that means something specific",
+      },
+    ],
+    explanation:
+      "Conflating these is among the most reliable sources of integration bugs, because each side assumes its own reading and neither is written down. Decide what absent means once and state it. Be strictest about PATCH, where absent means 'leave this alone' and null means 'clear it' — two very different requests.",
+    concepts: ["Nullable versus optional", "PATCH semantics", "Tri-state value", "Schema evolution"],
+    tags: ["nulls", "semantics"],
+  },
+  {
+    id: "api-hook-007",
+    type: "mcq",
+    track: "api-integration",
+    topic: "webhooks",
+    difficulty: 4,
+    context:
+      "Webhook payloads carry the full object as it was at the time of the event. A receiver processes two events out of order, applies the older payload last, and overwrites newer data.",
+    prompt:
+      "What does sending only an event id, and letting receivers fetch current state, buy here?",
+    options: [
+      {
+        id: "a",
+        text: "The receiver always reads current state, so out-of-order delivery cannot resurrect stale data",
+      },
+      { id: "b", text: "It removes the need to verify the payload signature" },
+      { id: "c", text: "It guarantees the events will arrive in order" },
+      { id: "d", text: "It removes the need for delivery retries" },
+    ],
+    answer: "a",
+    explanation:
+      "A thin payload trades an extra round trip for the removal of an entire class of ordering bug: the receiver fetches the truth instead of trusting a snapshot of unknown age. Fat payloads are faster and perfectly fine for immutable facts such as 'payment succeeded', and dangerous for mutable state such as 'customer updated'.",
+    concepts: ["Thin payload", "Event-carried state transfer", "Event ordering", "Idempotency"],
+    tags: ["payloads", "ordering"],
+  },
+  {
+    id: "api-hook-008",
+    type: "multi",
+    track: "api-integration",
+    topic: "webhooks",
+    difficulty: 3,
+    prompt:
+      "What does a webhook provider owe its subscribers? Select all that apply.",
+    options: [
+      { id: "a", text: "Retries with backoff, and a stated limit after which delivery is abandoned" },
+      { id: "b", text: "A view of recent deliveries and their responses, with a way to replay one" },
+      { id: "c", text: "A signing secret that a subscriber can rotate without downtime" },
+      { id: "d", text: "A guarantee that each event is delivered exactly once" },
+      { id: "e", text: "A guarantee that events arrive in the order they occurred" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The last two cannot be promised across a network, and a provider claiming them is one to distrust — which is exactly why idempotency and version checks are the receiver's job. The delivery log is the item most often missing, and it decides whether a broken integration takes ten minutes to diagnose or two days.",
+    concepts: ["At-least-once delivery", "Delivery log", "Secret rotation", "Exponential backoff"],
+    tags: ["provider", "reliability"],
+  },
 ];

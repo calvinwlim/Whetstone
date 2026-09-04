@@ -466,4 +466,126 @@ export const questions: Question[] = [
     concepts: ["API inventory", "Service ownership", "Consumer mapping"],
     tags: ["inventory", "governance"],
   },
+  {
+    id: "api-auth-007",
+    type: "mcq",
+    track: "api-integration",
+    topic: "api-auth",
+    difficulty: 4,
+    context:
+      "A user's session must end the moment their account is disabled. Access tokens are self-contained JWTs with a one-hour lifetime, and resource servers validate them without ever calling the issuer.",
+    prompt: "Why can a stateless JWT not be revoked, and what is the usual answer?",
+    options: [
+      {
+        id: "a",
+        text: "Validation is local, so nothing consults the issuer — shorten the lifetime, and check a revocation list where it matters",
+      },
+      { id: "b", text: "Rotate the signing key, which is the normal way to end one user's session" },
+      { id: "c", text: "JWTs expire automatically the moment the user record changes" },
+      { id: "d", text: "The client is responsible for discarding the token" },
+    ],
+    answer: "a",
+    explanation:
+      "The property that makes a JWT fast is precisely the property that makes it unrevokable: nobody asks the issuer. The practical settlement is a short access token plus a refresh token checked centrally, so a disabled account stays live for at most one access token lifetime. Rotating the signing key works, and signs out everybody.",
+    concepts: ["Token revocation", "Stateless token", "Refresh token", "Token lifetime"],
+    tags: ["jwt", "revocation"],
+  },
+  {
+    id: "api-auth-008",
+    type: "multi",
+    track: "api-integration",
+    topic: "api-auth",
+    difficulty: 3,
+    prompt:
+      "Which statements about OAuth2 scopes are correct? Select all that apply.",
+    options: [
+      {
+        id: "a",
+        text: "A scope bounds what a token may do, drawn from what its holder is already permitted to do",
+      },
+      { id: "b", text: "Granting a scope does not grant permission the user does not have" },
+      {
+        id: "c",
+        text: "The resource server must still check that this caller may act on this specific object",
+      },
+      { id: "d", text: "A scope replaces the need for role or permission checks" },
+      { id: "e", text: "A scope identifies who the user is" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "A scope is a ceiling on delegation rather than a grant of authority: 'read:invoices' lets an application read the invoices its user could already read, and nothing more. Treating the scope as the authorisation decision is how object-level checks get skipped, which is the top entry on the OWASP API risk list.",
+    concepts: ["OAuth scope", "Delegated authorisation", "Broken Object Level Authorization", "Principle of least privilege"],
+    tags: ["scopes", "authorisation"],
+  },
+  {
+    id: "api-sec-007",
+    type: "ordering",
+    track: "api-integration",
+    topic: "api-owasp",
+    difficulty: 3,
+    prompt: "Put the checks an API endpoint should run on a request in order.",
+    items: [
+      "Authenticate the caller and establish who they are",
+      "Check this caller may invoke this operation at all",
+      "Validate the body against the schema, rejecting unknown fields",
+      "Load the object the request names",
+      "Check this caller may act on that specific object",
+      "Bind only the fields this caller is permitted to change",
+    ],
+    explanation:
+      "The fifth step is Broken Object Level Authorization, the most exploited API flaw there is, and it is genuinely separate from the second: being allowed to call GET /invoices/{id} is not being allowed to read invoice 91. The last guards against mass assignment, where binding the whole body lets a caller set a field no form ever exposed.",
+    concepts: ["Broken Object Level Authorization", "Broken Function Level Authorization", "Mass assignment", "Schema validation"],
+    tags: ["owasp", "request-pipeline"],
+  },
+  {
+    id: "api-gov-006",
+    type: "multi",
+    track: "api-integration",
+    topic: "api-governance",
+    difficulty: 3,
+    prompt: "What does a public API need beyond working endpoints? Select all that apply.",
+    options: [
+      { id: "a", text: "A changelog, so a consumer can see what changed and when" },
+      { id: "b", text: "A stated deprecation policy, so consumers know how much notice they get" },
+      { id: "c", text: "A sandbox or test credentials, so integration can be built without real data" },
+      { id: "d", text: "A guarantee that the response shape will never change" },
+      { id: "e", text: "An SDK in every language a consumer might use" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "All three are promises about change rather than features, and they are what makes an API safe to build on: consumers are not asking you to freeze, they are asking to know what happens next. Promising never to change is a promise nobody keeps, and it merely postpones the conversation until it is an emergency.",
+    concepts: ["Deprecation policy", "API changelog", "Developer experience", "Sandbox environment"],
+    tags: ["consumers", "promises"],
+  },
+  {
+    id: "api-gov-007",
+    type: "matching",
+    track: "api-integration",
+    topic: "api-governance",
+    difficulty: 3,
+    prompt: "Match each versioning decision to the consequence it carries.",
+    pairs: [
+      {
+        left: "Publishing a new major version at /v2",
+        right: "You now operate both versions until v1 is retired",
+      },
+      { left: "An additive change within v1", right: "No existing consumer has to do anything" },
+      {
+        left: "Renaming a field within v1",
+        right: "Every consumer reading that field breaks at once",
+      },
+      {
+        left: "Selecting the version by request header",
+        right: "The URL stays clean, and the header is easy to forget to set",
+      },
+      {
+        left: "No versioning scheme at all",
+        right: "Every change becomes a negotiation with every consumer",
+      },
+    ],
+    explanation:
+      "The cost of a major version is operating two of everything, which is why teams work so hard at staying additive. The header row names the real objection to the more RESTful option: an unset header has to default to something, and defaulting to the latest version breaks people silently.",
+    concepts: ["API versioning", "URL versioning", "Header versioning", "Additive change"],
+    tags: ["versioning", "consequences"],
+  },
 ];
