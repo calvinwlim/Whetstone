@@ -509,6 +509,481 @@ const questions: Question[] = [
     concepts: ["Re-estimation", "Early escalation", "Scope negotiation"],
     tags: ["communication", "re-estimation"],
   },
+  {
+    id: "wk-cr-005",
+    type: "matching",
+    track: "workplace",
+    topic: "code-review",
+    difficulty: 2,
+    prompt: "Match each review comment prefix to what it asks the author to do.",
+    pairs: [
+      { left: "nit:", right: "Fix it or do not — either way this does not block the merge" },
+      { left: "question:", right: "Explain, because I may be missing context" },
+      { left: "blocking:", right: "This has to change before I approve" },
+      { left: "future:", right: "Not this pull request — worth a follow-up ticket" },
+      { left: "praise:", right: "Nothing to do; I want you to keep doing this" },
+    ],
+    explanation:
+      "Without labels every comment reads as a gate, so authors either argue about formatting or silently rewrite working code. Making the weight explicit is the cheapest thing a reviewer can do for a slow queue. Praise is not decoration either — it is how the good patterns in a codebase actually spread.",
+    concepts: ["Blocking feedback", "Conventional Comments", "Review latency"],
+    tags: ["feedback", "conventions"],
+  },
+  {
+    id: "wk-cr-006",
+    type: "multi",
+    track: "workplace",
+    topic: "code-review",
+    difficulty: 3,
+    prompt:
+      "What is worth checking about the tests in a pull request? Select all that apply.",
+    options: [
+      { id: "a", text: "Whether the test would actually fail if the behaviour it names regressed" },
+      { id: "b", text: "Whether the cases cover the boundaries this change introduces" },
+      { id: "c", text: "Whether it asserts on behaviour rather than on internal implementation detail" },
+      { id: "d", text: "Whether the diff raised the project's line coverage number" },
+      { id: "e", text: "Whether there is one test per newly added function" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The first is the check almost nobody performs, and it is the one that matters: a test passing against a deliberately broken implementation asserts nothing, and nothing in the tooling will tell you. Coverage counts executed lines rather than verified behaviour, so both of the rejected options can be satisfied by tests that could never fail.",
+    concepts: ["Assertion strength", "Code coverage", "Mutation testing", "Test brittleness"],
+    tags: ["tests", "review"],
+  },
+  {
+    id: "wk-cr-007",
+    type: "mcq",
+    track: "workplace",
+    topic: "code-review",
+    difficulty: 4,
+    context:
+      "A reviewer and an author have gone four rounds on one design point in the comments. Neither has moved, the pull request is three days old, and other work is queued behind it.",
+    prompt:
+      "What should happen after four rounds of unresolved review comments?",
+    options: [
+      {
+        id: "a",
+        text: "Move it to a synchronous conversation, then write the outcome back into the pull request",
+      },
+      { id: "b", text: "The reviewer should approve, since the author owns the code" },
+      { id: "c", text: "The author should implement the reviewer's version to unblock the queue" },
+      { id: "d", text: "Escalate to a manager to settle the technical question" },
+    ],
+    answer: "a",
+    explanation:
+      "Comment threads are a poor medium for disagreement: they are slow, and each written round hardens both positions, because setting an argument down is an act of committing to it. Two rounds is the practical signal to change channel. Recording the outcome back in the thread matters because whoever reads this code next year needs the decision to be discoverable.",
+    concepts: ["Escalation path", "Decision record", "Synchronous communication"],
+    tags: ["disagreement", "escalation"],
+  },
+  {
+    id: "wk-cr-008",
+    type: "ordering",
+    track: "workplace",
+    topic: "code-review",
+    difficulty: 2,
+    prompt: "Put the steps of preparing a change for review in order.",
+    items: [
+      "Split the work so each pull request does one reviewable thing",
+      "Get the automated checks passing, so no reviewer spends attention on formatting",
+      "Read your own diff line by line, as though someone else had written it",
+      "Write a description covering what changed, why, and what you deliberately left out",
+      "Request review, flagging the parts you are least confident about",
+    ],
+    explanation:
+      "Every step before the last one removes work from the reviewer, and reviewer attention is the scarce resource in this loop. Reading your own diff has the highest yield of the five — you will find something, and finding it yourself costs a minute rather than a day of round-trip latency.",
+    concepts: ["Self-review", "Pull request size", "Review latency", "Automated checks"],
+    tags: ["authoring", "preparation"],
+  },
+  {
+    id: "wk-cr-009",
+    type: "short",
+    track: "workplace",
+    topic: "code-review",
+    difficulty: 3,
+    context:
+      "A pull request changes how payments are retried. The comments are almost all about variable naming and brace placement; nobody has questioned the retry logic.",
+    prompt:
+      "What is this misallocation of review attention called? (Either common name is accepted.)",
+    answers: [
+      "bikeshedding",
+      "bike shedding",
+      "bike-shedding",
+      "bikeshed",
+      "law of triviality",
+      "parkinsons law of triviality",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Bikeshedding, from Parkinson's law of triviality: people comment on what they can evaluate cheaply, and naming is cheap where retry semantics are not. Exhortation does not fix it. Deleting the cheap surface does — hand style to a formatter, and the only thing left to discuss is the part that matters.",
+    concepts: ["Bikeshedding", "Law of triviality", "Review priorities"],
+    tags: ["attention", "triviality"],
+  },
+  {
+    id: "wk-cr-010",
+    type: "multi",
+    track: "workplace",
+    topic: "code-review",
+    difficulty: 4,
+    context:
+      "A 2,000-line pull request genuinely cannot be split: it is one generated migration plus the hand-written code that uses it.",
+    prompt:
+      "How should a reviewer handle a large diff that cannot be split? Select all that apply.",
+    options: [
+      { id: "a", text: "Ask the author to walk through it, making the review a conversation" },
+      { id: "b", text: "Review the hand-written part closely and spot-check the generated part" },
+      { id: "c", text: "State in the approval what was and was not actually reviewed" },
+      { id: "d", text: "Approve it, since careful review at this size is impossible anyway" },
+      { id: "e", text: "Reject it on size, since a large pull request is always avoidable" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The honest move is to bound what your approval claims. An approval that silently covers 2,000 unread lines is worse than one naming the 300 that were checked, because the next person assumes the whole thing was reviewed. Generated code is reviewed at its generator, not line by line.",
+    concepts: ["Review scope", "Pull request size", "Generated code", "Defect detection rate"],
+    tags: ["large-diffs", "scope"],
+  },
+  {
+    id: "wk-cr-011",
+    type: "mcq",
+    track: "workplace",
+    topic: "code-review",
+    difficulty: 3,
+    context:
+      "Reviews on a team are thorough but take two days to start. Authors have responded by opening bigger pull requests, batching several changes so they only wait once.",
+    prompt: "Why does slow review latency push pull request size up?",
+    options: [
+      {
+        id: "a",
+        text: "The wait is a fixed cost per review, so authors amortise it by batching more work into one",
+      },
+      { id: "b", text: "Larger pull requests get reviewed sooner, because reviewers prioritise them" },
+      { id: "c", text: "Authors write more code because they have idle time while waiting" },
+      { id: "d", text: "Batching improves defect detection, so authors reasonably prefer it" },
+    ],
+    answer: "a",
+    explanation:
+      "The loop is the trap: latency drives size up, size drives defect detection down, and reviews get slower still because each one is bigger. Attacking the latency with a rota or a same-day norm is what breaks it. Asking for smaller pull requests while the wait stays at two days is asking people to pay that cost more often.",
+    concepts: ["Review latency", "Batch size", "Pull request size", "Feedback loop"],
+    tags: ["throughput", "incentives"],
+  },
+  {
+    id: "wk-dbg-005",
+    type: "ordering",
+    track: "workplace",
+    topic: "debugging",
+    difficulty: 2,
+    prompt: "Put a methodical debugging pass in order.",
+    items: [
+      "Reproduce the failure reliably, as small as you can make it",
+      "Read the error and the stack trace in full, including the actual values",
+      "State a hypothesis specific enough that a test could prove it wrong",
+      "Design the cheapest test that splits the remaining possibilities in half",
+      "Run it, and either discard the hypothesis or narrow it",
+      "Fix the cause, then add a test that fails without the fix",
+    ],
+    explanation:
+      "The middle three steps are a loop, and each pass should eliminate about half of what is left rather than confirm what you already suspect. The final step is what stops the bug returning, and it is the one skipped when the fix arrives late in the day.",
+    concepts: ["Minimal reproducible example", "Falsifiable hypothesis", "Binary search debugging", "Regression test"],
+    tags: ["method", "loop"],
+  },
+  {
+    id: "wk-dbg-006",
+    type: "short",
+    track: "workplace",
+    topic: "debugging",
+    difficulty: 3,
+    context:
+      "A crash happens reliably in production. Attach a debugger or add logging around the failing line and it stops; take them away and it comes back.",
+    prompt: "What is a bug that disappears when observed called? (One word.)",
+    answers: ["heisenbug", "heisen bug", "heisenbugs", "heisen-bug"],
+    typoTolerance: true,
+    explanation:
+      "A heisenbug, after the uncertainty principle. It is nearly always timing or memory ordering: the logging adds a delay or a barrier that makes the race lose. So the disappearance is your strongest piece of evidence — it says concurrency rather than logic, and points at the interleaving rather than the line.",
+    concepts: ["Heisenbug", "Race condition", "Observer effect"],
+    tags: ["concurrency", "terminology"],
+  },
+  {
+    id: "wk-dbg-007",
+    type: "multi",
+    track: "workplace",
+    topic: "debugging",
+    difficulty: 3,
+    context:
+      "A bug reproduces on a colleague's machine and in production, and never on yours.",
+    prompt:
+      "Which differences should you check first when a bug will not reproduce locally? Select all that apply.",
+    options: [
+      { id: "a", text: "The data — your local database lacks the row shape that triggers it" },
+      { id: "b", text: "The configuration actually resolved at runtime, not the values in the repo" },
+      { id: "c", text: "Concurrency — local requests are serial where production requests overlap" },
+      { id: "d", text: "The runtime version listed in the project's README" },
+      { id: "e", text: "Whether your local branch is ahead of the main branch" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The pattern behind all three is that your machine is a small, clean, serial version of production. The README is close to right and wrong in the way that counts — check what the runtime resolved, not what a file claims. Being ahead of main would explain a bug you have and others do not, which is the opposite symptom.",
+    concepts: ["Environment parity", "Configuration drift", "Race condition", "Production data"],
+    tags: ["reproduction", "environments"],
+  },
+  {
+    id: "wk-dbg-008",
+    type: "mcq",
+    track: "workplace",
+    topic: "debugging",
+    difficulty: 4,
+    context:
+      "An engineer suspects a caching bug, adds a bypass, watches the error stop appearing, and closes the ticket.",
+    prompt:
+      "What is the risk in concluding the cache was the cause because bypassing it stopped the error?",
+    options: [
+      {
+        id: "a",
+        text: "The bypass also changed timing and load, so it may have hidden a different bug rather than fixed one",
+      },
+      { id: "b", text: "None — a change that stops the error is by definition the fix" },
+      { id: "c", text: "The engineer should have bypassed the database instead" },
+      { id: "d", text: "The error will only return if the cache is switched back on" },
+    ],
+    answer: "a",
+    explanation:
+      "A change that makes a symptom vanish is evidence, not proof — least of all a change that alters timing, since that is exactly what masks a race. The test is whether you can narrate the mechanism: which value was stale, how it got that way, and why that produced this error. No chain means you have a correlation and a closed ticket.",
+    concepts: ["Confirmation bias", "Root cause analysis", "Correlation versus causation", "Race condition"],
+    tags: ["bias", "verification"],
+  },
+  {
+    id: "wk-dbg-009",
+    type: "matching",
+    track: "workplace",
+    topic: "debugging",
+    difficulty: 3,
+    prompt: "Match each debugging tool to the question it answers best.",
+    pairs: [
+      { left: "Stack trace", right: "Which call path reached the failure?" },
+      { left: "git bisect", right: "Which commit introduced this?" },
+      { left: "Interactive debugger", right: "What are the values right now, at this line?" },
+      { left: "Structured logs", right: "What happened in production last Tuesday at 03:00?" },
+      { left: "Profiler", right: "Where is the time actually going?" },
+    ],
+    explanation:
+      "Reaching for the wrong one is most of what makes debugging slow. A debugger is excellent locally and useless for something that already happened on a machine you cannot attach to — which is why production debugging is really log design, done before the incident rather than during it.",
+    concepts: ["Structured logging", "git bisect", "Profiler", "Stack trace"],
+    tags: ["tooling", "selection"],
+  },
+  {
+    id: "wk-dbg-010",
+    type: "mcq",
+    track: "workplace",
+    topic: "debugging",
+    difficulty: 3,
+    context:
+      "A value is correct when it leaves the client and wrong by the time it reaches the database. Six components sit between the two.",
+    prompt:
+      "What is the fastest way to find which of six components corrupts the value?",
+    options: [
+      {
+        id: "a",
+        text: "Inspect the value at the midpoint, then repeat on whichever half still contains the corruption",
+      },
+      { id: "b", text: "Add logging to all six components and read the output end to end" },
+      { id: "c", text: "Start at the client and step forward through each component in turn" },
+      { id: "d", text: "Rewrite the two components most likely to be at fault" },
+    ],
+    answer: "a",
+    explanation:
+      "Bisection is not only for commit history — it works on any ordered chain. Six components is under three probes, where walking forward averages three and costs six at worst, and instrumenting everything is the most work up front for information you will mostly discard. The skill is picking a boundary where the value is easy to observe.",
+    concepts: ["Binary search debugging", "Bisection", "Observability boundary"],
+    tags: ["bisection", "method"],
+  },
+  {
+    id: "wk-dbg-011",
+    type: "multi",
+    track: "workplace",
+    topic: "debugging",
+    difficulty: 4,
+    prompt:
+      "What should happen after a bug is fixed, before the ticket is closed? Select all that apply.",
+    options: [
+      { id: "a", text: "A test that fails against the old code and passes against the new" },
+      { id: "b", text: "A search for the same mistake elsewhere in the codebase" },
+      { id: "c", text: "A note on why the bug was not caught before it shipped" },
+      { id: "d", text: "A defensive check added at every layer the value passes through" },
+      { id: "e", text: "The debug logging from the investigation left in permanently" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Running the new test against the unfixed code is what verifies the test, and it is routinely skipped. Blanket defensive checks feel responsible and instead scatter one bug's fix across five files, so the next occurrence is swallowed rather than raised. A mistake made once in a codebase has usually been made more than once.",
+    concepts: ["Regression test", "Defensive programming", "Systemic fix", "Root cause analysis"],
+    tags: ["closure", "follow-up"],
+  },
+  {
+    id: "wk-est-004",
+    type: "short",
+    track: "workplace",
+    topic: "estimation",
+    difficulty: 3,
+    context:
+      "A team underestimates consistently. Shown that their last ten projects each took roughly twice the estimate, their next estimate is optimistic again.",
+    prompt: "What is this systematic bias towards optimistic estimates called? (Two words.)",
+    answers: [
+      "planning fallacy",
+      "the planning fallacy",
+      "planning bias",
+      "optimism bias",
+    ],
+    typoTolerance: true,
+    explanation:
+      "The planning fallacy: people estimate from an imagined smooth path through this specific task rather than from what comparable tasks actually cost. Knowing about it does not fix it — that is the finding. Reference class forecasting does: start from how long the last five similar things took, then argue about why this one differs.",
+    concepts: ["Planning fallacy", "Reference class forecasting", "Optimism bias"],
+    tags: ["bias", "forecasting"],
+  },
+  {
+    id: "wk-est-005",
+    type: "mcq",
+    track: "workplace",
+    topic: "estimation",
+    difficulty: 3,
+    context:
+      "An engineer says a piece of work is 'about three weeks'. It appears on the roadmap the next day as a date, and a week later as a customer commitment.",
+    prompt: "What was lost between the engineer's estimate and the commitment?",
+    options: [
+      {
+        id: "a",
+        text: "An estimate is a distribution and a commitment is a promise — converting one to the other takes an explicit buffer and a decision",
+      },
+      { id: "b", text: "Nothing — once a number is stated it is a commitment" },
+      { id: "c", text: "The engineer should have declined to give a number at all" },
+      { id: "d", text: "The roadmap should have shown story points rather than weeks" },
+    ],
+    answer: "a",
+    explanation:
+      "'About three weeks' usually means something closer to 'more likely than not, between two and five'. A commitment pinned to the middle of a distribution is right roughly half the time, which is not what anyone means by a commitment. State the range and the confidence, and let whoever owns the promise choose where in it to stand.",
+    concepts: ["Estimate versus commitment", "Confidence interval", "Schedule buffer"],
+    tags: ["commitments", "communication"],
+  },
+  {
+    id: "wk-est-006",
+    type: "multi",
+    track: "workplace",
+    topic: "estimation",
+    difficulty: 4,
+    prompt:
+      "Which practices genuinely improve a team's estimates over time? Select all that apply.",
+    options: [
+      { id: "a", text: "Comparing estimates against actuals and tracking the ratio" },
+      { id: "b", text: "Estimating from how long comparable past work took, rather than from the plan" },
+      { id: "c", text: "Decomposing until each piece resembles something the team has done before" },
+      { id: "d", text: "Adding a fixed percentage buffer to every estimate" },
+      { id: "e", text: "Having the most senior engineer estimate everything" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "All three replace imagination with evidence, which is the only thing that moves accuracy. A flat buffer changes the number without changing what you know, and teams quietly consume it. A single senior estimator is the quickest way to discard the information held by whoever will actually do the work.",
+    concepts: ["Reference class forecasting", "Estimate-to-actual ratio", "Decomposition", "Schedule buffer"],
+    tags: ["calibration", "practice"],
+  },
+  {
+    id: "wk-est-007",
+    type: "ordering",
+    track: "workplace",
+    topic: "estimation",
+    difficulty: 2,
+    prompt: "Put the steps of producing a defensible estimate in order.",
+    items: [
+      "Agree what 'done' means, including review, tests, migration, and rollout",
+      "Break the work into pieces small enough that each resembles something done before",
+      "Give each piece a range rather than a single number",
+      "Name the unknowns that would move that range the most",
+      "Time-box a spike for the largest unknown before committing to a number",
+    ],
+    explanation:
+      "Definition of done comes first because it decides what is being estimated at all — most estimates that miss badly were accurate about coding and silent about review and rollout. The last step is what separates an estimate from a guess: when one unknown dominates the range, buy information instead of padding the number.",
+    concepts: ["Definition of done", "Decomposition", "Spike", "Timebox"],
+    tags: ["method", "ranges"],
+  },
+  {
+    id: "wk-est-008",
+    type: "matching",
+    track: "workplace",
+    topic: "estimation",
+    difficulty: 3,
+    prompt: "Match each estimation term to what it names.",
+    pairs: [
+      { left: "Spike", right: "Time-boxed work bought purely to reduce an unknown" },
+      {
+        left: "Definition of done",
+        right: "The agreed list of what must be true before it counts as finished",
+      },
+      {
+        left: "Cone of uncertainty",
+        right: "The range narrowing as the work becomes understood",
+      },
+      {
+        left: "Reference class forecasting",
+        right: "Estimating from what comparable past work actually cost",
+      },
+      {
+        left: "Yak shaving",
+        right: "The chain of prerequisites discovered only once you start",
+      },
+    ],
+    explanation:
+      "These name parts of a conversation people otherwise have vaguely. The cone is the one worth internalising: an estimate given before any investigation is not a worse estimate of the same kind, it is a wider one — so the honest answer to 'can you be more precise?' is usually 'yes, after a spike'.",
+    concepts: ["Spike", "Cone of uncertainty", "Reference class forecasting", "Definition of done"],
+    tags: ["vocabulary"],
+  },
+  {
+    id: "wk-inc-004",
+    type: "ordering",
+    track: "workplace",
+    topic: "incidents",
+    difficulty: 2,
+    prompt: "Put the phases of responding to a production incident in order.",
+    items: [
+      "Declare the incident and say who is coordinating it",
+      "Stop the bleeding — roll back or disable the change, before understanding why",
+      "Confirm from the metrics that users are no longer affected",
+      "Diagnose the cause with the time pressure off",
+      "Write the postmortem and give each follow-up an owner and a date",
+    ],
+    explanation:
+      "Mitigation before diagnosis is the ordering people invert under pressure, because understanding feels more responsible than reverting. It is not: every minute spent diagnosing is a minute of user impact you could already have ended, and the evidence is still there afterwards.",
+    concepts: ["Mitigation before diagnosis", "Incident commander", "Rollback", "Blameless postmortem"],
+    tags: ["response", "sequence"],
+  },
+  {
+    id: "wk-inc-005",
+    type: "short",
+    track: "workplace",
+    topic: "incidents",
+    difficulty: 3,
+    context:
+      "A postmortem opens by establishing how many users were affected, for how long, and which functionality degraded — before it goes anywhere near whose change caused it.",
+    prompt:
+      "What term describes the extent of a failure's impact across users and systems? (Two words.)",
+    answers: ["blast radius", "blastradius", "blast-radius", "impact radius"],
+    typoTolerance: true,
+    explanation:
+      "Blast radius. Sizing it first makes severity a fact rather than an argument, and it drives everything downstream: who gets paged, what customers are told, how much the follow-up work is worth. Designs are judged on it too — a change that can only break one tenant is a different risk from one that can break every tenant.",
+    concepts: ["Blast radius", "Incident severity", "Blameless postmortem"],
+    tags: ["severity", "impact"],
+  },
+  {
+    id: "wk-doc-004",
+    type: "matching",
+    track: "workplace",
+    topic: "design-docs",
+    difficulty: 3,
+    prompt: "Match each design doc section to the question it answers for a reader.",
+    pairs: [
+      { left: "Problem statement", right: "Why is anyone spending time on this?" },
+      { left: "Non-goals", right: "What did you deliberately decide not to solve?" },
+      { left: "Alternatives considered", right: "Why not the obvious cheaper option?" },
+      { left: "Rollout plan", right: "How does this reach production without breaking anything?" },
+      { left: "Open questions", right: "What do you still need a decision on?" },
+    ],
+    explanation:
+      "Readers arrive with these questions whether or not the document answers them, so a section answering none of them is padding. Open questions changes a review the most: naming what you are unsure about invites help, whereas a document projecting total confidence gets either rubber-stamped or nitpicked.",
+    concepts: ["Non-goals", "Alternatives considered", "Rollout plan", "Design document"],
+    tags: ["structure", "sections"],
+  },
 ];
 
 export const track: Track = {
