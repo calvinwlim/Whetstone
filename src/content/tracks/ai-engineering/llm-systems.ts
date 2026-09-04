@@ -253,4 +253,30 @@ export const questions: Question[] = [
     concepts: ["Retrieval-augmented generation", "Fine-tuning"],
     tags: ["rag", "fundamentals"],
   },
+  {
+    id: "sd-ai-011",
+    type: "multi",
+    track: "ai-engineering",
+    topic: "ai-systems",
+    difficulty: 4,
+    context:
+      "A RAG assistant answers confidently and wrongly. Before touching the prompt, you want to know which stage actually failed.",
+    prompt:
+      "Which checks separate a retrieval failure from a generation failure? Select all that apply.",
+    options: [
+      { id: "a", text: "Inspect whether the retrieved chunks contain the answer at all" },
+      { id: "b", text: "Supply the correct chunk by hand and see whether the answer becomes right" },
+      {
+        id: "c",
+        text: "Measure retrieval recall over a labelled set of questions and expected sources",
+      },
+      { id: "d", text: "Raise the temperature and see whether the answer changes" },
+      { id: "e", text: "Retrieve more chunks and see whether the answer improves" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The two stages fail identically from the outside, so the diagnostic is to hold one of them constant. If supplying the right chunk fixes the answer, retrieval is the problem and no amount of prompt work will help. Retrieving more chunks is a fix you might try afterwards, and it can dilute the context instead.",
+    concepts: ["Retrieval recall", "Groundedness", "Context dilution", "Ablation"],
+    tags: ["rag", "diagnosis"],
+  },
 ];

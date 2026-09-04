@@ -371,4 +371,76 @@ export const questions: Question[] = [
     concepts: ["Prompt engineering", "Few-shot learning", "Retrieval-augmented generation", "Fine-tuning"],
     tags: ["cost", "approach"],
   },
+  {
+    id: "ai-ml-008",
+    type: "ordering",
+    track: "ai-engineering",
+    topic: "ml-basics",
+    difficulty: 3,
+    prompt:
+      "Put the steps of preparing and training a supervised model in order, so nothing leaks.",
+    items: [
+      "Split the data into training, validation, and test sets before inspecting it",
+      "Fit any scaler or encoder on the training split alone",
+      "Apply that fitted transformation to the validation and test splits",
+      "Train and tune against the validation split",
+      "Evaluate once on the test split, and report that number",
+    ],
+    explanation:
+      "Every step is arranged to keep the test data out of every decision. Fitting a scaler across the whole dataset is the leak that catches people most often: it is one line, and it quietly passes information about the test distribution into training, so the model looks better offline than it will ever be in production.",
+    concepts: ["Data leakage", "Train-validation-test split", "Feature scaling", "Generalisation"],
+    tags: ["leakage", "workflow"],
+  },
+  {
+    id: "ai-llm-008",
+    type: "matching",
+    track: "ai-engineering",
+    topic: "llm-fundamentals",
+    difficulty: 3,
+    prompt: "Match each generation parameter to what it controls.",
+    pairs: [
+      {
+        left: "Temperature",
+        right: "How much the probability distribution is flattened before sampling",
+      },
+      {
+        left: "Top-p",
+        right: "How much of the probability mass the sample is drawn from",
+      },
+      {
+        left: "Max tokens",
+        right: "How long the output may get before it is cut off",
+      },
+      { left: "Stop sequences", right: "Strings that end generation when they are produced" },
+      {
+        left: "Seed",
+        right: "Which pseudo-random draw is repeated, where the provider supports it",
+      },
+    ],
+    explanation:
+      "Temperature and top-p both narrow randomness, by different means, which is why turning both down hard is how you end up with repetitive output. None of them makes generation deterministic on its own — batching, hardware, and floating point ordering still vary, so temperature zero reduces variance rather than removing it.",
+    concepts: ["Temperature", "Nucleus sampling", "Stop sequence", "Determinism"],
+    tags: ["sampling", "parameters"],
+  },
+  {
+    id: "ai-llm-009",
+    type: "multi",
+    track: "ai-engineering",
+    topic: "llm-fundamentals",
+    difficulty: 3,
+    prompt:
+      "Which changes reduce the cost of an LLM feature without changing the model? Select all that apply.",
+    options: [
+      { id: "a", text: "Putting the stable part of the prompt first, so it can be cached across calls" },
+      { id: "b", text: "Trimming or summarising conversation history rather than resending all of it" },
+      { id: "c", text: "Capping the output length for tasks whose answers are naturally short" },
+      { id: "d", text: "Lowering the temperature" },
+      { id: "e", text: "Streaming the response to the client" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "Cost is tokens in plus tokens out, so only changes to token counts or their price move it. Temperature changes which token gets chosen, never how many. Streaming changes when the user sees output and bills identically — a real improvement, aimed at a different problem entirely.",
+    concepts: ["Prompt caching", "Context window management", "Token cost", "Perceived latency"],
+    tags: ["cost", "tokens"],
+  },
 ];

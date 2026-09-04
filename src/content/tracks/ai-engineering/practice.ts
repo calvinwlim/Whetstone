@@ -610,4 +610,145 @@ export const questions: Question[] = [
     concepts: ["Supply chain security", "Package verification", "Transitive dependency"],
     tags: ["dependencies", "supply-chain"],
   },
+  {
+    id: "ai-agent-006",
+    type: "ordering",
+    track: "ai-engineering",
+    topic: "agents-tools",
+    difficulty: 3,
+    prompt: "Put one iteration of an agent loop in order.",
+    items: [
+      "The model receives the goal, the history so far, and the available tool definitions",
+      "It chooses a tool and produces arguments for it",
+      "The runtime validates those arguments against the tool's schema",
+      "The tool executes, with only the permissions the agent has been granted",
+      "The result, or a describable error, is appended to the history",
+      "The model decides whether to call another tool or to answer",
+    ],
+    explanation:
+      "Validating before executing is what keeps a malformed or malicious argument away from a real system, and the permission boundary is what limits the damage when one gets through anyway. Errors have to come back as text the model can read and act on: an exception that stops the loop teaches it nothing and leaves the task half done.",
+    concepts: ["Agent loop", "Tool schema validation", "Least privilege", "Error feedback"],
+    tags: ["loop", "tools"],
+  },
+  {
+    id: "ai-agent-007",
+    type: "short",
+    track: "ai-engineering",
+    topic: "agents-tools",
+    difficulty: 4,
+    context:
+      "A long-running agent makes an incorrect assumption early on. It stays in the history, the model keeps reading it as established fact, and every later step builds on it.",
+    prompt:
+      "What is this failure of an agent's accumulated context called? (Two words.)",
+    answers: [
+      "context poisoning",
+      "poisoned context",
+      "context pollution",
+      "context rot",
+    ],
+    typoTolerance: true,
+    explanation:
+      "Context poisoning. Because the history is the agent's whole memory, a wrong entry carries the same standing as a right one and nothing ever prompts a re-examination. The mitigations are structural: summarise and re-ground periodically, keep verified facts separate from speculation, and make restarting from a checkpoint cheaper than repairing a long thread.",
+    concepts: ["Context poisoning", "Error compounding", "Agent memory", "Checkpointing"],
+    tags: ["memory", "failure-modes"],
+  },
+  {
+    id: "ai-mcp-007",
+    type: "multi",
+    track: "ai-engineering",
+    topic: "mcp-servers",
+    difficulty: 3,
+    prompt:
+      "What makes an MCP tool easy for a model to use correctly? Select all that apply.",
+    options: [
+      { id: "a", text: "A description that says when to use it, not only what it does" },
+      {
+        id: "b",
+        text: "A small number of task-shaped tools rather than one per underlying endpoint",
+      },
+      { id: "c", text: "Errors that explain what to do differently next time" },
+      { id: "d", text: "Parameter names that match the internal database columns" },
+      { id: "e", text: "Returning the full raw upstream response, so nothing is lost" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "A tool definition is a prompt: it is read and reasoned about rather than merely called, which is why 'when to use this' does more work than any amount of parameter documentation. Wrapping every endpoint one to one fills the context with choices, and raw responses fill whatever is left with fields nothing needs.",
+    concepts: ["Tool description", "Task-oriented API", "Context window", "Error feedback"],
+    tags: ["tool-design", "mcp"],
+  },
+  {
+    id: "ai-vibe-006",
+    type: "ordering",
+    track: "ai-engineering",
+    topic: "ai-assisted-coding",
+    difficulty: 2,
+    prompt:
+      "Put the steps of using a coding assistant in an unfamiliar codebase in order.",
+    items: [
+      "Read enough of the surrounding code to know what correct would look like here",
+      "State the task with the constraints and conventions the change has to respect",
+      "Ask for a small change rather than the whole feature at once",
+      "Read the diff line by line, against what the code around it does",
+      "Run the tests, and add one for the behaviour you actually wanted",
+    ],
+    explanation:
+      "The first step is the one people skip and the one every later step depends on: you cannot review a diff against conventions you have not read, and the output is most confidently wrong exactly where the codebase is unusual. Reviewing generated code you could not have written yourself is not review.",
+    concepts: ["Code review", "Incremental development", "Verification", "Code ownership"],
+    tags: ["workflow", "unfamiliar-code"],
+  },
+  {
+    id: "ai-vibe-007",
+    type: "matching",
+    track: "ai-engineering",
+    topic: "ai-assisted-coding",
+    difficulty: 3,
+    prompt: "Match each AI-assisted coding practice to the failure it prevents.",
+    pairs: [
+      {
+        left: "Asking for a small diff at a time",
+        right: "A large change nobody reviews properly",
+      },
+      {
+        left: "Stating the conventions up front",
+        right: "Code that works and looks nothing like the codebase",
+      },
+      {
+        left: "Writing the test yourself first",
+        right: "A test shaped to match whatever the code happens to do",
+      },
+      {
+        left: "Reading the diff before running it",
+        right: "Merging a change you could not have written or defended",
+      },
+      {
+        left: "Rejecting a solution you do not understand",
+        right: "Code the team cannot maintain once you have moved on",
+      },
+    ],
+    explanation:
+      "The test row is the least obvious and matters most: a test written after the implementation, by the same process that wrote the implementation, encodes the bug as expected behaviour. Write the assertion first, or at the very least confirm the test fails against a deliberately broken version.",
+    concepts: ["Test-driven development", "Code ownership", "Architectural drift", "Confirmation bias"],
+    tags: ["practices", "prevention"],
+  },
+  {
+    id: "ai-vsec-007",
+    type: "multi",
+    track: "ai-engineering",
+    topic: "ai-coding-security",
+    difficulty: 3,
+    prompt:
+      "Which should not go into a third-party AI tool without checking its terms and your organisation's policy? Select all that apply.",
+    options: [
+      { id: "a", text: "Live credentials, tokens, or database connection strings" },
+      { id: "b", text: "Customer personal data taken from a production system" },
+      { id: "c", text: "Source code under a contract restricting where it may be processed" },
+      { id: "d", text: "A public error message from an open-source library" },
+      { id: "e", text: "A generic algorithm you could find in any textbook" },
+    ],
+    answers: ["a", "b", "c"],
+    explanation:
+      "The question is never whether the content is secret in the abstract; it is whether sending it is a disclosure you were entitled to make. Credentials are the sharp case, because pasting one is a compromise at the moment it happens — rotate it rather than hoping, since you cannot unsend it or audit what followed.",
+    concepts: ["Data residency", "Secret rotation", "Personal data", "Third-party processing"],
+    tags: ["disclosure", "policy"],
+  },
 ];
