@@ -201,11 +201,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Extraneous fetching — an index does not stop the wasted network, memory, and cache pressure of unused columns",
+        text: "Extraneous fetching — an index changes how rows are found, not how much returns",
       },
-      { id: "b", text: "Chatty I/O — too many round trips" },
-      { id: "c", text: "Busy database — the query should run in the application" },
-      { id: "d", text: "Nothing is wrong if the query uses an index" },
+      { id: "b", text: "Chatty I/O — the page makes too many separate round trips" },
+      { id: "c", text: "Busy database — the filtering belongs in the application instead" },
+      { id: "d", text: "Nothing is wrong — an index makes the column count irrelevant" },
     ],
     answer: "a",
     explanation:
@@ -251,11 +251,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Load shedding by priority — drop background refreshes first, protect health checks and paying traffic",
+        text: "Shed by priority — drop background refreshes, protect health checks and revenue",
       },
-      { id: "b", text: "Drop requests at random to be fair" },
-      { id: "c", text: "Drop the oldest requests in the queue" },
-      { id: "d", text: "Accept everything and let timeouts sort it out" },
+      { id: "b", text: "Drop requests at random, so no caller is treated unfairly" },
+      { id: "c", text: "Drop the oldest requests, whose callers have waited longest" },
+      { id: "d", text: "Accept everything and let client timeouts shed the load" },
     ],
     answer: "a",
     explanation:
@@ -275,11 +275,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "An idempotency key sent with both attempts, so the server returns the original result",
+        text: "An idempotency key on both attempts, so the server returns the first result",
       },
-      { id: "b", text: "A unique constraint on the orders table" },
-      { id: "c", text: "Retrying only after a delay" },
-      { id: "d", text: "Switching the endpoint from POST to PUT" },
+      { id: "b", text: "A unique constraint on the orders table rejecting the second" },
+      { id: "c", text: "Retrying only after a delay, so the first request can land" },
+      { id: "d", text: "Switching the endpoint from POST to PUT, which is idempotent" },
     ],
     answer: "a",
     explanation:

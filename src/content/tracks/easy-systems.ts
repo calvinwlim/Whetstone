@@ -156,11 +156,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Independent deployment and scaling, at the cost of network calls and distributed failure",
+        text: "Independent deployment and scaling, at the cost of distributed failure",
       },
-      { id: "b", text: "Faster code, because each service is smaller" },
-      { id: "c", text: "Fewer bugs, because the code is separated" },
-      { id: "d", text: "Lower infrastructure cost" },
+      { id: "b", text: "Faster code, because each service is smaller to run" },
+      { id: "c", text: "Fewer bugs, because the code is kept separate" },
+      { id: "d", text: "Lower infrastructure cost, because services are smaller" },
     ],
     answer: "a",
     explanation:
@@ -250,7 +250,7 @@ export const questions: Question[] = [
     answer: "a",
     explanation:
       "Metrics answer \"how is the system doing\" cheaply and cannot tell you about one specific request. Logs answer \"what happened to this request\" and get expensive at volume. Traces are the third leg, following one request across services.",
-    concepts: ["Logs", "Metrics", "Distributed tracing"],
+    concepts: ["Structured logging", "Time series metrics", "Distributed tracing"],
     tags: ["fundamentals"],
   },
   {
@@ -285,11 +285,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "It translates an external system's model into yours, so their design does not leak into your code",
+        text: "It translates an external system's model into yours, so theirs stays out",
       },
-      { id: "b", text: "It validates that incoming data is not malicious" },
-      { id: "c", text: "It encrypts data exchanged with third parties" },
-      { id: "d", text: "It prevents database corruption during writes" },
+      { id: "b", text: "It validates that data arriving from outside is not malicious" },
+      { id: "c", text: "It encrypts the data you exchange with third-party systems" },
+      { id: "d", text: "It prevents the database being corrupted by concurrent writes" },
     ],
     answer: "a",
     explanation:

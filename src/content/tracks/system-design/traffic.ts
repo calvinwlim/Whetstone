@@ -355,7 +355,7 @@ export const questions: Question[] = [
     ],
     answer: "a",
     explanation:
-      "stale-while-revalidate decouples the user's latency from the origin fetch — nobody waits for the refresh. must-revalidate is the opposite, forbidding stale responses. no-cache requires revalidation before every use, and immutable promises the content will never change at all.",
+      "stale-while-revalidate decouples the user's latency from the origin fetch — nobody waits for the refresh. must-revalidate is the opposite, forbidding stale responses. no-cache requires revalidation before every use, and immutable only tells a client not to revalidate while the response is still fresh.",
     concepts: ["stale-while-revalidate", "Cache-Control", "Revalidation"],
     tags: ["cache-control"],
   },
@@ -553,11 +553,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "It starts with zero in-flight requests, so it wins every choice at once — ramp it in with slow start",
+        text: "It starts with zero in-flight requests, so it wins every choice — use slow start",
       },
-      { id: "b", text: "Its health check interval is too short — probe less often" },
-      { id: "c", text: "Least connections requires an even number of backends" },
-      { id: "d", text: "The autoscaler should add backends in pairs so the load splits" },
+      { id: "b", text: "Its health check interval is too short — probe it less often" },
+      { id: "c", text: "Least connections cannot be used with an autoscaling pool" },
+      { id: "d", text: "The autoscaler should add backends in pairs so load splits evenly" },
     ],
     answer: "a",
     explanation:
@@ -614,29 +614,5 @@ export const questions: Question[] = [
       "The choice follows from what varies. Round robin assumes requests cost the same; least connections drops that assumption; weighting drops the assumption that backends are identical; consistent hashing gives up even distribution in exchange for sending a key to the same place every time.",
     concepts: ["Round robin", "Least connections", "Weighted round robin", "Consistent hashing"],
     tags: ["algorithms"],
-  },
-  {
-    id: "sd-rl-005",
-    type: "mcq",
-    track: "system-design",
-    topic: "rate-limiting",
-    difficulty: 3,
-    context:
-      "An API limits by source IP. Corporate customers behind one NAT gateway are being throttled as if they were a single user, while an abusive client rotating through a cloud provider's address range never trips the limit.",
-    prompt: "What does this reveal about rate limiting on source IP?",
-    options: [
-      {
-        id: "a",
-        text: "IP is a weak identity — limit on the authenticated principal, and keep an IP limit only for unauthenticated traffic",
-      },
-      { id: "b", text: "The limit is set too low and should simply be raised" },
-      { id: "c", text: "A longer window would let the NAT traffic average out" },
-      { id: "d", text: "Moving clients to IPv6 would resolve both symptoms" },
-    ],
-    answer: "a",
-    explanation:
-      "One address can be thousands of users and one user can be thousands of addresses, so an IP limit is too strict and too loose at the same time — raising it worsens the abuse side while barely helping the NAT side. Once you know who is calling, key on that; IP is the fallback for the pre-authentication surface, where it is the only identity you have.",
-    concepts: ["Rate limit key", "Carrier-grade NAT", "Principal identity"],
-    tags: ["keying", "nat"],
   },
 ];

@@ -137,11 +137,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Stops calling a failing dependency for a while, so the caller fails fast and the dependency can recover",
+        text: "Stops calling a failing dependency for a while, so the caller fails fast",
       },
-      { id: "b", text: "Retries a failed request until it succeeds" },
-      { id: "c", text: "Restarts a service that has crashed" },
-      { id: "d", text: "Limits how many requests a client may send" },
+      { id: "b", text: "Retries a failed request until the dependency responds" },
+      { id: "c", text: "Restarts a service that has crashed so it returns to health" },
+      { id: "d", text: "Limits how many requests each client may send in a window" },
     ],
     answer: "a",
     explanation:

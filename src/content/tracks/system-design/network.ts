@@ -115,11 +115,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Lower the record's TTL well in advance, so the old long TTL has expired everywhere by cutover",
+        text: "Lower the record's TTL well ahead, so old caches expire before cutover",
       },
-      { id: "b", text: "Lower the TTL at the moment you cut over" },
-      { id: "c", text: "Raise the TTL so clients hold the new value longer" },
-      { id: "d", text: "Nothing — DNS changes take effect immediately" },
+      { id: "b", text: "Lower the TTL at the moment you cut over to the new provider" },
+      { id: "c", text: "Raise the TTL so clients hold the new value for longer afterwards" },
+      { id: "d", text: "Nothing — DNS changes take effect everywhere immediately" },
     ],
     answer: "a",
     explanation:
@@ -220,11 +220,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "UDP — no retransmission or ordering, so loss costs a frame instead of a stall",
+        text: "UDP — no retransmission or ordering, so loss costs a frame not a stall",
       },
-      { id: "b", text: "TCP — reliable delivery guarantees every frame arrives" },
-      { id: "c", text: "TCP — ordering is required for video to decode" },
-      { id: "d", text: "Either; the transport has no effect on latency" },
+      { id: "b", text: "TCP — reliable delivery guarantees every frame eventually arrives" },
+      { id: "c", text: "TCP — frames must arrive in order for the codec to decode" },
+      { id: "d", text: "Either — the codec conceals loss, so transport is irrelevant" },
     ],
     answer: "a",
     explanation:
@@ -324,10 +324,10 @@ export const questions: Question[] = [
     context:
       "HTTP/3 abandons TCP so that packet loss on one stream no longer blocks the others.",
     prompt: "Which transport protocol does HTTP/3 use?",
-    answers: ["quic", "quic protocol", "udp/quic", "quic over udp"],
+    answers: ["quic", "quic protocol", "udp/quic", "quic over udp", "udp"],
     typoTolerance: true,
     explanation:
-      "QUIC, which runs over UDP and implements its own reliability, ordering, and congestion control per stream. It also folds the TLS handshake into the connection setup, cutting a round trip.",
+      "QUIC — which itself runs over UDP, so either name is accepted here. QUIC implements reliability, ordering, and congestion control per stream, so one lost packet no longer stalls the others. It also folds the TLS handshake into connection setup, cutting a round trip.",
     concepts: ["QUIC", "HTTP/3", "UDP"],
     tags: ["http3", "quic"],
   },
@@ -366,7 +366,7 @@ export const questions: Question[] = [
       { id: "a", text: "About 99.9999% — both must fail at once" },
       { id: "b", text: "99.9% — redundancy does not change availability" },
       { id: "c", text: "About 99.8% — availabilities multiply" },
-      { id: "d", text: "100% — a redundant pair cannot fail" },
+      { id: "d", text: "About 99.95% — the pair averages the two figures" },
     ],
     answer: "a",
     explanation:
@@ -402,11 +402,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "No cutover window and shared load, at the cost of write conflicts and each side needing full capacity",
+        text: "No cutover window and shared load, at the cost of conflicts and spare capacity",
       },
-      { id: "b", text: "Lower infrastructure cost, at the cost of slower failover" },
-      { id: "c", text: "Simpler operations, at the cost of higher latency" },
-      { id: "d", text: "Stronger consistency, at the cost of availability" },
+      { id: "b", text: "Lower infrastructure cost, at the cost of a slower failover" },
+      { id: "c", text: "Simpler operations, at the cost of higher request latency" },
+      { id: "d", text: "Stronger consistency, at the cost of reduced availability" },
     ],
     answer: "a",
     explanation:
@@ -426,11 +426,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "The maths assumes independent failures, and shared deploys, config, or dependencies make them correlated",
+        text: "The maths assumes independent failures; shared deploys and config correlate them",
       },
-      { id: "b", text: "Two regions can never exceed the availability of one" },
-      { id: "c", text: "Availability cannot be calculated for multi-region systems" },
-      { id: "d", text: "The figure is too low — two regions should give six nines" },
+      { id: "b", text: "Two regions can never exceed the availability of a single one" },
+      { id: "c", text: "Availability arithmetic does not apply to multi-region systems" },
+      { id: "d", text: "The figure is too low — two regions at three nines give six" },
     ],
     answer: "a",
     explanation:

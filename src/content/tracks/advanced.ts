@@ -15,11 +15,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Last-write-wins silently discards one booking — the constraint needs a single point of serialisation",
+        text: "Last-write-wins silently discards one booking; the constraint needs one writer",
       },
-      { id: "b", text: "Replication lag will resolve itself once both regions sync" },
-      { id: "c", text: "The clocks need to be synchronised more precisely" },
-      { id: "d", text: "Both bookings will be rejected as a conflict" },
+      { id: "b", text: "Replication lag will resolve itself once the two regions sync" },
+      { id: "c", text: "The clocks need synchronising to a much finer precision" },
+      { id: "d", text: "Both bookings will be rejected once the conflict is detected" },
     ],
     answer: "a",
     explanation:
@@ -40,11 +40,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Dual-write to both shards, backfill history, verify parity, cut reads over, then stop writing to the old shard",
+        text: "Dual-write to both, backfill, verify parity, cut reads over, then stop the old",
       },
-      { id: "b", text: "Copy the data, then update the routing table in one step" },
-      { id: "c", text: "Update the routing table first, then copy the data across" },
-      { id: "d", text: "Take a brief write lock, copy, then release" },
+      { id: "b", text: "Copy the data across, then update the routing table in one step" },
+      { id: "c", text: "Update the routing table first, then copy the data across behind it" },
+      { id: "d", text: "Take a brief write lock on the tenant, copy, then release it" },
     ],
     answer: "a",
     explanation:
@@ -87,11 +87,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Write skew — prevented by serializable isolation, or by explicitly locking the rows the decision depends on",
+        text: "Write skew — prevented by serializable isolation, or by locking the rows read",
       },
-      { id: "b", text: "A dirty read — prevented by read committed" },
-      { id: "c", text: "A non-repeatable read — prevented by repeatable read" },
-      { id: "d", text: "A lost update — prevented by optimistic locking" },
+      { id: "b", text: "A dirty read of uncommitted data — prevented by read committed" },
+      { id: "c", text: "A non-repeatable read of the rota — prevented by repeatable read" },
+      { id: "d", text: "A lost update — prevented by optimistic locking on a version" },
     ],
     answer: "a",
     explanation:

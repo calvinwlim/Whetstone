@@ -343,16 +343,16 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "They are coupled through the schema — neither can change it independently, so they are one service in practice",
+        text: "They are coupled through the schema, so neither can change it independently",
       },
-      { id: "b", text: "Database connections will be exhausted" },
-      { id: "c", text: "Nothing, as long as both use the same ORM" },
-      { id: "d", text: "Reads will always be stale" },
+      { id: "b", text: "The connection pool will be exhausted by the second service" },
+      { id: "c", text: "Nothing, as long as both services use the same ORM and migrations" },
+      { id: "d", text: "Reads will be stale, because each service caches the table" },
     ],
     answer: "a",
     explanation:
       "A shared table is a shared contract. Neither team can alter the schema without coordinating with the other, so you have the deployment overhead and network latency of separate services with none of the independence they are supposed to buy. Each service should own its data and expose access through an API.",
-    concepts: ["Shared database antipattern", "Service boundary", "Coupling"],
+    concepts: ["Shared database antipattern", "Service boundary", "Schema coupling"],
     tags: ["boundaries", "coupling"],
   },
   {
@@ -407,11 +407,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "The outbox pattern — write the event to a table in the same transaction, then publish asynchronously",
+        text: "The outbox — write the event to a table in the same transaction, publish later",
       },
-      { id: "b", text: "Publish the event first, then write to the database" },
-      { id: "c", text: "Use a two-phase commit across the database and broker" },
-      { id: "d", text: "Retry the publish in a finally block" },
+      { id: "b", text: "Publish the event first, then write to the database afterwards" },
+      { id: "c", text: "Use a two-phase commit spanning the database and the broker" },
+      { id: "d", text: "Retry the publish in a finally block until it succeeds" },
     ],
     answer: "a",
     explanation:
@@ -477,11 +477,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Vector search is weak on exact identifiers like SKUs, which keyword search handles precisely",
+        text: "Vector search is weak on exact identifiers like SKUs; keyword search is not",
       },
-      { id: "b", text: "Vector search cannot be indexed" },
-      { id: "c", text: "Keyword search is always more relevant" },
-      { id: "d", text: "Hybrid search requires less storage" },
+      { id: "b", text: "Embeddings cannot be computed for short strings like part numbers" },
+      { id: "c", text: "Keyword search returns more relevant results in every case" },
+      { id: "d", text: "Hybrid search needs less storage than a vector index alone" },
     ],
     answer: "a",
     explanation:
@@ -503,7 +503,7 @@ export const questions: Question[] = [
         text: "The average hides a bad tail — p99 could be seconds",
       },
       { id: "b", text: "The metric is being collected incorrectly" },
-      { id: "c", text: "Users are comparing against a faster competitor" },
+      { id: "c", text: "The average is computed over too short a window" },
       { id: "d", text: "Average latency is the wrong unit" },
     ],
     answer: "a",
@@ -643,10 +643,10 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "The message becomes visible again before the worker acknowledges it, so the broker hands it to another consumer",
+        text: "The timeout expires before the worker acknowledges, so it is re-offered",
       },
-      { id: "b", text: "The worker is not acknowledging messages at all" },
-      { id: "c", text: "The queue is configured for fan-out, so every consumer gets a copy" },
+      { id: "b", text: "The worker never acknowledges, so everything is redelivered" },
+      { id: "c", text: "The queue is set to fan-out, so every consumer gets a copy" },
       { id: "d", text: "The dead letter queue is feeding the message back into the main queue" },
     ],
     answer: "a",

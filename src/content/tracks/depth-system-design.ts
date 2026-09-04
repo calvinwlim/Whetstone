@@ -15,11 +15,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Push uploads content to the edge ahead of time; pull fetches from origin on the first request and caches it",
+        text: "Push uploads to the edge ahead of time; pull fetches from origin on first use",
       },
-      { id: "b", text: "Push serves static files, pull serves dynamic responses" },
-      { id: "c", text: "Push caches at the browser, pull caches at the edge" },
-      { id: "d", text: "They are two names for the same mechanism" },
+      { id: "b", text: "Push is for static files and pull is for dynamic responses" },
+      { id: "c", text: "Push caches in the browser while pull caches at the edge" },
+      { id: "d", text: "They are two vendor names for the same mechanism" },
     ],
     answer: "a",
     explanation:
@@ -55,7 +55,7 @@ export const questions: Question[] = [
       { left: "s-maxage", right: "Overrides max-age for shared caches only" },
       { left: "private", right: "Keeps the response out of shared caches" },
       { left: "no-store", right: "Forbids storing the response anywhere" },
-      { left: "immutable", right: "Promises the body will never change" },
+      { left: "immutable", right: "Stops clients revalidating while it is still fresh" },
     ],
     explanation:
       "The pairing that unlocks most real setups is s-maxage with a short max-age: cache hard at the CDN where you can purge, and keep browsers on a short leash where you cannot. Note no-store and no-cache are different — no-cache permits storage but requires revalidation.",
@@ -196,11 +196,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "IP is a poor identity key when many users share an address — key on an authenticated identity instead",
+        text: "IP is a poor identity when many users share one — key on the signed-in user",
       },
-      { id: "b", text: "The limit is set too low and should be raised globally" },
-      { id: "c", text: "NAT traversal breaks the counting logic" },
-      { id: "d", text: "IPv6 should be disabled to make addresses stable" },
+      { id: "b", text: "The limit is set too low and should be raised for everyone" },
+      { id: "c", text: "NAT traversal interferes with the limiter's counting logic" },
+      { id: "d", text: "IPv6 should be adopted so each user gets a stable address" },
     ],
     answer: "a",
     explanation:
@@ -238,11 +238,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "A hot shard — split that tenant across shards with a composite key, or give it a dedicated shard",
+        text: "A hot shard — subdivide that tenant with a composite key, or isolate it",
       },
-      { id: "b", text: "Nothing — tenant id guarantees even distribution" },
-      { id: "c", text: "Re-hash every tenant id to redistribute load" },
-      { id: "d", text: "Add read replicas to every shard equally" },
+      { id: "b", text: "Nothing — a tenant id is high-cardinality, so spread is even" },
+      { id: "c", text: "Re-hash every tenant id to redistribute load across shards" },
+      { id: "d", text: "Add read replicas to every shard so the load is shared out" },
     ],
     answer: "a",
     explanation:
@@ -279,11 +279,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Plain consistent hashing distributes unevenly; virtual nodes give each server many ring positions to smooth it out",
+        text: "Plain consistent hashing distributes unevenly; virtual nodes smooth it out",
       },
-      { id: "b", text: "Virtual nodes remove the need to rebalance when a server is added" },
-      { id: "c", text: "Virtual nodes make lookups constant time instead of logarithmic" },
-      { id: "d", text: "Plain consistent hashing cannot handle server removal" },
+      { id: "b", text: "Virtual nodes remove the need to rebalance at all when a server joins" },
+      { id: "c", text: "Virtual nodes make ring lookups constant time rather than logarithmic" },
+      { id: "d", text: "Plain consistent hashing cannot handle a server being removed" },
     ],
     answer: "a",
     explanation:
@@ -303,11 +303,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "That absent a partition you still trade latency against consistency, which is the everyday tradeoff",
+        text: "That absent a partition you still trade latency against consistency",
       },
-      { id: "b", text: "That partitions can be avoided with enough redundancy" },
-      { id: "c", text: "That availability always beats consistency in practice" },
-      { id: "d", text: "That CAP applies only to relational databases" },
+      { id: "b", text: "That partitions can be avoided entirely with enough redundancy" },
+      { id: "c", text: "That availability should always be chosen over consistency" },
+      { id: "d", text: "That CAP applies only to relational database systems" },
     ],
     answer: "a",
     explanation:
@@ -385,11 +385,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Every query must remember to filter, so correctness depends on discipline rather than the schema",
+        text: "Every query must remember to filter, so correctness rests on discipline",
       },
-      { id: "b", text: "Soft deletes corrupt foreign key relationships" },
-      { id: "c", text: "The deleted_at column cannot be indexed" },
-      { id: "d", text: "Soft deletes prevent the table from ever being vacuumed" },
+      { id: "b", text: "Soft deletes corrupt the table's foreign key relationships" },
+      { id: "c", text: "The deleted_at column cannot be indexed, so filtering is slow" },
+      { id: "d", text: "Soft-deleted rows stop the table from ever being vacuumed" },
     ],
     answer: "a",
     explanation:

@@ -53,7 +53,9 @@ export const topics: Topic[] = [
 
 **Anti-corruption layer** translates between your model and an external or legacy one, so their design decisions do not leak into yours.
 
-**Leader election** picks one node to perform work that must happen exactly once across a cluster, such as running a scheduled job.`,
+**Leader election** picks one node to perform work that must happen exactly once across a cluster, such as running a scheduled job.
+
+**The failure mode is reaching for these early.** Each one removes a problem you can name and adds a moving part you now operate. If you cannot say which specific pain a pattern takes away from the system in front of you, you are paying its cost and deferring its benefit — which is how an architecture ends up with five patterns and the original problem.`,
     resources: [
       {
         label: "Azure — Cloud design patterns",
@@ -101,11 +103,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "It is designed to be fast, so an attacker with the hashes can try billions of guesses per second",
+        text: "It is designed to be fast, so an attacker can try billions of guesses a second",
       },
-      { id: "b", text: "It produces collisions too easily" },
-      { id: "c", text: "It cannot be salted" },
-      { id: "d", text: "Its output is too short to be secure" },
+      { id: "b", text: "It produces collisions too easily, so two passwords can collide" },
+      { id: "c", text: "It cannot be salted, so identical passwords hash identically" },
+      { id: "d", text: "Its 256-bit output is too short to resist a brute-force search" },
     ],
     answer: "a",
     explanation:
@@ -165,11 +167,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "It cannot be, without a revocation store — which reintroduces the state JWTs were chosen to avoid",
+        text: "It cannot be, without a revocation store — the state JWTs were chosen to avoid",
       },
-      { id: "b", text: "Rotate the signing key, which revokes only that token" },
-      { id: "c", text: "JWTs expire immediately when a user logs out" },
-      { id: "d", text: "Revoke it at the load balancer" },
+      { id: "b", text: "Rotate the signing key, which revokes just that one token" },
+      { id: "c", text: "JWTs expire the moment the user logs out of the session" },
+      { id: "d", text: "Revoke it at the load balancer, which inspects each token" },
     ],
     answer: "a",
     explanation:
@@ -250,11 +252,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "Event schemas live forever and must stay readable, and replay needs snapshots to stay fast",
+        text: "Old event schemas must stay readable forever, and replay needs snapshots",
       },
-      { id: "b", text: "Writes must be synchronous across all consumers" },
-      { id: "c", text: "It prevents keeping any derived read model" },
-      { id: "d", text: "Events cannot be stored in a relational database" },
+      { id: "b", text: "Writes must be applied synchronously across all consumers" },
+      { id: "c", text: "It rules out keeping any derived read model alongside it" },
+      { id: "d", text: "Events cannot be stored in an ordinary relational database" },
     ],
     answer: "a",
     explanation:
@@ -278,7 +280,7 @@ export const questions: Question[] = [
     ],
     explanation:
       "These come up by name, so recognising them is worth more than deriving them live. Strangler fig in particular is the answer to almost any \"how would you migrate off this?\" question, because it makes every step small and reversible.",
-    concepts: ["Strangler fig pattern", "Sidecar pattern", "Backend for frontend", "Anti-corruption layer"],
+    concepts: ["Strangler fig pattern", "Sidecar pattern", "Backend for Frontend", "Anti-corruption layer"],
     tags: ["catalogue"],
   },
   {

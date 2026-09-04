@@ -106,7 +106,9 @@ The honest rule: do not shard until you must. A single well-indexed database wit
 
 **Choose per operation, not per system.** A payment must be linearizable. The like count on a post can be eventual and nobody will ever notice. Teams that pick one consistency level for an entire system either overpay everywhere or underpay somewhere that matters.
 
-**Quorums** give tunable consistency: with N replicas, W + R > N guarantees a read overlaps the latest write. W=N, R=1 favours fast reads; W=1, R=N favours fast writes.`,
+**Quorums** give tunable consistency: with N replicas, W + R > N guarantees a read overlaps the latest write. W=N, R=1 favours fast reads; W=1, R=N favours fast writes.
+
+**The question worth carrying into a design review** is not which consistency model the system has. It is which one each operation needs, and what a user would actually notice if that operation were served one level weaker.`,
     resources: [
       {
         label: "Jepsen — Consistency models",
@@ -203,7 +205,7 @@ export const questions: Question[] = [
       { id: "b", text: "It consumes additional storage" },
       { id: "c", text: "It can slow the query planner with more paths to consider" },
       { id: "d", text: "It makes existing reads on other columns slower" },
-      { id: "e", text: "It requires the table to be locked permanently" },
+      { id: "e", text: "It has to be rebuilt by hand whenever the data changes" },
     ],
     answers: ["a", "b", "c"],
     explanation:
@@ -225,7 +227,7 @@ export const questions: Question[] = [
       { left: "Serializable", right: "Phantom reads and write skew" },
     ],
     explanation:
-      "Each level rules out one more anomaly at increasing cost. Worth knowing that read committed is the default in PostgreSQL and many others — so unless you asked for more, a value you read twice in one transaction can legitimately differ.",
+      "Each level rules out one more anomaly at increasing cost. This is the ANSI standard's ladder and engines diverge from it: PostgreSQL's repeatable read is snapshot isolation, which does block phantoms but still permits write skew. Read committed is its default, so a value read twice in one transaction can legitimately differ.",
     concepts: ["Read committed", "Repeatable read", "Serializable isolation", "Phantom read"],
     tags: ["transactions", "isolation"],
   },
@@ -266,7 +268,7 @@ export const questions: Question[] = [
       { id: "b", text: "Evenly distributed access" },
       { id: "c", text: "Present in most queries" },
       { id: "d", text: "Monotonically increasing" },
-      { id: "e", text: "As few distinct values as possible" },
+      { id: "e", text: "A value you can change later to rebalance load" },
     ],
     answers: ["a", "b", "c"],
     explanation:
@@ -285,11 +287,11 @@ export const questions: Question[] = [
     options: [
       {
         id: "a",
-        text: "It must scatter to every shard and gather results, so the slowest shard sets the latency",
+        text: "It scatters to every shard and gathers, so the slowest shard sets latency",
       },
-      { id: "b", text: "It is rejected outright by the router" },
-      { id: "c", text: "It forces an immediate rebalance" },
-      { id: "d", text: "It bypasses all indexes" },
+      { id: "b", text: "It is rejected outright by the router, which cannot place it" },
+      { id: "c", text: "It forces the cluster into an immediate keyspace rebalance" },
+      { id: "d", text: "It bypasses every index, so each shard does a full scan" },
     ],
     answer: "a",
     explanation:
