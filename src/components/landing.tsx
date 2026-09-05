@@ -159,7 +159,7 @@ export function Landing() {
             </h1>
 
             <p className="mt-6 max-w-md leading-relaxed text-shell-text-2">
-              System design, APIs, SQL and the conversations around them. Ten
+              System design, APIs, SQL and the conversations around them. Five
               questions a day, scheduled so the ones you get wrong come back
               before you forget them.
             </p>
@@ -203,8 +203,8 @@ export function Landing() {
           <div>
             <h3 className="text-lg font-semibold">A few minutes a day</h3>
             <p className="mt-2.5 leading-relaxed text-text-2">
-              Ten questions, then you are done. Short enough to do before a
-              stand-up, and the daily target moves if ten is the wrong number
+              Five questions, then you are done. Short enough to do before a
+              stand-up, and the daily target moves if five is the wrong number
               for you.
             </p>
           </div>
