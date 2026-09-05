@@ -22,6 +22,7 @@ import * as easyEveryday from "./tracks/easy-everyday";
 import * as easyCoreSystems from "./tracks/easy-core-systems";
 import * as easyJudgment from "./tracks/easy-judgment";
 import * as easyLanesA from "./tracks/easy-lanes-a";
+import * as easyLanesB from "./tracks/easy-lanes-b";
 
 /** The whole bank, bundled at build time. Nothing here touches a database,
  *  so rendering a question costs zero network round trips. */
@@ -70,6 +71,7 @@ export const ALL_QUESTIONS: Question[] = [
   ...easyJudgment.questions,
   // Band 1-2 depth for the Frontend, DSA, and Communication lanes.
   ...easyLanesA.questions,
+  ...easyLanesB.questions,
 ];
 
 /** Topic ids marked as specialist depth, for the session composer and the UI. */
