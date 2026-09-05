@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import { useProgress } from "@/components/progress-provider";
 import { ALL_QUESTIONS, ALL_TOPICS } from "@/content";
 import { EXPERIENCE_LEVELS } from "@/content/path";
+import { PLACEMENT_LENGTH } from "@/lib/placement";
 import {
   buildLanes,
   buildStages,
@@ -190,29 +191,51 @@ export default function PathPage() {
         </section>
       )}
 
-      {state.experienceLevel === undefined ? (
-        <section className="rounded-card border border-border bg-surface p-4">
-          <h2 className="text-sm font-semibold">Where should you start?</h2>
-          <p className="mt-1 max-w-prose text-sm text-text-2">
-            This opens stages rather than skipping them — everything behind you
-            stays available, and nothing is marked done that you have not
-            answered.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {EXPERIENCE_LEVELS.map((level) => (
+      <section className="rounded-card border border-border bg-surface p-4">
+        <h2 className="text-sm font-semibold">
+          {state.experienceLevel === undefined
+            ? "Where should you start?"
+            : "Change where you start"}
+        </h2>
+        <p className="mt-1 max-w-prose text-sm text-text-2">
+          This opens stages rather than skipping them — everything behind you
+          stays available, and nothing is marked done that you have not
+          answered.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {EXPERIENCE_LEVELS.map((level) => {
+            const active = state.experienceLevel === level.value;
+            return (
               <button
                 key={level.value}
                 type="button"
+                aria-pressed={active}
                 onClick={() => setExperienceLevel(level.value)}
-                className="btn btn-quiet px-3 py-2 text-left"
+                className={`btn px-3 py-2 text-left ${
+                  active ? "btn-primary" : "btn-quiet"
+                }`}
               >
                 <span className="block text-sm font-medium">{level.label}</span>
-                <span className="block text-xs text-text-2">{level.note}</span>
+                <span
+                  className={`block text-xs ${active ? "" : "text-text-2"}`}
+                >
+                  {level.note}
+                </span>
               </button>
-            ))}
-          </div>
-        </section>
-      ) : null}
+            );
+          })}
+        </div>
+        <p className="mt-3 text-sm text-text-2">
+          Not sure?{" "}
+          <Link
+            href="/drill?placement=1"
+            className="font-medium text-text underline hover:text-green"
+          >
+            Take an {PLACEMENT_LENGTH}-question check
+          </Link>{" "}
+          and it will place you.
+        </p>
+      </section>
 
       <section className="space-y-6">
         {stages.map((stage, index) => (

@@ -14,6 +14,8 @@ import { ALL_QUESTIONS, DEPTH_TOPIC_IDS, getTopic } from "@/content";
 import type { Question, Response } from "@/content/types";
 import { gradeResponse } from "@/lib/grading";
 import { composeSession } from "@/lib/session";
+import { composePlacement, scorePlacement } from "@/lib/placement";
+import { PATH_STAGES } from "@/content/path";
 import { xpForAnswer } from "@/lib/xp";
 
 /** useSearchParams needs a Suspense boundary for this route to keep
@@ -44,6 +46,10 @@ function DrillSession() {
   // /drill?topic=<id>&from=path is a unit of the learning path rather than a
   // browsed topic. It orders easiest-first and offers the way back.
   const fromPath = params.get("from") === "path";
+  // /drill?placement=1 is the confirming check offered after somebody states
+  // an experience level. Same drill machinery, different composition and a
+  // different summary at the end.
+  const isPlacement = params.get("placement") === "1";
 
   // Composed once when the drill opens and then frozen. Recomputing as answers
   // land would reshuffle the questions out from under the learner.
@@ -65,30 +71,35 @@ function DrillSession() {
       ? ALL_QUESTIONS.filter((q) => q.topic === focusTopicId)
       : ALL_QUESTIONS;
 
+    // A placement check is a fixed set spanning the spine rather than anything
+    // drawn from the learner's own schedule, so it bypasses the composer.
+    const composed = isPlacement
+      ? composePlacement(ALL_QUESTIONS)
+      : composeSession({
+          questions: pool,
+          srs: state.srs,
+          goal: state.dailyGoal,
+          now: new Date(),
+          // A focused drill is an explicit choice, so it ignores the track
+          // toggles and the difficulty band -- you asked for this topic.
+          enabledTracks: focusTopicId ? undefined : state.enabledTracks,
+          accuracy: focusTopicId ? undefined : accuracy,
+          // A path unit is somebody's first contact with the topic, so it
+          // opens on the easiest questions rather than anywhere in the band.
+          easiestFirst: fromPath,
+          topicAccuracy: byTopic,
+          depthTopics: DEPTH_TOPIC_IDS,
+          includeDepth: state.includeDepth ?? false,
+        });
+
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSession(
-      composeSession({
-        questions: pool,
-        srs: state.srs,
-        goal: state.dailyGoal,
-        now: new Date(),
-        // A focused drill is an explicit choice, so it ignores the track
-        // toggles and the difficulty band -- you asked for this topic.
-        enabledTracks: focusTopicId ? undefined : state.enabledTracks,
-        accuracy: focusTopicId ? undefined : accuracy,
-        // A path unit is somebody's first contact with the topic, so it opens
-        // on the easiest questions rather than anywhere in the band.
-        easiestFirst: fromPath,
-        topicAccuracy: byTopic,
-        depthTopics: DEPTH_TOPIC_IDS,
-        includeDepth: state.includeDepth ?? false,
-      }),
-    );
+    setSession(composed);
   }, [
     hydrated,
     session,
     focusTopicId,
     fromPath,
+    isPlacement,
     state.srs,
     state.dailyGoal,
     state.enabledTracks,
@@ -175,6 +186,7 @@ function DrillSession() {
         results={results}
         session={session}
         fromPath={fromPath}
+        isPlacement={isPlacement}
       />
     );
   }
@@ -350,18 +362,77 @@ function SessionSummary({
   results,
   session,
   fromPath,
+  isPlacement,
 }: {
   results: boolean[];
   session: Question[];
+  /** A placement check reports where the path will open rather than a score,
+   *  because the score is a means to that and not the point. */
+  isPlacement?: boolean;
   /** Finishing a path unit should return you to the path, so the unit ticks
    *  over in front of you and the next one is one tap away. Dropping someone
    *  on the dashboard breaks that loop. */
   fromPath: boolean;
 }) {
+  const { setExperienceLevel } = useProgress();
   const correct = results.filter(Boolean).length;
   const missed = session.filter((_, i) => results[i] === false);
   const percent =
     results.length > 0 ? Math.round((correct / results.length) * 100) : 0;
+
+  if (isPlacement) {
+    const result = scorePlacement(session, results);
+    const stage = PATH_STAGES[result.stageIndex];
+    return (
+      <div className="space-y-4">
+        <section className="rounded-card border border-border p-5">
+          <p className="label">Placement</p>
+          <p className="mt-1 text-xl font-semibold">
+            Starting you at {stage.title}
+          </p>
+          <p className="mt-1 max-w-prose text-sm text-text-2">
+            You answered {correct} of {results.length}. The path opens at the
+            first stage where something was missed — earlier stages stay
+            available, and nothing has been marked complete that you have not
+            actually answered.
+          </p>
+          <ul className="mt-4 space-y-1.5">
+            {PATH_STAGES.map((s, index) => (
+              <li key={s.id} className="flex items-center gap-3 text-sm">
+                <span
+                  className={`h-2 w-2 shrink-0 rounded-full ${
+                    result.byStage[index] === result.perStage
+                      ? "bg-green"
+                      : "bg-border-strong"
+                  }`}
+                />
+                <span className="flex-1">{s.title}</span>
+                <span className="font-mono text-xs tabular-nums text-text-2">
+                  {result.byStage[index]}/{result.perStage}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/path"
+            onClick={() => setExperienceLevel(result.level)}
+            className="key key-ink flex-1 px-5 py-3 text-center text-base"
+          >
+            Open my path
+          </Link>
+          <Link
+            href="/path"
+            className="key key-plain px-5 py-3 text-center text-base"
+          >
+            Keep what I chose
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
