@@ -76,22 +76,11 @@ describe("path composition", () => {
     }
   });
 
-  /** The entry stage is the one somebody meets before they have any reason to
-   *  trust us, so it is stocked first and held to a higher bar. Stages 2 to 4
-   *  are mid-commission; raise their floor here as each is filled in. */
-  test("the entry stage has enough easy questions to open with", () => {
-    for (const id of PATH_STAGES[0].topics) {
-      const easy = ALL_QUESTIONS.filter(
-        (q: Question) => q.topic === id && q.difficulty <= 2,
-      );
-      expect(
-        easy.length,
-        `Stage 1 topic "${id}" has only ${easy.length} easy questions`,
-      ).toBeGreaterThanOrEqual(6);
-    }
-  });
-
-  test("no spine topic is empty at the easy end", () => {
+  /** Six is the bar because a stage serves five-question sessions and the
+   *  sixth stops every session in a topic being identical. Failing here means
+   *  somebody added a topic to the spine without stocking its easy band, and
+   *  the path would push a beginner into band 3 to fill the session. */
+  test("every spine topic can fill a session from its easy band", () => {
     for (const stage of PATH_STAGES) {
       for (const id of stage.topics) {
         const easy = ALL_QUESTIONS.filter(
@@ -100,7 +89,21 @@ describe("path composition", () => {
         expect(
           easy.length,
           `spine topic "${id}" has only ${easy.length} easy questions`,
-        ).toBeGreaterThanOrEqual(2);
+        ).toBeGreaterThanOrEqual(6);
+      }
+    }
+  });
+
+  test("every spine topic has at least one band 1 question to open on", () => {
+    for (const stage of PATH_STAGES) {
+      for (const id of stage.topics) {
+        const first = ALL_QUESTIONS.filter(
+          (q: Question) => q.topic === id && q.difficulty === 1,
+        );
+        expect(
+          first.length,
+          `spine topic "${id}" has no band 1 question`,
+        ).toBeGreaterThanOrEqual(1);
       }
     }
   });
