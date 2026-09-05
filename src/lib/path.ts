@@ -217,3 +217,29 @@ export function spineProgress(stages: PathStageView[]): {
     total: units.length,
   };
 }
+
+/** The line under a unit's title. Pulled out of the page because it is the
+ *  only real logic there and the house convention is to test functions rather
+ *  than markup. */
+export function unitCaption(unit: PathUnit): string {
+  if (unit.status === "complete") {
+    return `Done · ${unit.attempted} of ${unit.total} questions seen`;
+  }
+  if (unit.status === "locked") {
+    return "Finish the stage above to open this";
+  }
+  return `${unit.attempted} of ${unit.required} questions to pass`;
+}
+
+/** Where a unit links, or nothing when it is locked. Returning undefined
+ *  rather than a disabled link keeps the locked row out of the tab order. */
+export function unitHref(unit: PathUnit): string | undefined {
+  if (unit.status === "locked") return undefined;
+  return `/drill?topic=${unit.topicId}&from=path`;
+}
+
+/** Guards the empty case, which would otherwise divide by zero. */
+export function progressPercent(done: number, total: number): number {
+  if (total <= 0) return 0;
+  return Math.round((done / total) * 100);
+}

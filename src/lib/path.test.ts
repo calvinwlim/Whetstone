@@ -8,8 +8,12 @@ import {
   buildLanes,
   buildStages,
   nextUnit,
+  progressPercent,
   spineProgress,
+  unitCaption,
+  unitHref,
   type PathInput,
+  type PathUnit,
 } from "@/lib/path";
 
 const NOW = new Date("2026-01-01T00:00:00.000Z");
@@ -213,5 +217,67 @@ describe("progress reporting", () => {
         expect(unit.status).not.toBe("locked");
       }
     }
+  });
+});
+
+describe("how a unit is presented", () => {
+  const unit = (over: Partial<PathUnit> = {}): PathUnit => ({
+    topicId: "caching",
+    title: "Caching",
+    status: "available",
+    attempted: 0,
+    required: 5,
+    total: 8,
+    accuracy: undefined,
+    ...over,
+  });
+
+  test("a completed unit reports what it covered, not what is left", () => {
+    expect(unitCaption(unit({ status: "complete", attempted: 6 }))).toBe(
+      "Done · 6 of 8 questions seen",
+    );
+  });
+
+  test("a locked unit says what would open it", () => {
+    expect(unitCaption(unit({ status: "locked" }))).toBe(
+      "Finish the stage above to open this",
+    );
+  });
+
+  test("an open unit counts towards passing, not towards the topic total", () => {
+    expect(unitCaption(unit({ status: "in-progress", attempted: 2 }))).toBe(
+      "2 of 5 questions to pass",
+    );
+  });
+
+  test("an open unit links into the drill, flagged as coming from the path", () => {
+    const href = unitHref(unit());
+    expect(href).toBe("/drill?topic=caching&from=path");
+    // The flag is what makes the drill serve easiest-first and offer the way
+    // back, so losing it would silently undo both.
+    expect(href).toContain("from=path");
+  });
+
+  test("a locked unit has no link at all, so it stays out of the tab order", () => {
+    expect(unitHref(unit({ status: "locked" }))).toBeUndefined();
+  });
+
+  test("a completed unit is still followable, for revision", () => {
+    expect(unitHref(unit({ status: "complete" }))).toBeDefined();
+  });
+});
+
+describe("progress percentage", () => {
+  test("rounds to a whole percent", () => {
+    expect(progressPercent(1, 3)).toBe(33);
+    expect(progressPercent(2, 3)).toBe(67);
+  });
+
+  test("is 0 rather than NaN when there is nothing to do", () => {
+    expect(progressPercent(0, 0)).toBe(0);
+  });
+
+  test("reaches exactly 100 when everything is done", () => {
+    expect(progressPercent(24, 24)).toBe(100);
   });
 });

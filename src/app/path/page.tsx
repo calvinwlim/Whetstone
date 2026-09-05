@@ -10,7 +10,10 @@ import {
   buildLanes,
   buildStages,
   nextUnit,
+  progressPercent,
   spineProgress,
+  unitCaption,
+  unitHref,
   type PathUnit,
 } from "@/lib/path";
 
@@ -61,13 +64,7 @@ function UnitRow({ unit }: { unit: PathUnit }) {
       <StatusMark status={unit.status} />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-medium">{unit.title}</span>
-        <span className="block text-xs text-text-2">
-          {unit.status === "complete"
-            ? `Done · ${unit.attempted} of ${unit.total} questions seen`
-            : unit.status === "locked"
-              ? "Finish the stage above to open this"
-              : `${unit.attempted} of ${unit.required} questions to pass`}
-        </span>
+        <span className="block text-xs text-text-2">{unitCaption(unit)}</span>
       </span>
       {unit.accuracy !== undefined ? (
         <span className="shrink-0 text-xs tabular-nums text-text-2">
@@ -77,7 +74,8 @@ function UnitRow({ unit }: { unit: PathUnit }) {
     </>
   );
 
-  if (unit.status === "locked") {
+  const href = unitHref(unit);
+  if (href === undefined) {
     return (
       <li className="flex items-center gap-3 rounded-card px-3 py-2.5 opacity-55">
         {body}
@@ -88,7 +86,7 @@ function UnitRow({ unit }: { unit: PathUnit }) {
   return (
     <li>
       <Link
-        href={`/drill?topic=${unit.topicId}&from=path`}
+        href={href}
         className="flex items-center gap-3 rounded-card px-3 py-2.5 transition-colors hover:bg-surface"
       >
         {body}
@@ -98,7 +96,7 @@ function UnitRow({ unit }: { unit: PathUnit }) {
 }
 
 function Bar({ done, total }: { done: number; total: number }) {
-  const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+  const pct = progressPercent(done, total);
   return (
     <span
       role="progressbar"
