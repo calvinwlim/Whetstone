@@ -17,6 +17,13 @@ export interface ComposeInput {
   depthTopics?: Set<string>;
   /** Opt in to depth topics appearing in the daily mix. */
   includeDepth?: boolean;
+  /** Serve the easiest unseen questions first within the band.
+   *
+   *  The daily mix deliberately does not do this -- variety is the point
+   *  there. A learning path unit is the opposite: it is somebody's first
+   *  contact with a topic, so opening on the hardest question the band allows
+   *  is how a beginner concludes the topic is not for them. */
+  easiestFirst?: boolean;
   /** Defaults to the calendar day, so reloading keeps the same session. */
   seed?: number;
 }
@@ -60,11 +67,13 @@ function weightFor(question: Question, topicAccuracy?: Record<string, number>) {
 }
 
 /** Weight descending, ties broken by the seeded RNG so the order is stable
- *  for a given day but not the same every day. */
+ *  for a given day but not the same every day. With `easiestFirst`, difficulty
+ *  leads and the weight becomes the tiebreak. */
 function pickOrdered(
   questions: Question[],
   rng: () => number,
   topicAccuracy: Record<string, number> | undefined,
+  easiestFirst = false,
 ): Question[] {
   return questions
     .map((question) => ({
@@ -72,7 +81,13 @@ function pickOrdered(
       weight: weightFor(question, topicAccuracy),
       tiebreak: rng(),
     }))
-    .sort((a, b) => b.weight - a.weight || a.tiebreak - b.tiebreak)
+    .sort((a, b) =>
+      easiestFirst
+        ? a.question.difficulty - b.question.difficulty ||
+          b.weight - a.weight ||
+          a.tiebreak - b.tiebreak
+        : b.weight - a.weight || a.tiebreak - b.tiebreak,
+    )
     .map((entry) => entry.question);
 }
 
@@ -117,9 +132,10 @@ export function composeSession(input: ComposeInput): Question[] {
   );
 
   // Prefer the band, but never hand back a short session just to respect it.
+  const easiestFirst = input.easiestFirst ?? false;
   const fresh = [
-    ...pickOrdered(inBand, rng, topicAccuracy),
-    ...pickOrdered(outOfBand, rng, topicAccuracy),
+    ...pickOrdered(inBand, rng, topicAccuracy, easiestFirst),
+    ...pickOrdered(outOfBand, rng, topicAccuracy, easiestFirst),
   ].slice(0, remaining);
 
   return [...reviews, ...fresh];

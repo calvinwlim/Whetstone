@@ -38,8 +38,12 @@ function DrillSession() {
 
   // /drill?topic=<id> drills one topic instead of the daily mix, which is what
   // the "Drill this topic" action on a topic page means.
-  const focusTopicId = useSearchParams().get("topic");
+  const params = useSearchParams();
+  const focusTopicId = params.get("topic");
   const focusTopic = focusTopicId ? getTopic(focusTopicId) : undefined;
+  // /drill?topic=<id>&from=path is a unit of the learning path rather than a
+  // browsed topic. It orders easiest-first and offers the way back.
+  const fromPath = params.get("from") === "path";
 
   // Composed once when the drill opens and then frozen. Recomputing as answers
   // land would reshuffle the questions out from under the learner.
@@ -72,6 +76,9 @@ function DrillSession() {
         // toggles and the difficulty band -- you asked for this topic.
         enabledTracks: focusTopicId ? undefined : state.enabledTracks,
         accuracy: focusTopicId ? undefined : accuracy,
+        // A path unit is somebody's first contact with the topic, so it opens
+        // on the easiest questions rather than anywhere in the band.
+        easiestFirst: fromPath,
         topicAccuracy: byTopic,
         depthTopics: DEPTH_TOPIC_IDS,
         includeDepth: state.includeDepth ?? false,
@@ -81,6 +88,7 @@ function DrillSession() {
     hydrated,
     session,
     focusTopicId,
+    fromPath,
     state.srs,
     state.dailyGoal,
     state.enabledTracks,
@@ -142,8 +150,11 @@ function DrillSession() {
             : "You have answered everything available in your enabled tracks. Reviews return as they fall due."}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <Link href="/" className="key key-plain inline-block px-4 py-2 text-sm">
-            Back to today
+          <Link
+            href={fromPath ? "/path" : "/"}
+            className="key key-plain inline-block px-4 py-2 text-sm"
+          >
+            {fromPath ? "Back to your path" : "Back to today"}
           </Link>
           {focusTopic ? (
             <Link
@@ -159,7 +170,13 @@ function DrillSession() {
   }
 
   if (index >= session.length) {
-    return <SessionSummary results={results} session={session} />;
+    return (
+      <SessionSummary
+        results={results}
+        session={session}
+        fromPath={fromPath}
+      />
+    );
   }
 
   if (!question) return null;
@@ -181,9 +198,15 @@ function DrillSession() {
           <span>
             Drilling <span className="font-semibold">{focusTopic.title}</span>
           </span>
-          <Link href="/drill" className="text-text-2 underline hover:text-green">
-            Switch to today&apos;s drill
-          </Link>
+          {fromPath ? (
+            <Link href="/path" className="text-text-2 underline hover:text-green">
+              Back to your path
+            </Link>
+          ) : (
+            <Link href="/drill" className="text-text-2 underline hover:text-green">
+              Switch to today&apos;s drill
+            </Link>
+          )}
         </div>
       ) : null}
 
@@ -326,9 +349,14 @@ function DrillSession() {
 function SessionSummary({
   results,
   session,
+  fromPath,
 }: {
   results: boolean[];
   session: Question[];
+  /** Finishing a path unit should return you to the path, so the unit ticks
+   *  over in front of you and the next one is one tap away. Dropping someone
+   *  on the dashboard breaks that loop. */
+  fromPath: boolean;
 }) {
   const correct = results.filter(Boolean).length;
   const missed = session.filter((_, i) => results[i] === false);
@@ -383,10 +411,10 @@ function SessionSummary({
 
       <div className="flex gap-2">
         <Link
-          href="/"
+          href={fromPath ? "/path" : "/"}
           className="key key-ink flex-1 px-5 py-3 text-center text-base"
         >
-          Back to today
+          {fromPath ? "Back to your path" : "Back to today"}
         </Link>
       </div>
     </div>

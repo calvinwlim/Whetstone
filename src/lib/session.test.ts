@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+import { ALL_QUESTIONS } from "@/content";
 import { composeSession, targetBand } from "@/lib/session";
 import { initialSrsState, scheduleNext } from "@/lib/srs";
 import type { Difficulty, McqQuestion, TrackId } from "@/content/types";
@@ -248,5 +249,77 @@ describe("depth topics", () => {
   test("behaves as before when no depth topics are given", () => {
     const questions = [q("a"), q("b")];
     expect(composeSession({ questions, srs: {}, goal: 5, now: NOW })).toHaveLength(2);
+  });
+});
+
+describe("easiest first, for learning path units", () => {
+  /** The bug this guards: a path unit is somebody's first contact with a
+   *  topic, and targetBand(undefined) admits bands 1 to 3 equally. Before
+   *  this flag existed, a beginner's opening Foundations session came back as
+   *  1,3,3,3,2 -- three hard questions, and none of the easy ones written for
+   *  exactly that moment. */
+  const pool = ALL_QUESTIONS.filter((q) => q.topic === "version-control");
+
+  test("orders unseen questions by difficulty ascending", () => {
+    const session = composeSession({
+      questions: pool,
+      srs: {},
+      goal: 5,
+      now: NOW,
+      easiestFirst: true,
+    });
+    const difficulties = session.map((q) => q.difficulty);
+    expect(difficulties).toEqual([...difficulties].sort((a, b) => a - b));
+    expect(difficulties[0]).toBe(1);
+  });
+
+  test("the daily mix is left alone, because variety is the point there", () => {
+    const withFlag = composeSession({
+      questions: pool,
+      srs: {},
+      goal: 5,
+      now: NOW,
+      easiestFirst: true,
+    });
+    const without = composeSession({
+      questions: pool,
+      srs: {},
+      goal: 5,
+      now: NOW,
+    });
+    expect(without.map((q) => q.difficulty)).not.toEqual(
+      withFlag.map((q) => q.difficulty),
+    );
+  });
+
+  test("due reviews still lead, whatever their difficulty", () => {
+    const hard = pool.find((q) => q.difficulty >= 3)!;
+    const session = composeSession({
+      questions: pool,
+      srs: {
+        [hard.id]: {
+          ease: 2.5,
+          intervalDays: 1,
+          reps: 1,
+          lapses: 0,
+          dueAt: new Date(NOW.getTime() - 86_400_000).toISOString(),
+        },
+      },
+      goal: 3,
+      now: NOW,
+      easiestFirst: true,
+    });
+    expect(session[0].id).toBe(hard.id);
+  });
+
+  test("never returns more than the goal", () => {
+    const session = composeSession({
+      questions: pool,
+      srs: {},
+      goal: 3,
+      now: NOW,
+      easiestFirst: true,
+    });
+    expect(session).toHaveLength(3);
   });
 });

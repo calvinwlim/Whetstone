@@ -24,7 +24,7 @@ function StatusMark({ status }: { status: PathUnit["status"] }) {
     return (
       <span
         aria-hidden
-        className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-correct/15 text-correct"
+        className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-green-wash text-green-deep"
       >
         <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3.5 8.5l3 3 6-7" />
@@ -87,7 +87,7 @@ function UnitRow({ unit }: { unit: PathUnit }) {
   return (
     <li>
       <Link
-        href={`/drill?topic=${unit.topicId}`}
+        href={`/drill?topic=${unit.topicId}&from=path`}
         className="flex items-center gap-3 rounded-card px-3 py-2.5 transition-colors hover:bg-surface"
       >
         {body}
@@ -162,33 +162,9 @@ export default function PathPage() {
         </div>
       </header>
 
-      {state.experienceLevel === undefined ? (
-        <section className="rounded-card border border-border bg-surface p-4">
-          <h2 className="text-sm font-semibold">Where should you start?</h2>
-          <p className="mt-1 max-w-prose text-sm text-text-2">
-            This opens stages rather than skipping them — everything behind you
-            stays available, and nothing is marked done that you have not
-            answered.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {EXPERIENCE_LEVELS.map((level) => (
-              <button
-                key={level.value}
-                type="button"
-                onClick={() => setExperienceLevel(level.value)}
-                className="rounded-card border border-border px-3 py-2 text-left transition-colors hover:border-ink"
-              >
-                <span className="block text-sm font-medium">{level.label}</span>
-                <span className="block text-xs text-text-2">{level.note}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
       {next ? (
         <section className="rounded-card border border-border p-4">
-          <p className="text-xs uppercase tracking-wide text-text-2">Next up</p>
+          <p className="label">Next up</p>
           <div className="mt-1 flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-base font-semibold">{next.title}</p>
@@ -197,8 +173,8 @@ export default function PathPage() {
               </p>
             </div>
             <Link
-              href={`/drill?topic=${next.topicId}`}
-              className="rounded-card bg-ink px-4 py-2 text-sm font-medium text-bg transition-opacity hover:opacity-90"
+              href={`/drill?topic=${next.topicId}&from=path`}
+              className="btn btn-primary shrink-0 px-3.5 py-2 text-sm"
             >
               {next.attempted > 0 ? "Continue" : "Start"}
             </Link>
@@ -213,6 +189,30 @@ export default function PathPage() {
           </p>
         </section>
       )}
+
+      {state.experienceLevel === undefined ? (
+        <section className="rounded-card border border-border bg-surface p-4">
+          <h2 className="text-sm font-semibold">Where should you start?</h2>
+          <p className="mt-1 max-w-prose text-sm text-text-2">
+            This opens stages rather than skipping them — everything behind you
+            stays available, and nothing is marked done that you have not
+            answered.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {EXPERIENCE_LEVELS.map((level) => (
+              <button
+                key={level.value}
+                type="button"
+                onClick={() => setExperienceLevel(level.value)}
+                className="btn btn-quiet px-3 py-2 text-left"
+              >
+                <span className="block text-sm font-medium">{level.label}</span>
+                <span className="block text-xs text-text-2">{level.note}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="space-y-6">
         {stages.map((stage, index) => (

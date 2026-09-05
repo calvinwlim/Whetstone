@@ -60,6 +60,19 @@ export interface PathInput {
   experienceLevel?: ExperienceLevel;
 }
 
+/** Questions grouped by topic, built once per call. */
+type TopicIndex = Map<string, Question[]>;
+
+function indexByTopic(questions: Question[]): TopicIndex {
+  const index: TopicIndex = new Map();
+  for (const question of questions) {
+    const list = index.get(question.topic);
+    if (list) list.push(question);
+    else index.set(question.topic, [question]);
+  }
+  return index;
+}
+
 interface TopicFacts {
   attempted: number;
   required: number;
@@ -72,8 +85,12 @@ interface TopicFacts {
  *  progress that already exists. This is what lets somebody who has been using
  *  the daily mix for a month open the path and find it partly filled in,
  *  rather than being told to start from zero. */
-function factsFor(topicId: string, input: PathInput): TopicFacts {
-  const questions = input.questions.filter((q) => q.topic === topicId);
+function factsFor(
+  topicId: string,
+  input: PathInput,
+  index: TopicIndex,
+): TopicFacts {
+  const questions = index.get(topicId) ?? [];
   const attempted = questions.filter((q) => input.srs[q.id] !== undefined).length;
   const required = Math.min(REQUIRED_ATTEMPTS, questions.length);
 
@@ -90,8 +107,13 @@ function factsFor(topicId: string, input: PathInput): TopicFacts {
   return { attempted, required, total: questions.length, accuracy, complete };
 }
 
-function unitFor(topicId: string, input: PathInput, unlocked: boolean): PathUnit {
-  const facts = factsFor(topicId, input);
+function unitFor(
+  topicId: string,
+  input: PathInput,
+  unlocked: boolean,
+  index: TopicIndex,
+): PathUnit {
+  const facts = factsFor(topicId, input, index);
   const status: UnitStatus = facts.complete
     ? "complete"
     : !unlocked
@@ -117,6 +139,7 @@ function unitFor(topicId: string, input: PathInput, unlocked: boolean): PathUnit
  *  existing history, who would see a completed topic sitting behind a locked
  *  one purely because the daily mix served it early. */
 export function buildStages(input: PathInput): PathStageView[] {
+  const index = indexByTopic(input.questions);
   const floor = input.experienceLevel
     ? STARTING_STAGE[input.experienceLevel]
     : 0;
@@ -124,10 +147,10 @@ export function buildStages(input: PathInput): PathStageView[] {
   const views: PathStageView[] = [];
   let previousComplete: boolean = true;
 
-  for (const [index, stage] of PATH_STAGES.entries()) {
-    const unlocked: boolean = previousComplete || index <= floor;
+  for (const [stageIndex, stage] of PATH_STAGES.entries()) {
+    const unlocked: boolean = previousComplete || stageIndex <= floor;
     const units: PathUnit[] = stage.topics.map((topicId) =>
-      unitFor(topicId, input, unlocked),
+      unitFor(topicId, input, unlocked, index),
     );
     const done: number = units.filter((u) => u.status === "complete").length;
     const complete: boolean = done === units.length;
@@ -152,8 +175,11 @@ export function buildStages(input: PathInput): PathStageView[] {
  *  your time given what you do, not a gate -- somebody who wants to read about
  *  sharding on day one should be allowed to. */
 export function buildLanes(input: PathInput): PathLaneView[] {
+  const index = indexByTopic(input.questions);
   return PATH_LANES.map((lane) => {
-    const units = lane.topics.map((topicId) => unitFor(topicId, input, true));
+    const units = lane.topics.map((topicId) =>
+      unitFor(topicId, input, true, index),
+    );
     return {
       id: lane.id,
       title: lane.title,
