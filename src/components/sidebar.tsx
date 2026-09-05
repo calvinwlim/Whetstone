@@ -31,10 +31,12 @@ const ICONS = {
   leaderboard:
     "M5 2.5h6v3.5a3 3 0 1 1-6 0V2.5Zm0 1H3.5v1a2 2 0 0 0 2 2m5.5-3H12.5v1a2 2 0 0 1-2 2M8 9v2.5M6 13.5h4",
   settings: "M2.5 5h11M2.5 11h11M6 3v4m4 2v4",
+  path: "M4 13.5V9a2 2 0 0 1 2-2h4a2 2 0 0 0 2-2V2.5M4 13.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm8-11a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z",
 } as const;
 
 const LINKS = [
   { href: "/", label: "Today", icon: ICONS.today },
+  { href: "/path", label: "Path", icon: ICONS.path },
   { href: "/topics", label: "Topics", icon: ICONS.topics },
   { href: "/stats", label: "Stats", icon: ICONS.stats },
   { href: "/leaderboard", label: "Leaderboard", icon: ICONS.leaderboard },

@@ -8,6 +8,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import type { Question, TrackId } from "@/content/types";
+import type { ExperienceLevel } from "@/content/path";
 import {
   emptyProgress,
   overallAccuracy,
@@ -51,6 +52,7 @@ interface ProgressContextValue {
   setDailyGoal: (goal: number) => void;
   setEnabledTracks: (tracks: TrackId[]) => void;
   setIncludeDepth: (include: boolean) => void;
+  setExperienceLevel: (level: ExperienceLevel) => void;
   repairStreak: () => void;
   resetProgress: () => void;
 }
@@ -91,6 +93,10 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     updateProgress((current) => ({ ...current, includeDepth: include }));
   }, []);
 
+  const setExperienceLevel = useCallback((level: ExperienceLevel) => {
+    updateProgress((current) => ({ ...current, experienceLevel: level }));
+  }, []);
+
   const repairStreak = useCallback(() => {
     const day = new Date().toISOString().slice(0, 10);
     updateProgress((current) => ({
@@ -119,6 +125,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       setDailyGoal,
       setEnabledTracks,
       setIncludeDepth,
+      setExperienceLevel,
       repairStreak,
       resetProgress,
     }),
@@ -130,6 +137,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       setDailyGoal,
       setEnabledTracks,
       setIncludeDepth,
+      setExperienceLevel,
       repairStreak,
       resetProgress,
     ],

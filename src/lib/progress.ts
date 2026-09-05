@@ -1,5 +1,6 @@
 import type { Difficulty, Question, TrackId } from "@/content/types";
 import { TRACK_IDS } from "@/content/types";
+import type { ExperienceLevel } from "@/content/path";
 import { initialSrsState, scheduleNext, type SrsState } from "@/lib/srs";
 import {
   GOAL_BONUS_XP,
@@ -65,6 +66,10 @@ export interface ProgressState {
   enabledTracks: TrackId[];
   /** Opt in to specialist depth topics appearing in the daily mix. */
   includeDepth?: boolean;
+  /** Self-declared experience, which opens stages on the learning path
+   *  without them having to be earned. Optional because everyone who used
+   *  Whetstone before the path existed has never been asked. */
+  experienceLevel?: ExperienceLevel;
   dailyStats: Record<string, DailyStat>;
 }
 
