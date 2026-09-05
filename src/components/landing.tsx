@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { QuestionInput, hasAnswer } from "@/components/questions/question-input";
+import { QuestionStem } from "@/components/questions/question-stem";
 import { ALL_QUESTIONS, TRACKS, getQuestion, getTopic } from "@/content";
 import type { Question, Response } from "@/content/types";
 import { gradeResponse } from "@/lib/grading";
@@ -43,9 +44,7 @@ function SampleQuestion({ question }: { question: Question }) {
         <p className="text-xs text-text-2">Not scored · nothing saved</p>
       </div>
 
-      <h2 className="mt-3 text-lg font-semibold leading-snug">
-        {question.prompt}
-      </h2>
+      <QuestionStem question={question} as="h2" className="mt-3" />
 
       <div className="mt-4">
         <QuestionInput

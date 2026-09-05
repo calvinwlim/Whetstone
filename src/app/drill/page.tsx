@@ -10,6 +10,7 @@ import {
   QuestionInput,
   hasAnswer,
 } from "@/components/questions/question-input";
+import { QuestionStem } from "@/components/questions/question-stem";
 import { ALL_QUESTIONS, DEPTH_TOPIC_IDS, getTopic } from "@/content";
 import type { Question, Response } from "@/content/types";
 import { gradeResponse } from "@/lib/grading";
@@ -244,17 +245,9 @@ function DrillSession() {
         <DifficultyPill difficulty={question.difficulty} />
       </div>
 
-      {question.context ? (
-        <p className="mt-3 rounded-control border-l-[3px] border-border-strong bg-surface px-3.5 py-2.5 text-sm leading-relaxed text-text-2">
-          {question.context}
-        </p>
-      ) : null}
+      <QuestionStem question={question} className="mt-3.5" />
 
-      <h1 className="mt-3 text-lg font-semibold leading-snug">
-        {question.prompt}
-      </h1>
-
-      <div className="mt-4">
+      <div className="mt-5">
         <QuestionInput
           question={question}
           value={response}
@@ -456,7 +449,14 @@ function SessionSummary({
               const topic = getTopic(question.topic);
               return (
                 <li key={question.id} className="py-2.5">
-                  <p className="text-sm leading-snug">{question.prompt}</p>
+                  {/* Same reason as the stem: a prompt like "Which approach
+                      fits best?" identifies nothing without its scenario. */}
+                  {question.context ? (
+                    <p className="text-sm leading-snug">{question.context}</p>
+                  ) : null}
+                  <p className="text-sm font-semibold leading-snug">
+                    {question.prompt}
+                  </p>
                   {topic ? (
                     <Link
                       href={`/topics/${topic.id}`}
