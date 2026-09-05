@@ -24,6 +24,7 @@ import * as easyJudgment from "./tracks/easy-judgment";
 import * as easyLanesA from "./tracks/easy-lanes-a";
 import * as easyLanesB from "./tracks/easy-lanes-b";
 import * as easyLanesC from "./tracks/easy-lanes-c";
+import * as easyLanesD from "./tracks/easy-lanes-d";
 
 /** The whole bank, bundled at build time. Nothing here touches a database,
  *  so rendering a question costs zero network round trips. */
@@ -74,6 +75,7 @@ export const ALL_QUESTIONS: Question[] = [
   ...easyLanesA.questions,
   ...easyLanesB.questions,
   ...easyLanesC.questions,
+  ...easyLanesD.questions,
 ];
 
 /** Topic ids marked as specialist depth, for the session composer and the UI. */

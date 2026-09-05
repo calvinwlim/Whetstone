@@ -98,6 +98,24 @@ describe("path composition", () => {
     }
   });
 
+  /** Lanes sit at four rather than six. A lane is reached after two stages by
+   *  somebody who has already shown they can answer things, so a session
+   *  reaching into band 3 to fill itself is a different proposition from doing
+   *  that to a beginner on day one. */
+  test("every lane topic can open on its easy band", () => {
+    for (const lane of PATH_LANES) {
+      for (const id of lane.topics) {
+        const easy = ALL_QUESTIONS.filter(
+          (q: Question) => q.topic === id && q.difficulty <= 2,
+        );
+        expect(
+          easy.length,
+          `lane topic "${id}" has only ${easy.length} easy questions`,
+        ).toBeGreaterThanOrEqual(4);
+      }
+    }
+  });
+
   test("every spine topic has at least one band 1 question to open on", () => {
     for (const stage of PATH_STAGES) {
       for (const id of stage.topics) {
