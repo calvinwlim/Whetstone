@@ -16,7 +16,7 @@ export default function PrivacyPage() {
     <article className="max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight">Privacy</h1>
       <p className="mt-1.5 text-sm text-text-2">
-        Last updated 2 September 2026.
+        Last updated 7 September 2026.
       </p>
 
       <p className="mt-5 leading-relaxed">
@@ -76,12 +76,51 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="Who processes it">
+        {/* TODO: replace with the legal name of whoever is accountable.
+            UK/EU law requires the controller to be identifiable, and "one
+            person" is not an identity. The email below is necessary but not
+            sufficient on its own. */}
         <p>
+          Whetstone is run and paid for by one person, who decides what is
+          collected and why, and is the data controller for it. Reaching them
+          is the email address at the bottom of this page.
+        </p>
+        <p className="mt-2">
           The site runs on <strong>Vercel</strong>, and accounts and progress
           are stored by <strong>Supabase</strong>. Both act as processors on
           Whetstone&apos;s behalf, and both keep standard server logs
-          containing IP addresses for security and debugging. No other third
-          party receives your data.
+          containing IP addresses for security and debugging.
+        </p>
+        <p className="mt-2">
+          If you sign in with <strong>GitHub</strong> rather than by email,
+          GitHub necessarily learns that you use Whetstone, and passes back the
+          email address on your GitHub account so the account can be created.
+          What GitHub does with that is covered by their privacy policy, not
+          this one. Choosing the email link instead avoids involving them.
+        </p>
+        <p className="mt-2">
+          Nobody else receives your data. It is never sold, and it is not used
+          to train anything.
+        </p>
+      </Section>
+
+      <Section title="Where it is held">
+        <p>
+          Vercel and Supabase are United States companies, so if you are in the
+          UK or EU your data is transferred outside it. Both are contractually
+          bound to protect it to the standard required here — in the usual way,
+          through standard contractual clauses in their terms.
+        </p>
+      </Section>
+
+      <Section title="Why it is allowed">
+        <p>
+          Under UK and EU data protection law, the email address and progress
+          are processed to perform the service you asked for — there is no
+          account without them. The leaderboard entry is processed on your
+          consent, which is why it is off until you switch it on and why
+          switching it off deletes it. Server logs are kept on the legitimate
+          interest of keeping the site up and secure.
         </p>
       </Section>
 
@@ -130,15 +169,33 @@ export default function PrivacyPage() {
         </ul>
         <p className="mt-2">
           If you are in the UK or EU, the rights of access, rectification,
-          erasure and portability apply. The controls above cover the first
-          three directly; for a copy of your data in a portable form, ask.
+          erasure, restriction, objection and portability apply. The controls
+          above cover the first three directly; for a copy of your data in a
+          portable form, ask. You will not be charged for any of this, and
+          nothing about the service changes because you asked.
+        </p>
+        <p className="mt-2">
+          If you think your data has been handled badly, please say so first —
+          but you are entitled to complain to a data protection regulator
+          without doing that. In the UK that is the{" "}
+          <a
+            href="https://ico.org.uk/make-a-complaint/"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="font-medium text-text underline underline-offset-2"
+          >
+            Information Commissioner&apos;s Office
+          </a>
+          ; in the EU it is the supervisory authority where you live.
         </p>
       </Section>
 
       <Section title="Children">
         <p>
-          Whetstone is aimed at working software engineers and is not intended
-          for children under 13.
+          Whetstone is aimed at working software engineers. It is not intended
+          for children, and accounts should not be created by anyone under 16,
+          which is the highest age any country covered here sets for consenting
+          to this on your own behalf.
         </p>
       </Section>
 

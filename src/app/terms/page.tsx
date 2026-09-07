@@ -13,7 +13,7 @@ export default function TermsPage() {
     <article className="max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight">Terms of use</h1>
       <p className="mt-1.5 text-sm text-text-2">
-        Last updated 2 September 2026.
+        Last updated 7 September 2026.
       </p>
 
       <p className="mt-5 leading-relaxed">
@@ -64,12 +64,17 @@ export default function TermsPage() {
         </p>
       </Section>
 
-      <Section title="Donations">
+      <Section title="Paying for it">
         <p>
-          Whetstone is free and will stay free. Donations are voluntary, buy no
-          features, and are not refundable — they cover hosting and the time
-          spent writing questions. Choosing not to donate changes nothing about
-          what you can use.
+          Whetstone is free and will stay free. There is nothing to buy, no
+          subscription, and at present no way to donate even if you wanted to.
+        </p>
+        <p className="mt-2">
+          If a donation link is ever added, this is what it will mean:
+          voluntary, buying no features and no advantage on the leaderboard,
+          not refundable, and covering hosting and the time spent writing
+          questions. Choosing not to donate would change nothing about what you
+          can use.
         </p>
       </Section>
 
@@ -79,6 +84,14 @@ export default function TermsPage() {
           tiers and may be slow, briefly unavailable, or occasionally broken. I
           take backups and take your progress seriously, but you should not
           treat this as the only record of anything that matters to you.
+        </p>
+        <p className="mt-2">
+          Because it is free and run by one person in their own time, I am not
+          liable for losses that follow from using it — lost progress, an
+          interview that did not go your way, or time spent on an explanation
+          that turned out to be wrong. Nothing here limits liability for death
+          or personal injury caused by negligence, for fraud, or for anything
+          else the law does not permit to be limited.
         </p>
       </Section>
 
@@ -94,6 +107,15 @@ export default function TermsPage() {
           , with no confirmation email and no waiting period. The service
           itself could be discontinued; if that happens, anyone with an account
           gets reasonable notice and a chance to export their progress first.
+        </p>
+      </Section>
+
+      <Section title="Which law applies">
+        <p>
+          These terms, and any dispute about them, are governed by the law of
+          the place where Whetstone is run from, and its courts are where such
+          a dispute would be heard. If you use Whetstone as a consumer, this
+          does not take away the protections of the law where you live.
         </p>
       </Section>
 
