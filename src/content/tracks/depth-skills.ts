@@ -435,9 +435,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Memory proportional to distinct inputs, in exchange for eliminating repeat computation",
       },
-      { id: "b", text: "Computation time, in exchange for less memory" },
-      { id: "c", text: "Accuracy, in exchange for speed" },
-      { id: "d", text: "No trade — memoisation is free" },
+      {
+        id: "b",
+        text: "Extra computation time on every call, in exchange for a smaller memory footprint",
+      },
+      { id: "c", text: "A small loss of accuracy, in exchange for noticeably faster calls" },
+      { id: "d", text: "No trade at all — memoisation is essentially free to add" },
     ],
     answer: "a",
     explanation:
@@ -459,9 +462,12 @@ export const questions: Question[] = [
         id: "a",
         text: "A probabilistic cardinality estimator such as HyperLogLog, using kilobytes instead of storing every id",
       },
-      { id: "b", text: "A hash set of every visitor id seen" },
-      { id: "c", text: "Sorting the events and counting adjacent duplicates" },
-      { id: "d", text: "A Bloom filter, which returns an exact count" },
+      { id: "b", text: "A hash set holding every distinct visitor id ever seen" },
+      {
+        id: "c",
+        text: "Sorting the full stream of events by id first, then counting the adjacent duplicates that result",
+      },
+      { id: "d", text: "A Bloom filter, since it returns an exact distinct count" },
     ],
     answer: "a",
     explanation:
@@ -483,9 +489,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Each update invalidates every prefix after it — use a Fenwick or segment tree for O(log n) updates and queries",
       },
-      { id: "b", text: "Nothing — prefix sums handle updates in constant time" },
-      { id: "c", text: "Queries become O(n); rebuild the array on each read" },
-      { id: "d", text: "The array must be re-sorted after each update" },
+      {
+        id: "b",
+        text: "Nothing breaks — prefix sums already handle updates in constant time",
+      },
+      {
+        id: "c",
+        text: "Queries degrade to O(n) once updates are frequent; the usual fix is to rebuild the whole array on every single read",
+      },
+      { id: "d", text: "The underlying array must be re-sorted after every single update" },
     ],
     answer: "a",
     explanation:
@@ -545,9 +557,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Fast and slow pointers — they meet inside a cycle and the fast one exits if there is none",
       },
-      { id: "b", text: "A hash set of visited nodes" },
-      { id: "c", text: "Sorting the nodes by address" },
-      { id: "d", text: "Binary search over the list length" },
+      {
+        id: "b",
+        text: "A hash set of visited nodes, checked again before following each next pointer",
+      },
+      { id: "c", text: "Sorting the nodes by their memory address before walking them" },
+      { id: "d", text: "Binary search over the list's length to find where it repeats" },
     ],
     answer: "a",
     explanation:
@@ -569,9 +584,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Backtracking — build candidates incrementally and abandon partial ones that cannot succeed",
       },
-      { id: "b", text: "Dynamic programming over the count" },
-      { id: "c", text: "A greedy scan taking the best local option" },
-      { id: "d", text: "Binary search over the solution space" },
+      { id: "b", text: "Dynamic programming, memoising the count at each state" },
+      {
+        id: "c",
+        text: "A greedy scan that always takes the best local option and never reconsiders any of them",
+      },
+      { id: "d", text: "Binary search over the space of possible solutions" },
     ],
     answer: "a",
     explanation:

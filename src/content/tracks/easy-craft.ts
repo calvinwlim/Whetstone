@@ -572,9 +572,9 @@ export const questions: Question[] = [
         id: "a",
         text: "It gives you a known approach and complexity before writing any code",
       },
-      { id: "b", text: "Patterns always produce the shortest solution" },
-      { id: "c", text: "Interviewers award marks for naming them" },
-      { id: "d", text: "It removes the need to handle edge cases" },
+      { id: "b", text: "Patterns always produce the shortest possible solution" },
+      { id: "c", text: "Interviewers specifically award marks for naming them out loud" },
+      { id: "d", text: "It removes the need to think about edge cases at all" },
     ],
     answer: "a",
     explanation:
