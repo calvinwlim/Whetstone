@@ -68,10 +68,16 @@ export default function PrivacyPage() {
 
       <Section title="Cookies">
         <p>
-          Only sign-in cookies, which keep you logged in between visits. They
-          are strictly necessary for the account to work, there are no
-          advertising or tracking cookies, and so there is no consent banner to
-          click through. Signing out removes them.
+          Whetstone itself sets only sign-in cookies, which keep you logged in
+          between visits and are strictly necessary for the account to work.
+          Signing out removes them.
+        </p>
+        <p className="mt-2">
+          The Sponsor button in the footer is an embedded frame from GitHub,
+          present on every page, and GitHub may set its own cookies in it —
+          Whetstone has no say over that and does not read them. There is
+          still no advertising, and no tracking of you across other sites by
+          Whetstone itself, so there is no consent banner to click through.
         </p>
       </Section>
 
@@ -104,6 +110,15 @@ export default function PrivacyPage() {
           email address on your GitHub account so the account can be created.
           What GitHub does with that is covered by their privacy policy, not
           this one. Choosing the email link instead avoids involving them.
+        </p>
+        <p className="mt-2">
+          Separately, every page carries a <strong>GitHub Sponsors</strong>{" "}
+          button in the footer, loaded live from github.com rather than drawn
+          as a static image. That means a request carrying your IP address
+          reaches GitHub on every page you visit here, whether or not you ever
+          click it — the same way it would for an embedded YouTube video or
+          Google Map on another site. Whetstone does not see anything from
+          that request; GitHub does, under their own privacy policy.
         </p>
         <p className="mt-2">
           Nobody else receives your data. It is never sold, and it is not used

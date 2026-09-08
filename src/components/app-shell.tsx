@@ -139,7 +139,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         >
           <div className="mx-auto flex w-full max-w-5xl flex-col px-4 py-5 sm:px-6">
             <div className="flex-1">{children}</div>
-            <footer className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-4 text-xs text-text-2">
+            <footer className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4 text-xs text-text-2">
               <span>Whetstone</span>
               <Link href="/about" className="hover:text-text hover:underline">
                 About
@@ -150,6 +150,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link href="/terms" className="hover:text-text hover:underline">
                 Terms
               </Link>
+              {/* GitHub's own embed, unmodified. It is a live iframe from
+                  github.com rather than a static badge, so it is allow-listed
+                  in next.config.ts's frame-src and disclosed in the privacy
+                  policy -- unlike the rest of this footer, loading it means a
+                  request leaves the browser for GitHub on every page view,
+                  whether or not anyone clicks it. */}
+              <iframe
+                src="https://github.com/sponsors/calvinwlim/button"
+                title="Sponsor calvinwlim"
+                height="32"
+                width="114"
+                className="ml-auto rounded-control border-0"
+              />
             </footer>
           </div>
         </main>

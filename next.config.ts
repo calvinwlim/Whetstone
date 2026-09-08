@@ -7,9 +7,10 @@ const isDev = process.env.NODE_ENV === "development";
  *
  *  The app loads no third-party script, stylesheet, font or image: next/font
  *  self-hosts at build time, the social images are generated here, and the
- *  only outbound hosts are Supabase and, when a crash is actually being
- *  reported, Rollbar. So 'self' is very nearly the whole policy, and the
- *  directives that cost nothing to lock down are locked down.
+ *  only outbound hosts are Supabase, Rollbar when a crash is actually being
+ *  reported, and GitHub for the Sponsors button in the footer. So 'self' is
+ *  very nearly the whole policy, and the directives that cost nothing to
+ *  lock down are locked down.
  *
  *  script-src keeps 'unsafe-inline' because Next.js inlines its bootstrap and
  *  flight data. The alternative is per-request nonces, and Next can only
@@ -44,6 +45,9 @@ function contentSecurityPolicy(): string {
       "https://api.rollbar.com",
       ...(isDev ? ["ws://localhost:*"] : []),
     ],
+    // The Sponsors button in the footer: a live iframe from github.com, not
+    // a static badge. default-src would otherwise block it outright.
+    "frame-src": ["https://github.com"],
     "frame-ancestors": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
