@@ -225,9 +225,15 @@ const questions: Question[] = [
         id: "a",
         text: "The listener can follow the reasoning as support instead of holding it all in memory",
       },
-      { id: "b", text: "It is faster to say" },
-      { id: "c", text: "It prevents the listener from disagreeing" },
-      { id: "d", text: "Reasoning is not important once a decision is made" },
+      { id: "b", text: "It is simply faster to say than the reasoning would be" },
+      {
+        id: "c",
+        text: "It prevents the listener from disagreeing with the conclusion",
+      },
+      {
+        id: "d",
+        text: "Reasoning stops being important once a decision has already been made",
+      },
     ],
     answer: "a",
     explanation:
@@ -265,9 +271,18 @@ const questions: Question[] = [
         id: "a",
         text: "Name the benefit strong consistency gives, why it is not worth the cost here, and what would change your mind",
       },
-      { id: "b", text: "Change to strong consistency, since they seem to prefer it" },
-      { id: "c", text: "Restate that eventual consistency is the industry standard" },
-      { id: "d", text: "Explain that strong consistency is impossible at scale" },
+      {
+        id: "b",
+        text: "Change your answer to strong consistency, since they seem to prefer it",
+      },
+      {
+        id: "c",
+        text: "Restate that eventual consistency is simply the industry standard now",
+      },
+      {
+        id: "d",
+        text: "Explain plainly that strong consistency is simply flatly impossible to achieve at any real scale",
+      },
     ],
     answer: "a",
     explanation:
@@ -287,9 +302,12 @@ const questions: Question[] = [
         id: "a",
         text: "When you have been given new information that invalidates an assumption",
       },
-      { id: "b", text: "Whenever someone more senior disagrees" },
-      { id: "c", text: "Never — consistency signals conviction" },
-      { id: "d", text: "Whenever the discussion has run long" },
+      { id: "b", text: "Whenever someone more senior than you disagrees with it" },
+      {
+        id: "c",
+        text: "Never — staying consistent is what signals genuine conviction",
+      },
+      { id: "d", text: "Whenever the discussion has simply run on for too long" },
     ],
     answer: "a",
     explanation:
@@ -309,9 +327,12 @@ const questions: Question[] = [
         id: "a",
         text: "It is only useful with the specific dependency and both outcomes named",
       },
-      { id: "b", text: "It is always technically incorrect" },
-      { id: "c", text: "Interviewers want a single definitive answer" },
-      { id: "d", text: "It takes too long to say" },
+      { id: "b", text: "It is almost always technically incorrect as stated" },
+      {
+        id: "c",
+        text: "Interviewers always want to hear one single, definitive answer",
+      },
+      { id: "d", text: "It simply takes too long to say out loud" },
     ],
     answer: "a",
     explanation:
@@ -351,9 +372,15 @@ const questions: Question[] = [
         id: "a",
         text: "The analogy was extended past where it holds — name its limits when you introduce it",
       },
-      { id: "b", text: "The analogy was wrong and should not have been used" },
-      { id: "c", text: "The stakeholder needs the full technical explanation instead" },
-      { id: "d", text: "Nothing went wrong; the question is unrelated" },
+      {
+        id: "b",
+        text: "The analogy was simply wrong and never should have been used",
+      },
+      {
+        id: "c",
+        text: "The stakeholder needs the full technical explanation instead of an analogy",
+      },
+      { id: "d", text: "Nothing went wrong at all; the question is unrelated" },
     ],
     answer: "a",
     explanation:
@@ -375,9 +402,18 @@ const questions: Question[] = [
         id: "a",
         text: "Restate their proposal and its benefit accurately, then raise the specific failure mode",
       },
-      { id: "b", text: "State that the approach will not work and explain why" },
-      { id: "c", text: "Say nothing publicly and raise it privately afterwards" },
-      { id: "d", text: "Ask a series of leading questions until they find the flaw" },
+      {
+        id: "b",
+        text: "State plainly that the approach will not work and explain why",
+      },
+      {
+        id: "c",
+        text: "Say nothing in the room and raise it privately with them afterwards",
+      },
+      {
+        id: "d",
+        text: "Ask a series of leading questions until they discover the flaw themselves",
+      },
     ],
     answer: "a",
     explanation:

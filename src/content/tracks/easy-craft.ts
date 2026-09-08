@@ -444,9 +444,12 @@ export const questions: Question[] = [
         id: "a",
         text: "It shows you understand what the choice costs, which is what separates a decision from a guess",
       },
-      { id: "b", text: "It prevents the interviewer from asking about it" },
-      { id: "c", text: "It makes the design sound more modest" },
-      { id: "d", text: "It shortens the explanation" },
+      {
+        id: "b",
+        text: "It permanently prevents the interviewer from ever asking you about it later on at all",
+      },
+      { id: "c", text: "It simply makes the whole design sound more modest" },
+      { id: "d", text: "It generally shortens the overall explanation" },
     ],
     answer: "a",
     explanation:
@@ -466,9 +469,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Say so, state the assumption you are using, and say how you would verify it",
       },
-      { id: "b", text: "Give your best guess with confidence" },
-      { id: "c", text: "Avoid the area and design around it" },
-      { id: "d", text: "Ask the interviewer for the number" },
+      { id: "b", text: "Give your best guess and state it with total confidence" },
+      {
+        id: "c",
+        text: "Quietly avoid the area entirely and design around it instead",
+      },
+      { id: "d", text: "Simply ask the interviewer to give you the number" },
     ],
     answer: "a",
     explanation:
@@ -485,9 +491,9 @@ export const questions: Question[] = [
     prompt: "What decides how technical your explanation should be?",
     options: [
       { id: "a", text: "The decision your listener actually has to make" },
-      { id: "b", text: "How senior they are" },
-      { id: "c", text: "How much time you have" },
-      { id: "d", text: "How complex the system is" },
+      { id: "b", text: "How senior the person you are speaking to happens to be" },
+      { id: "c", text: "How much time you personally have available right now" },
+      { id: "d", text: "How complex the underlying system actually is" },
     ],
     answer: "a",
     explanation:
@@ -507,9 +513,12 @@ export const questions: Question[] = [
         id: "a",
         text: "It proves you understood it, which is what earns your objection a hearing",
       },
-      { id: "b", text: "It gives you time to think of an argument" },
-      { id: "c", text: "It is considered polite in most workplaces" },
-      { id: "d", text: "It ensures the objection is recorded accurately" },
+      {
+        id: "b",
+        text: "It quietly gives you extra time to think of a good argument",
+      },
+      { id: "c", text: "It is simply considered polite in most workplaces" },
+      { id: "d", text: "It ensures the objection gets recorded accurately later" },
     ],
     answer: "a",
     explanation:

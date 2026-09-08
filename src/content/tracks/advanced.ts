@@ -113,9 +113,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Say what you got wrong, what it invalidates, and what you would change — then adjust",
       },
-      { id: "b", text: "Continue, since changing course now will look disorganised" },
-      { id: "c", text: "Quietly adjust the later parts so they no longer depend on it" },
-      { id: "d", text: "Ask the interviewer whether they would like you to change it" },
+      {
+        id: "b",
+        text: "Keep going regardless, since changing course now will look disorganised",
+      },
+      {
+        id: "c",
+        text: "Quietly adjust the later parts so they no longer depend on the earlier mistake",
+      },
+      {
+        id: "d",
+        text: "Ask the interviewer directly whether they would like you to change it",
+      },
     ],
     answer: "a",
     explanation:
