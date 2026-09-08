@@ -22,7 +22,8 @@ export default function PrivacyPage() {
       <p className="mt-5 leading-relaxed">
         Whetstone is a personal study tool. It is free, it is not funded by
         advertising, and none of what follows is sold or shared with anyone for
-        marketing. There are no advertising or analytics trackers on this site.
+        marketing. There is no advertising on this site, and the one analytics
+        tool in use is described plainly below rather than left unmentioned.
       </p>
 
       <Section title="If you never sign in">
@@ -78,6 +79,23 @@ export default function PrivacyPage() {
           Whetstone has no say over that and does not read them. There is
           still no advertising, and no tracking of you across other sites by
           Whetstone itself, so there is no consent banner to click through.
+        </p>
+      </Section>
+
+      <Section title="Analytics">
+        <p>
+          Vercel Web Analytics counts page views and measures loading
+          performance. It is cookieless — it does not set a cookie or any
+          other identifier that would let it recognise you on a return visit
+          — and it stores no name, email, or account ID against what it
+          collects. What it does record is standard for this kind of tool:
+          which page was viewed, in what country, and general device and
+          browser information taken from the request.
+        </p>
+        <p className="mt-2">
+          It exists to answer one question honestly: whether anyone is
+          actually using this. It does not feed advertising, anywhere, and it
+          is never combined with your account or your progress.
         </p>
       </Section>
 
@@ -143,7 +161,10 @@ export default function PrivacyPage() {
           account without them. The leaderboard entry is processed on your
           consent, which is why it is off until you switch it on and why
           switching it off deletes it. Server logs and crash reports are kept
-          on the legitimate interest of keeping the site up and secure.
+          on the legitimate interest of keeping the site up and secure, and
+          analytics on the legitimate interest of knowing whether the site is
+          actually used — it needs no consent of its own precisely because it
+          is cookieless and does not identify you.
         </p>
       </Section>
 

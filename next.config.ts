@@ -8,9 +8,9 @@ const isDev = process.env.NODE_ENV === "development";
  *  The app loads no third-party script, stylesheet, font or image: next/font
  *  self-hosts at build time, the social images are generated here, and the
  *  only outbound hosts are Supabase, Rollbar when a crash is actually being
- *  reported, and GitHub for the Sponsors button in the footer. So 'self' is
- *  very nearly the whole policy, and the directives that cost nothing to
- *  lock down are locked down.
+ *  reported, GitHub for the Sponsors button in the footer, and Vercel
+ *  Analytics. So 'self' is very nearly the whole policy, and the directives
+ *  that cost nothing to lock down are locked down.
  *
  *  script-src keeps 'unsafe-inline' because Next.js inlines its bootstrap and
  *  flight data. The alternative is per-request nonces, and Next can only
@@ -30,15 +30,23 @@ const isDev = process.env.NODE_ENV === "development";
 function contentSecurityPolicy(): string {
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
-    // 'unsafe-eval' is React Refresh in dev only; it never ships.
-    "script-src": ["'self'", "'unsafe-inline'", ...(isDev ? ["'unsafe-eval'"] : [])],
+    // 'unsafe-eval' is React Refresh in dev only; it never ships. Analytics'
+    // debug script is dev-only too -- in production it serves from
+    // /_vercel/insights/script.js, same-origin, confirmed from the installed
+    // package's own source rather than assumed.
+    "script-src": [
+      "'self'",
+      "'unsafe-inline'",
+      ...(isDev ? ["'unsafe-eval'", "https://va.vercel-scripts.com"] : []),
+    ],
     "style-src": ["'self'", "'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:"],
     "font-src": ["'self'", "data:"],
     // Supabase auth and the progress/leaderboard tables; api.rollbar.com is
     // where a caught crash gets posted, confirmed against the installed
-    // rollbar package's own source rather than assumed. The websocket entry
-    // is the dev server's hot reload.
+    // rollbar package's own source rather than assumed. Analytics beacons
+    // post to /_vercel/insights, same-origin, so it needs no entry here. The
+    // websocket entry is the dev server's hot reload.
     "connect-src": [
       "'self'",
       "https://*.supabase.co",

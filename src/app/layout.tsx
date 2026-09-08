@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Rubik, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Provider as RollbarProvider } from "@rollbar/react";
 import { ProgressProvider } from "@/components/progress-provider";
 import { AppShell } from "@/components/app-shell";
@@ -75,6 +76,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <AppShell>{children}</AppShell>
           </ProgressProvider>
         </RollbarProvider>
+        {/* Renders nothing -- it only injects the same-origin
+            /_vercel/insights beacon script. Page views and Core Web Vitals
+            only, aggregated by Vercel: no cookies, and nothing that
+            identifies a person across sites. */}
+        <Analytics />
       </body>
     </html>
   );
