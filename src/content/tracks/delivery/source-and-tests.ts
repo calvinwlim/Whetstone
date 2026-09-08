@@ -96,9 +96,9 @@ export const questions: Question[] = [
     prompt: "What does a merge commit record that a rebase does not?",
     options: [
       { id: "a", text: "That two lines of work existed in parallel and were joined" },
-      { id: "b", text: "Which files changed in the branch" },
-      { id: "c", text: "The author of each original commit" },
-      { id: "d", text: "The order commits were written in" },
+      { id: "b", text: "Which specific files changed within the branch" },
+      { id: "c", text: "The original author of each individual commit" },
+      { id: "d", text: "The order the commits were originally written in" },
     ],
     answer: "a",
     explanation:
@@ -120,9 +120,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Rewritten commits they have based work on, so their branches now conflict with history that no longer exists",
       },
-      { id: "b", text: "Nothing — rebasing only affects your local copy" },
-      { id: "c", text: "Deleted their commits from the remote permanently" },
-      { id: "d", text: "Triggered an automatic merge on their machines" },
+      {
+        id: "b",
+        text: "Nothing at all — rebasing only ever affects your own local copy",
+      },
+      {
+        id: "c",
+        text: "Deleted all of their commits from the remote repository permanently, with absolutely no way back",
+      },
+      {
+        id: "d",
+        text: "Triggered an automatic merge on each of their individual machines",
+      },
     ],
     answer: "a",
     explanation:
@@ -161,9 +170,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Integrate constantly so conflicts stay small; feature flags let unfinished work ship dormant",
       },
-      { id: "b", text: "Long-lived branches are safer because work is isolated until finished" },
-      { id: "c", text: "Every developer works in their own fork and merges monthly" },
-      { id: "d", text: "Releases are cut from a dedicated branch per version" },
+      {
+        id: "b",
+        text: "Long-lived branches are safer because work stays isolated until it is finished",
+      },
+      {
+        id: "c",
+        text: "Every developer works in their own personal fork and merges monthly",
+      },
+      { id: "d", text: "Releases are always cut from a dedicated branch per version" },
     ],
     answer: "a",
     explanation:
@@ -199,9 +214,15 @@ export const questions: Question[] = [
         id: "a",
         text: "When the intermediate commits are noise and only the finished change matters to history",
       },
-      { id: "b", text: "Always — linear history is objectively better" },
-      { id: "c", text: "Never — every commit is valuable history" },
-      { id: "d", text: "Only when the branch has merge conflicts" },
+      {
+        id: "b",
+        text: "Always — a perfectly linear history is simply objectively better in every case",
+      },
+      {
+        id: "c",
+        text: "Never — every single commit is genuinely valuable history",
+      },
+      { id: "d", text: "Only when the branch happens to have merge conflicts" },
     ],
     answer: "a",
     explanation:
@@ -242,9 +263,9 @@ export const questions: Question[] = [
         id: "a",
         text: "Which lines executed during the suite — not that anything was verified",
       },
-      { id: "b", text: "That 95% of behaviour is correct" },
-      { id: "c", text: "That 95% of bugs would be caught" },
-      { id: "d", text: "That the test pyramid is correctly proportioned" },
+      { id: "b", text: "That 95% of the application's behaviour is correct" },
+      { id: "c", text: "That roughly 95% of bugs would be caught before release" },
+      { id: "d", text: "That the test pyramid is correctly proportioned overall" },
     ],
     answer: "a",
     explanation:
@@ -266,9 +287,12 @@ export const questions: Question[] = [
         id: "a",
         text: "An inverted test pyramid — push coverage down to fast unit and integration tests",
       },
-      { id: "b", text: "Insufficient test coverage; add more end-to-end tests" },
-      { id: "c", text: "The CI runner needs more memory" },
-      { id: "d", text: "End-to-end tests should never be used" },
+      {
+        id: "b",
+        text: "Insufficient test coverage overall; add many more end-to-end tests",
+      },
+      { id: "c", text: "The CI runner simply needs to be given more memory" },
+      { id: "d", text: "End-to-end tests should genuinely never be used at all" },
     ],
     answer: "a",
     explanation:
@@ -310,9 +334,15 @@ export const questions: Question[] = [
         id: "a",
         text: "It asserts on implementation details rather than observable behaviour",
       },
-      { id: "b", text: "It needs more mocks to isolate it properly" },
-      { id: "c", text: "It belongs at the end-to-end level instead" },
-      { id: "d", text: "Nothing — tests are expected to change with the code" },
+      {
+        id: "b",
+        text: "It simply needs more mocks added to isolate it properly",
+      },
+      { id: "c", text: "It genuinely belongs at the end-to-end level instead" },
+      {
+        id: "d",
+        text: "Nothing at all — tests are always expected to change along with the code",
+      },
     ],
     answer: "a",
     explanation:
@@ -349,9 +379,12 @@ export const questions: Question[] = [
         id: "a",
         text: "One clear setup, one action, and one verified outcome — so a failure names one thing",
       },
-      { id: "b", text: "Faster execution by grouping setup" },
-      { id: "c", text: "Automatic isolation between tests" },
-      { id: "d", text: "Compatibility across testing frameworks" },
+      {
+        id: "b",
+        text: "Faster overall execution by grouping all of the setup work together first",
+      },
+      { id: "c", text: "Automatic, guaranteed isolation between separate tests" },
+      { id: "d", text: "Full compatibility across every testing framework available" },
     ],
     answer: "a",
     explanation:
@@ -374,9 +407,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Delivery makes every passing build releasable; deployment ships it automatically with no human step",
       },
-      { id: "b", text: "Delivery covers testing and deployment covers building" },
-      { id: "c", text: "They are two names for the same practice" },
-      { id: "d", text: "Delivery applies to libraries and deployment to services" },
+      {
+        id: "b",
+        text: "Delivery covers all the testing while deployment covers building the final release artifact",
+      },
+      { id: "c", text: "They are simply two different names for the same practice" },
+      {
+        id: "d",
+        text: "Delivery applies to libraries while deployment applies to services",
+      },
     ],
     answer: "a",
     explanation:
@@ -423,9 +462,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The artifact tested in staging is not the artifact shipped to production",
       },
-      { id: "b", text: "It doubles the build minutes used" },
-      { id: "c", text: "Staging and production must use different artifacts" },
-      { id: "d", text: "It prevents caching dependencies" },
+      { id: "b", text: "It simply doubles the total build minutes used" },
+      {
+        id: "c",
+        text: "Staging and production genuinely must use different artifacts",
+      },
+      { id: "d", text: "It prevents dependencies from being cached at all" },
     ],
     answer: "a",
     explanation:
@@ -501,9 +543,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Enough traffic and time for the signal to clear the noise, with defined promote or roll back criteria",
       },
-      { id: "b", text: "A larger percentage of traffic immediately" },
-      { id: "c", text: "A second canary in a different region" },
-      { id: "d", text: "Nothing — any elevation should trigger a rollback" },
+      {
+        id: "b",
+        text: "A much larger percentage of traffic sent to it immediately",
+      },
+      { id: "c", text: "A second canary running in a different geographic region" },
+      {
+        id: "d",
+        text: "Nothing extra at all — any elevation whatsoever should trigger an immediate, automatic rollback",
+      },
     ],
     answer: "a",
     explanation:
@@ -635,9 +683,18 @@ export const questions: Question[] = [
         id: "a",
         text: "A contract test, where the consumer's expectations are verified against the real provider",
       },
-      { id: "b", text: "More unit tests on both sides of the boundary" },
-      { id: "c", text: "A snapshot test of each service's response body" },
-      { id: "d", text: "A higher coverage threshold enforced on both services" },
+      {
+        id: "b",
+        text: "Adding many more unit tests to both sides of the service boundary individually",
+      },
+      {
+        id: "c",
+        text: "A snapshot test of each service's full response body",
+      },
+      {
+        id: "d",
+        text: "A higher coverage threshold enforced across both services",
+      },
     ],
     answer: "a",
     explanation:

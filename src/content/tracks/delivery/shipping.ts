@@ -95,9 +95,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Processes should be stateless with an ephemeral filesystem — shared state belongs in a backing service",
       },
-      { id: "b", text: "The instances need a shared session cookie" },
-      { id: "c", text: "The load balancer should use sticky sessions" },
-      { id: "d", text: "Files should be written asynchronously" },
+      {
+        id: "b",
+        text: "The instances simply need a properly shared session cookie configured correctly between them",
+      },
+      {
+        id: "c",
+        text: "The load balancer should be configured to use sticky sessions",
+      },
+      { id: "d", text: "Files should always be written to disk asynchronously" },
     ],
     answer: "a",
     explanation:
@@ -118,9 +124,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Liveness asks whether to restart the process; readiness asks whether to send it traffic",
       },
-      { id: "b", text: "Liveness runs at startup and readiness runs continuously" },
-      { id: "c", text: "Liveness checks the app and readiness checks the database" },
-      { id: "d", text: "They are the same check under two names" },
+      {
+        id: "b",
+        text: "Liveness runs only at startup while readiness runs continuously afterward",
+      },
+      {
+        id: "c",
+        text: "Liveness checks the app itself and readiness checks the database",
+      },
+      { id: "d", text: "They are genuinely the same check under two different names" },
     ],
     answer: "a",
     explanation:
@@ -140,9 +152,15 @@ export const questions: Question[] = [
         id: "a",
         text: "You never patch a running instance — you build a new image and replace it",
       },
-      { id: "b", text: "Infrastructure cannot be changed once provisioned" },
-      { id: "c", text: "Configuration is baked into the application code" },
-      { id: "d", text: "Servers are never restarted" },
+      {
+        id: "b",
+        text: "Infrastructure can genuinely never be changed once it is provisioned",
+      },
+      {
+        id: "c",
+        text: "All configuration is baked directly into the application code",
+      },
+      { id: "d", text: "Servers are simply never restarted under any circumstance" },
     ],
     answer: "a",
     explanation:
@@ -165,9 +183,12 @@ export const questions: Question[] = [
         id: "a",
         text: "A cold start — an instance had to be created because none was warm",
       },
-      { id: "b", text: "The database connection pool is exhausted" },
-      { id: "c", text: "The CDN is missing on those requests" },
-      { id: "d", text: "The function exceeded its memory limit" },
+      {
+        id: "b",
+        text: "The database connection pool has become fully exhausted",
+      },
+      { id: "c", text: "The CDN is simply missing on those particular requests" },
+      { id: "d", text: "The function exceeded its configured memory limit" },
     ],
     answer: "a",
     explanation:
@@ -223,9 +244,9 @@ export const questions: Question[] = [
     prompt: "What do feature flags fundamentally decouple?",
     options: [
       { id: "a", text: "Deploying code from releasing the behaviour to users" },
-      { id: "b", text: "The frontend from the backend" },
-      { id: "c", text: "Testing from deployment" },
-      { id: "d", text: "Configuration from secrets" },
+      { id: "b", text: "The frontend codebase from the backend codebase" },
+      { id: "c", text: "Testing entirely from the act of deployment itself" },
+      { id: "d", text: "Ordinary configuration from stored secrets" },
     ],
     answer: "a",
     explanation:
@@ -264,9 +285,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Up to 1,024 combinations of behaviour, almost none of which are tested",
       },
-      { id: "b", text: "Ten extra network calls per request" },
-      { id: "c", text: "Ten additional deployment environments to maintain" },
-      { id: "d", text: "Nothing, provided each flag defaults to off" },
+      { id: "b", text: "Ten extra network calls made on every single request" },
+      {
+        id: "c",
+        text: "Ten additional deployment environments that now need to be maintained",
+      },
+      {
+        id: "d",
+        text: "Nothing at all, provided each individual flag defaults to off",
+      },
     ],
     answer: "a",
     explanation:
@@ -287,9 +314,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Start with sensible cached or default values — flag evaluation must fail safe",
       },
-      { id: "b", text: "Refuse to start until flags can be fetched" },
-      { id: "c", text: "Enable every flag so no feature is missing" },
-      { id: "d", text: "Disable every flag including permission toggles" },
+      {
+        id: "b",
+        text: "Refuse to start entirely until flags can be successfully fetched",
+      },
+      {
+        id: "c",
+        text: "Enable every single flag so that no feature is ever missing",
+      },
+      {
+        id: "d",
+        text: "Disable every flag, including the permission toggles that gate access",
+      },
     ],
     answer: "a",
     explanation:
@@ -324,9 +360,9 @@ export const questions: Question[] = [
     prompt: "In semantic versioning, what does a change from 2.4.1 to 3.0.0 signal?",
     options: [
       { id: "a", text: "A breaking change — upgrading may require code changes" },
-      { id: "b", text: "A large number of new features" },
-      { id: "c", text: "A security patch of high severity" },
-      { id: "d", text: "A complete rewrite of the package" },
+      { id: "b", text: "A large number of new features being added" },
+      { id: "c", text: "A security patch classified at high severity" },
+      { id: "d", text: "A complete, ground-up rewrite of the package" },
     ],
     answer: "a",
     explanation:
@@ -349,9 +385,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Version ranges resolve to whatever is newest at install time, so their dependency trees differ",
       },
-      { id: "b", text: "Their package manager versions differ" },
-      { id: "c", text: "One of them installed with the wrong Node version" },
-      { id: "d", text: "The registry served a corrupted package" },
+      { id: "b", text: "Their local package manager versions simply differ" },
+      {
+        id: "c",
+        text: "One of them installed everything using an entirely different, wrong version of Node",
+      },
+      { id: "d", text: "The registry served up a corrupted package to one of them" },
     ],
     answer: "a",
     explanation:
@@ -391,9 +430,12 @@ export const questions: Question[] = [
         id: "a",
         text: "An SBOM — a maintained inventory of every component you ship, including transitive ones",
       },
-      { id: "b", text: "A list of your direct dependencies" },
-      { id: "c", text: "The lockfile alone" },
-      { id: "d", text: "Your container registry's image list" },
+      {
+        id: "b",
+        text: "A list of only your direct, top-level dependencies and nothing beyond that",
+      },
+      { id: "c", text: "The lockfile on its own, without anything else" },
+      { id: "d", text: "Your container registry's own image list" },
     ],
     answer: "a",
     explanation:
@@ -414,9 +456,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Deferred upgrades compound into a migration, and the forcing security patch arrives at the worst time",
       },
-      { id: "b", text: "Newer versions are always faster" },
-      { id: "c", text: "Package managers refuse very old versions" },
-      { id: "d", text: "It reduces the number of transitive dependencies" },
+      { id: "b", text: "Newer versions of a dependency are always faster" },
+      {
+        id: "c",
+        text: "Package managers simply refuse to install very old versions",
+      },
+      {
+        id: "d",
+        text: "It reduces the total number of transitive dependencies that get pulled in overall each time",
+      },
     ],
     answer: "a",
     explanation:
@@ -517,9 +565,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Assignment must be a deterministic hash of a stable identifier, so a user always lands in the same bucket",
       },
-      { id: "b", text: "The random number generator is not uniform enough for this" },
-      { id: "c", text: "The rollout percentage is too low to be stable" },
-      { id: "d", text: "The flag should be evaluated on the client rather than the server" },
+      {
+        id: "b",
+        text: "The random number generator being used is simply not uniform enough for this specific purpose",
+      },
+      {
+        id: "c",
+        text: "The configured rollout percentage is simply too low to be stable",
+      },
+      {
+        id: "d",
+        text: "The flag should be evaluated on the client rather than on the server",
+      },
     ],
     answer: "a",
     explanation:
@@ -602,9 +659,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Assess reachability, upgrade on the normal cadence, and record why it was not urgent",
       },
-      { id: "b", text: "Ship an emergency patch, because the severity rating is critical" },
-      { id: "c", text: "Suppress the alert permanently, because the code is not reachable" },
-      { id: "d", text: "Remove the top-level dependency that pulled it in" },
+      {
+        id: "b",
+        text: "Ship an emergency patch immediately, because the severity rating is critical",
+      },
+      {
+        id: "c",
+        text: "Suppress the alert permanently, since the code path is not reachable",
+      },
+      {
+        id: "d",
+        text: "Remove the entire top-level dependency that pulled it in",
+      },
     ],
     answer: "a",
     explanation:

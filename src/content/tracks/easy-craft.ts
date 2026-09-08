@@ -106,9 +106,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Merging to a shared branch frequently, with an automated build verifying each merge",
       },
-      { id: "b", text: "Deploying to production automatically on every commit" },
-      { id: "c", text: "Running tests once before each release" },
-      { id: "d", text: "Keeping every developer on their own long-lived branch" },
+      {
+        id: "b",
+        text: "Deploying straight to production automatically on every single commit",
+      },
+      { id: "c", text: "Running the full test suite once before each release" },
+      {
+        id: "d",
+        text: "Keeping every developer working on their own long-lived branch",
+      },
     ],
     answer: "a",
     explanation:
@@ -128,9 +134,9 @@ export const questions: Question[] = [
         id: "a",
         text: "A flag that disables a risky or expensive feature without a deploy",
       },
-      { id: "b", text: "A command that stops all running instances" },
-      { id: "c", text: "A rollback to the previous release" },
-      { id: "d", text: "A rate limit applied during an incident" },
+      { id: "b", text: "A command that stops every single running instance" },
+      { id: "c", text: "A full rollback to the previous release version" },
+      { id: "d", text: "A rate limit applied specifically during an incident" },
     ],
     answer: "a",
     explanation:
