@@ -634,9 +634,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Strawmanned alternatives undermine the whole document — a reader cannot tell whether they were seriously considered",
       },
-      { id: "b", text: "Three alternatives is too many to include" },
-      { id: "c", text: "Alternatives should be listed without judgement" },
-      { id: "d", text: "Nothing — brevity is a virtue in design docs" },
+      {
+        id: "b",
+        text: "Three alternatives is simply too many to reasonably include",
+      },
+      {
+        id: "c",
+        text: "Alternatives should always be listed strictly neutrally, without passing any judgement on any of them at all",
+      },
+      { id: "d", text: "Nothing at all — brevity is a genuine virtue in design docs" },
     ],
     answer: "a",
     explanation:
@@ -656,9 +662,15 @@ export const questions: Question[] = [
         id: "a",
         text: "It bounds the review, stopping discussion of things this work deliberately does not address",
       },
-      { id: "b", text: "It lists features cut for time and planned for later" },
-      { id: "c", text: "It records requirements the team disagreed about" },
-      { id: "d", text: "It documents what the previous system failed to do" },
+      {
+        id: "b",
+        text: "It lists every feature that was cut for time and is now planned for a later release",
+      },
+      {
+        id: "c",
+        text: "It records the requirements the team disagreed about at the time",
+      },
+      { id: "d", text: "It documents everything the previous system failed to do" },
     ],
     answer: "a",
     explanation:
@@ -680,9 +692,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The constraints in force at the time, so a reader can check whether they still hold",
       },
-      { id: "b", text: "More detail about the implementation" },
-      { id: "c", text: "The names of everyone who approved it" },
-      { id: "d", text: "A longer list of alternatives" },
+      {
+        id: "b",
+        text: "Much more granular detail about the implementation itself, written line by line",
+      },
+      { id: "c", text: "The names of everyone who reviewed and formally approved it" },
+      { id: "d", text: "A considerably longer, more exhaustive list of alternatives" },
     ],
     answer: "a",
     explanation:
@@ -753,9 +768,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Write it down and keep going — fixing unrelated things mid-incident adds risk and confuses the timeline",
       },
-      { id: "b", text: "Fix it immediately while you are already in the code" },
-      { id: "c", text: "Stop the incident response and assess which is worse" },
-      { id: "d", text: "Ignore it, since it is not causing the outage" },
+      {
+        id: "b",
+        text: "Fix it immediately while you happen to already be in the code",
+      },
+      {
+        id: "c",
+        text: "Stop the incident response entirely and take the time to assess which of the two is actually worse",
+      },
+      { id: "d", text: "Ignore it completely, since it is not causing the outage" },
     ],
     answer: "a",
     explanation:

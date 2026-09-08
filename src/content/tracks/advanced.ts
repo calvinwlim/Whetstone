@@ -137,9 +137,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Give a conditional estimate, name the unknown, and propose a timeboxed spike to resolve it before committing",
       },
-      { id: "b", text: "Give a padded date that assumes the worst case" },
-      { id: "c", text: "Decline to estimate until the dependency is documented" },
-      { id: "d", text: "Give the optimistic date and flag risk if it slips" },
+      {
+        id: "b",
+        text: "Give a heavily padded date that assumes the worst case throughout",
+      },
+      {
+        id: "c",
+        text: "Decline to give any estimate at all until the dependency has been fully documented by someone else",
+      },
+      {
+        id: "d",
+        text: "Give the optimistic date and only flag the risk if it later slips",
+      },
     ],
     answer: "a",
     explanation:

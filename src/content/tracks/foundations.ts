@@ -292,9 +292,12 @@ export const questions: Question[] = [
     prompt: "Why should you reproduce a bug before trying to fix it?",
     options: [
       { id: "a", text: "Without a reproduction you cannot confirm the fix actually worked" },
-      { id: "b", text: "Reproducing it is required before filing a ticket" },
-      { id: "c", text: "It makes the stack trace shorter" },
-      { id: "d", text: "It proves the bug is the user's fault" },
+      {
+        id: "b",
+        text: "Reproducing it is a required step before filing a ticket",
+      },
+      { id: "c", text: "It makes the resulting stack trace shorter" },
+      { id: "d", text: "It proves that the bug is the user's fault" },
     ],
     answer: "a",
     explanation:
