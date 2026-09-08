@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { getServerSupabase } from "@/lib/supabase/server";
 import { requireSupabaseEnv } from "@/lib/supabase/config";
+import { reportServerError } from "@/lib/rollbar/config";
 
 /** Deleting your own account.
  *
@@ -46,6 +47,9 @@ export async function DELETE() {
   const { error } = await admin.auth.admin.deleteUser(user.id);
   if (error) {
     console.error("[whetstone] account deletion failed:", error.message);
+    // The one server-side failure worth an active alert rather than a log
+    // line nobody is watching: it means someone asked to leave and could not.
+    await reportServerError(error);
     return Response.json(
       { error: "Could not delete the account. Nothing was removed." },
       { status: 500 },

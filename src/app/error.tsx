@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { useRollbar } from "@rollbar/react";
 
 /** Catches a render failure in any page without taking the shell with it, so
  *  navigation still works and a drill in progress is one click away.
@@ -15,12 +16,15 @@ export default function PageError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  const rollbar = useRollbar();
+
   useEffect(() => {
-    // The one place a client-side failure is recorded today. Vercel captures
-    // server errors on its own; this is what makes a browser crash visible at
-    // all until an error service is wired up.
+    // console.error is kept alongside Rollbar rather than replaced by it --
+    // it is still what shows up in a local dev session or a screen-shared
+    // debugging call, and costs nothing extra to leave in.
     console.error("[whetstone] page error:", error);
-  }, [error]);
+    rollbar.error(error);
+  }, [error, rollbar]);
 
   return (
     <div className="rounded-card border-[1.5px] border-red bg-red-wash p-5">

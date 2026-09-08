@@ -16,7 +16,7 @@ export default function PrivacyPage() {
     <article className="max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight">Privacy</h1>
       <p className="mt-1.5 text-sm text-text-2">
-        Last updated 7 September 2026.
+        Last updated 8 September 2026.
       </p>
 
       <p className="mt-5 leading-relaxed">
@@ -92,6 +92,13 @@ export default function PrivacyPage() {
           containing IP addresses for security and debugging.
         </p>
         <p className="mt-2">
+          If something breaks, the crash — the error message, a stack trace,
+          which page, and your IP address as the report arrives — is sent to{" "}
+          <strong>Rollbar</strong>, also as a processor, so it can be noticed
+          and fixed. Nothing about which questions you were answering or who
+          you are signed in as is attached to that report.
+        </p>
+        <p className="mt-2">
           If you sign in with <strong>GitHub</strong> rather than by email,
           GitHub necessarily learns that you use Whetstone, and passes back the
           email address on your GitHub account so the account can be created.
@@ -106,10 +113,11 @@ export default function PrivacyPage() {
 
       <Section title="Where it is held">
         <p>
-          Vercel and Supabase are United States companies, so if you are in the
-          UK or EU your data is transferred outside it. Both are contractually
-          bound to protect it to the standard required here — in the usual way,
-          through standard contractual clauses in their terms.
+          Vercel, Supabase and Rollbar are United States companies, so if you
+          are in the UK or EU your data is transferred outside it. All three
+          are contractually bound to protect it to the standard required here
+          — in the usual way, through standard contractual clauses in their
+          terms.
         </p>
       </Section>
 
@@ -119,8 +127,8 @@ export default function PrivacyPage() {
           are processed to perform the service you asked for — there is no
           account without them. The leaderboard entry is processed on your
           consent, which is why it is off until you switch it on and why
-          switching it off deletes it. Server logs are kept on the legitimate
-          interest of keeping the site up and secure.
+          switching it off deletes it. Server logs and crash reports are kept
+          on the legitimate interest of keeping the site up and secure.
         </p>
       </Section>
 
