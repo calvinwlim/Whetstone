@@ -314,9 +314,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The agreed shape of requests and responses that consumers can rely on",
       },
-      { id: "b", text: "A legal agreement covering API usage limits" },
-      { id: "c", text: "The rate limit applied to each client" },
-      { id: "d", text: "The authentication method the API accepts" },
+      {
+        id: "b",
+        text: "A formal legal agreement covering API usage limits and pricing",
+      },
+      { id: "c", text: "The specific rate limit applied to each individual client" },
+      { id: "d", text: "The particular authentication method the API accepts" },
     ],
     answer: "a",
     explanation:
@@ -336,9 +339,12 @@ export const questions: Question[] = [
         id: "a",
         text: "An HTTP request a provider sends to your endpoint when an event happens",
       },
-      { id: "b", text: "A scheduled job that polls an API for changes" },
-      { id: "c", text: "A persistent connection between browser and server" },
-      { id: "d", text: "A cache that stores API responses" },
+      {
+        id: "b",
+        text: "A scheduled job that repeatedly polls an API for changes",
+      },
+      { id: "c", text: "A persistent connection kept open between browser and server" },
+      { id: "d", text: "A cache that stores previous API responses locally" },
     ],
     answer: "a",
     explanation:
@@ -358,9 +364,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Letting an application act on a user's behalf without ever seeing their password",
       },
-      { id: "b", text: "Encrypting traffic between client and server" },
-      { id: "c", text: "Storing user passwords securely in a database" },
-      { id: "d", text: "Preventing brute-force login attempts" },
+      {
+        id: "b",
+        text: "Encrypting all traffic that passes between the client and the server",
+      },
+      { id: "c", text: "Storing user passwords securely inside a database" },
+      { id: "d", text: "Preventing brute-force attempts against a login form" },
     ],
     answer: "a",
     explanation:
@@ -379,9 +388,12 @@ export const questions: Question[] = [
     prompt: "What check is still missing?",
     options: [
       { id: "a", text: "That this particular user is allowed to see this particular record" },
-      { id: "b", text: "That the id is a valid number" },
-      { id: "c", text: "That the caller has accepted the terms of service" },
-      { id: "d", text: "Nothing — being logged in is sufficient" },
+      { id: "b", text: "That the given id is at least a valid number" },
+      {
+        id: "c",
+        text: "That the caller has formally accepted the terms of service",
+      },
+      { id: "d", text: "Nothing at all — being logged in is already sufficient" },
     ],
     answer: "a",
     explanation:

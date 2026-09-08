@@ -104,9 +104,12 @@ export const questions: Question[] = [
         id: "a",
         text: "A formal machine-readable contract from which typed clients can be generated",
       },
-      { id: "b", text: "Encryption of the message payload" },
-      { id: "c", text: "Guaranteed message delivery" },
-      { id: "d", text: "Caching semantics for responses" },
+      {
+        id: "b",
+        text: "Automatic encryption of the message payload as it travels over the wire",
+      },
+      { id: "c", text: "A guarantee that every message will be delivered" },
+      { id: "d", text: "Caching semantics defined for every response" },
     ],
     answer: "a",
     explanation:
@@ -128,9 +131,15 @@ export const questions: Question[] = [
         id: "a",
         text: "TLS protects each hop only, so intermediaries see plaintext — WS-Security secures the message itself",
       },
-      { id: "b", text: "TLS cannot be used with XML payloads" },
-      { id: "c", text: "TLS certificates expire too frequently for enterprise use" },
-      { id: "d", text: "Nothing is needed; TLS is end-to-end by design" },
+      { id: "b", text: "TLS simply cannot be used with XML-based message payloads" },
+      {
+        id: "c",
+        text: "TLS certificates simply expire far too frequently to be usable for serious enterprise use",
+      },
+      {
+        id: "d",
+        text: "Nothing extra is needed; TLS is end-to-end secure by design",
+      },
     ],
     answer: "a",
     explanation:
@@ -205,9 +214,12 @@ export const questions: Question[] = [
         id: "a",
         text: "REST is an architectural style over HTTP; SOAP is a protocol with its own message format",
       },
-      { id: "b", text: "REST is newer, so SOAP is deprecated" },
-      { id: "c", text: "REST uses JSON and SOAP uses XML — that is the whole difference" },
-      { id: "d", text: "REST is stateless and SOAP is stateful" },
+      { id: "b", text: "REST is simply newer, so SOAP is considered deprecated" },
+      {
+        id: "c",
+        text: "REST uses JSON and SOAP uses XML — that is genuinely the whole difference",
+      },
+      { id: "d", text: "REST is always stateless and SOAP is always stateful" },
     ],
     answer: "a",
     explanation:
@@ -229,9 +241,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The interface is designed deliberately, and consumers can build against a mock before it exists",
       },
-      { id: "b", text: "It removes the need for integration tests" },
-      { id: "c", text: "It produces smaller response payloads" },
-      { id: "d", text: "It guarantees backwards compatibility automatically" },
+      { id: "b", text: "It entirely removes the need for integration tests" },
+      { id: "c", text: "It reliably produces smaller response payloads overall" },
+      {
+        id: "d",
+        text: "It automatically guarantees backwards compatibility forever, with no extra effort needed",
+      },
     ],
     answer: "a",
     explanation:
@@ -274,9 +289,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Consumer-driven contract testing — the provider's build fails when it violates a recorded consumer expectation",
       },
-      { id: "b", text: "More thorough unit tests on the provider" },
-      { id: "c", text: "End-to-end tests running every service together" },
-      { id: "d", text: "Semantic versioning of the provider's package" },
+      { id: "b", text: "Writing much more thorough unit tests on the provider side" },
+      {
+        id: "c",
+        text: "Running full end-to-end tests with every single service running together at once in a staging environment",
+      },
+      { id: "d", text: "Strict semantic versioning applied to the provider's package" },
     ],
     answer: "a",
     explanation:
@@ -297,9 +315,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Handlers can assume well-formed input, and rejections are consistent and explainable",
       },
-      { id: "b", text: "It removes the need for authentication checks" },
-      { id: "c", text: "It makes responses smaller" },
-      { id: "d", text: "It guarantees the business logic is correct" },
+      {
+        id: "b",
+        text: "It entirely removes the need for any authentication checks",
+      },
+      { id: "c", text: "It reliably makes every response noticeably smaller" },
+      {
+        id: "d",
+        text: "It also fully guarantees that the underlying business logic is correct",
+      },
     ],
     answer: "a",
     explanation:
@@ -339,9 +363,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Verify the signature over the raw request body using a constant-time comparison",
       },
-      { id: "b", text: "Check that the source IP is on an allowlist" },
-      { id: "c", text: "Confirm the payload parses as valid JSON" },
-      { id: "d", text: "Look up the event id to confirm it exists" },
+      { id: "b", text: "Check that the request's source IP is on an allowlist" },
+      { id: "c", text: "Confirm the incoming payload parses as valid JSON" },
+      {
+        id: "d",
+        text: "Look up the event id in your own records to confirm it already exists",
+      },
     ],
     answer: "a",
     explanation:
@@ -387,9 +414,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Ordering is not guaranteed — use a version or sequence number and ignore anything older than what you have applied",
       },
-      { id: "b", text: "The provider has a bug and should be asked to fix delivery order" },
-      { id: "c", text: "Process events in the order they arrive and accept the inconsistency" },
-      { id: "d", text: "Buffer all events for a minute and sort by timestamp before processing" },
+      {
+        id: "b",
+        text: "The provider clearly has a bug and should be asked to fix delivery order",
+      },
+      {
+        id: "c",
+        text: "Simply process events in whatever order they happen to arrive and accept the resulting inconsistency",
+      },
+      {
+        id: "d",
+        text: "Buffer all events for a full minute and sort by timestamp before processing",
+      },
     ],
     answer: "a",
     explanation:
@@ -411,9 +447,18 @@ export const questions: Question[] = [
         id: "a",
         text: "SSRF — validate and resolve the destination, block private and link-local ranges, and send from an egress-restricted path",
       },
-      { id: "b", text: "Cross-site request forgery — require an anti-forgery token" },
-      { id: "c", text: "Open redirect — validate the URL scheme only" },
-      { id: "d", text: "No vulnerability; outbound requests are inherently safe" },
+      {
+        id: "b",
+        text: "Cross-site request forgery — require a standard anti-forgery token on every single incoming request received",
+      },
+      {
+        id: "c",
+        text: "Open redirect — validate only the scheme of the given URL before following it",
+      },
+      {
+        id: "d",
+        text: "No real vulnerability; outbound requests are inherently safe",
+      },
     ],
     answer: "a",
     explanation:
@@ -587,9 +632,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The receiver always reads current state, so out-of-order delivery cannot resurrect stale data",
       },
-      { id: "b", text: "It removes the need to verify the payload signature" },
-      { id: "c", text: "It guarantees the events will arrive in order" },
-      { id: "d", text: "It removes the need for delivery retries" },
+      {
+        id: "b",
+        text: "It entirely removes the need to ever verify the payload signature on each request",
+      },
+      { id: "c", text: "It guarantees that the events will always arrive in order" },
+      { id: "d", text: "It removes the need for the provider to retry delivery" },
     ],
     answer: "a",
     explanation:

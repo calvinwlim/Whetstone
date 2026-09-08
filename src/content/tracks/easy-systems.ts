@@ -396,9 +396,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The endpoint is public, so anyone could send it a convincing-looking payload",
       },
-      { id: "b", text: "Signatures compress the payload" },
-      { id: "c", text: "Providers reject unsigned responses" },
-      { id: "d", text: "It confirms the payload is valid JSON" },
+      { id: "b", text: "Signatures compress the payload before it is sent" },
+      {
+        id: "c",
+        text: "Providers simply reject any responses that come back unsigned",
+      },
+      { id: "d", text: "It confirms that the payload is valid, well-formed JSON" },
     ],
     answer: "a",
     explanation:
@@ -418,9 +421,12 @@ export const questions: Question[] = [
         id: "a",
         text: "A short-lived credential proving the bearer may perform certain actions",
       },
-      { id: "b", text: "A permanent identifier for a user account" },
-      { id: "c", text: "An encrypted copy of the user's password" },
-      { id: "d", text: "A session cookie set by the browser" },
+      { id: "b", text: "A permanent identifier assigned to a user account" },
+      { id: "c", text: "An encrypted copy of the user's original password" },
+      {
+        id: "d",
+        text: "A session cookie that gets set directly by the browser itself",
+      },
     ],
     answer: "a",
     explanation:
@@ -440,9 +446,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The data is still in the API response, which anyone can read directly",
       },
-      { id: "b", text: "Hidden fields are still rendered to the page" },
-      { id: "c", text: "The browser caches hidden fields" },
-      { id: "d", text: "It only works when JavaScript is enabled" },
+      {
+        id: "b",
+        text: "Hidden fields are still rendered somewhere on the page itself",
+      },
+      { id: "c", text: "The browser silently caches hidden fields for later" },
+      { id: "d", text: "It only actually works when JavaScript is enabled" },
     ],
     answer: "a",
     explanation:
@@ -459,9 +468,9 @@ export const questions: Question[] = [
     prompt: "What makes a change to a public API 'breaking'?",
     options: [
       { id: "a", text: "An existing client that worked before stops working" },
-      { id: "b", text: "The change is large" },
-      { id: "c", text: "It requires a database migration" },
-      { id: "d", text: "It changes response times" },
+      { id: "b", text: "The change itself is simply large in scope" },
+      { id: "c", text: "It requires running a database migration first" },
+      { id: "d", text: "It noticeably changes response times for callers" },
     ],
     answer: "a",
     explanation:
