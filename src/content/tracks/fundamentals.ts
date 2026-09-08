@@ -591,9 +591,18 @@ export const questions: Question[] = [
         id: "a",
         text: "An attacker getting their own JavaScript to run in another user's browser on your site",
       },
-      { id: "b", text: "A site loading scripts from a third-party domain" },
-      { id: "c", text: "A request sent from one origin to another" },
-      { id: "d", text: "Copying code between two projects" },
+      {
+        id: "b",
+        text: "A site simply loading scripts from a third-party domain",
+      },
+      {
+        id: "c",
+        text: "A request sent from one origin over to a different origin",
+      },
+      {
+        id: "d",
+        text: "Copying the exact same piece of code between two entirely separate projects",
+      },
     ],
     answer: "a",
     explanation:
@@ -613,9 +622,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Conveying the image's purpose to people who cannot see it, and when it fails to load",
       },
-      { id: "b", text: "Improving how fast the image loads" },
-      { id: "c", text: "Providing a caption displayed under the image" },
-      { id: "d", text: "Telling the browser which image format to use" },
+      {
+        id: "b",
+        text: "Improving how fast the image itself is able to load",
+      },
+      {
+        id: "c",
+        text: "Providing a visible caption that is displayed directly under the image",
+      },
+      { id: "d", text: "Telling the browser exactly which image format to use" },
     ],
     answer: "a",
     explanation:
@@ -635,9 +650,18 @@ export const questions: Question[] = [
         id: "a",
         text: "It must be downloaded, parsed, and executed before the page becomes interactive",
       },
-      { id: "b", text: "Larger files are always served more slowly by CDNs" },
-      { id: "c", text: "Browsers limit how much JavaScript a page may contain" },
-      { id: "d", text: "It only affects the first visit, never later ones" },
+      {
+        id: "b",
+        text: "Larger files are always served noticeably more slowly by CDNs",
+      },
+      {
+        id: "c",
+        text: "Browsers strictly limit how much JavaScript a page may contain",
+      },
+      {
+        id: "d",
+        text: "It only ever affects the very first visit, never any visits after that",
+      },
     ],
     answer: "a",
     explanation:
@@ -658,9 +682,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Server-side sends ready-made HTML; client-side sends a shell and builds the page with JavaScript",
       },
-      { id: "b", text: "Server-side is always faster in every respect" },
-      { id: "c", text: "Client-side rendering cannot fetch data" },
-      { id: "d", text: "They differ only in where the code is stored" },
+      {
+        id: "b",
+        text: "Server-side rendering is always faster in absolutely every respect",
+      },
+      {
+        id: "c",
+        text: "Client-side rendering is fundamentally unable to fetch data",
+      },
+      {
+        id: "d",
+        text: "They differ only in where the underlying application code happens to be physically stored",
+      },
     ],
     answer: "a",
     explanation:

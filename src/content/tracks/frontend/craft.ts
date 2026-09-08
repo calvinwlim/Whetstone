@@ -94,9 +94,18 @@ export const questions: Question[] = [
         id: "a",
         text: "FID measured only the first interaction and only the delay before handling began, which flattered slow apps",
       },
-      { id: "b", text: "FID could not be measured on mobile devices" },
-      { id: "c", text: "INP is easier to compute in lab conditions" },
-      { id: "d", text: "FID measured layout shifts rather than input" },
+      {
+        id: "b",
+        text: "FID simply could not be measured reliably on mobile devices",
+      },
+      {
+        id: "c",
+        text: "INP is considerably easier to compute under lab conditions",
+      },
+      {
+        id: "d",
+        text: "FID measured layout shifts happening elsewhere on the page rather than input responsiveness itself",
+      },
     ],
     answer: "a",
     explanation:
@@ -140,9 +149,18 @@ export const questions: Question[] = [
         id: "a",
         text: "LCP gets worse — the browser defers the very resource the metric is waiting on",
       },
-      { id: "b", text: "LCP improves, since fewer resources load up front" },
-      { id: "c", text: "No effect; lazy loading only applies below the fold" },
-      { id: "d", text: "CLS improves because the image loads later" },
+      {
+        id: "b",
+        text: "LCP improves noticeably, since fewer resources load up front",
+      },
+      {
+        id: "c",
+        text: "No effect at all; lazy loading only ever applies below the fold",
+      },
+      {
+        id: "d",
+        text: "CLS improves as a result, because the image now loads later",
+      },
     ],
     answer: "a",
     explanation:
@@ -163,9 +181,15 @@ export const questions: Question[] = [
         id: "a",
         text: "It must be parsed, compiled, and executed on the main thread, where it blocks interaction",
       },
-      { id: "b", text: "JavaScript cannot be compressed" },
-      { id: "c", text: "Images are always served from a CDN" },
-      { id: "d", text: "JavaScript is downloaded more times than images" },
+      {
+        id: "b",
+        text: "JavaScript simply cannot be compressed the way images can",
+      },
+      { id: "c", text: "Images are always served from a dedicated CDN region" },
+      {
+        id: "d",
+        text: "JavaScript is generally downloaded far more times overall than images typically are",
+      },
     ],
     answer: "a",
     explanation:
@@ -205,9 +229,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Treating server state as client state — it is a cache, and caching has known solutions",
       },
-      { id: "b", text: "Using a global store at all" },
-      { id: "c", text: "Fetching on the client rather than the server" },
-      { id: "d", text: "Not normalising the data before storing it" },
+      { id: "b", text: "Using a global store for state management at all" },
+      {
+        id: "c",
+        text: "Fetching the data on the client rather than on the server",
+      },
+      {
+        id: "d",
+        text: "Not normalising the data properly before storing it centrally in the store",
+      },
     ],
     answer: "a",
     explanation:
@@ -248,9 +278,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Hydration — the markup is present but not interactive until its JavaScript downloads and runs",
       },
-      { id: "b", text: "The server is still streaming the response" },
-      { id: "c", text: "CSS has not finished loading" },
-      { id: "d", text: "The click handlers are attached on a timer" },
+      {
+        id: "b",
+        text: "The server is still streaming the rest of the response down",
+      },
+      { id: "c", text: "The page's CSS has simply not finished loading yet" },
+      {
+        id: "d",
+        text: "The click handlers are deliberately attached on a fixed one-second delay timer",
+      },
     ],
     answer: "a",
     explanation:
@@ -270,9 +306,15 @@ export const questions: Question[] = [
         id: "a",
         text: "It limits how much of the tree re-renders and keeps components movable",
       },
-      { id: "b", text: "State higher in the tree cannot be updated" },
-      { id: "c", text: "It removes the need for a state management library" },
-      { id: "d", text: "Lower state persists across navigation" },
+      {
+        id: "b",
+        text: "State that lives higher in the tree simply cannot be updated",
+      },
+      {
+        id: "c",
+        text: "It entirely removes the need for a state management library",
+      },
+      { id: "d", text: "State kept lower in the tree persists across navigation" },
     ],
     answer: "a",
     explanation:
@@ -341,9 +383,18 @@ export const questions: Question[] = [
         id: "a",
         text: "CSS is render-blocking — the browser will not paint until it knows the styles, rather than show unstyled content",
       },
-      { id: "b", text: "The stylesheet must be parsed before the HTML parser can continue" },
-      { id: "c", text: "Browsers fetch stylesheets ahead of the HTML document" },
-      { id: "d", text: "CSS parsing shares a thread with image decoding" },
+      {
+        id: "b",
+        text: "The stylesheet must fully finish downloading and parsing before the HTML parser is allowed to continue",
+      },
+      {
+        id: "c",
+        text: "Browsers always fetch stylesheets ahead of the HTML document itself",
+      },
+      {
+        id: "d",
+        text: "CSS parsing shares a single thread with image decoding work",
+      },
     ],
     answer: "a",
     explanation:
@@ -412,9 +463,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Windowing — render only the visible rows plus a small buffer, recycling nodes while scrolling",
       },
-      { id: "b", text: "Memoise each row so it does not re-render unnecessarily" },
-      { id: "c", text: "Debounce the scroll handler" },
-      { id: "d", text: "Move the row components into a web worker" },
+      {
+        id: "b",
+        text: "Memoise each row individually so it does not re-render unnecessarily on every update",
+      },
+      { id: "c", text: "Simply debounce the scroll handler to reduce event volume" },
+      {
+        id: "d",
+        text: "Move all of the row components into a background web worker",
+      },
     ],
     answer: "a",
     explanation:
@@ -456,9 +513,18 @@ export const questions: Question[] = [
         id: "a",
         text: "It is derived data — computing it during render removes a state variable, an effect, and a class of stale-value bug",
       },
-      { id: "b", text: "Effects run more slowly than computing the value during render" },
-      { id: "c", text: "The filtered list should be memoised into a ref instead" },
-      { id: "d", text: "Filtering belongs on the server, not in the component" },
+      {
+        id: "b",
+        text: "Effects simply run more slowly than computing the value during render",
+      },
+      {
+        id: "c",
+        text: "The filtered list should instead be memoised into a ref",
+      },
+      {
+        id: "d",
+        text: "Filtering fundamentally belongs on the server, and should never live inside a client component at all",
+      },
     ],
     answer: "a",
     explanation:
@@ -523,9 +589,18 @@ export const questions: Question[] = [
         id: "a",
         text: "The key is how the framework decides which component is which, so reusing index 3 for a different item reuses the old component and its state",
       },
-      { id: "b", text: "Numeric keys are slower to compare than string keys" },
-      { id: "c", text: "Deleting from the middle of an array is not supported" },
-      { id: "d", text: "The list must be re-sorted after every deletion" },
+      {
+        id: "b",
+        text: "Numeric keys are simply slower for the rendering framework to compare internally at reconciliation time than string keys ever are",
+      },
+      {
+        id: "c",
+        text: "Deleting an item from the middle of a JavaScript array is not actually supported",
+      },
+      {
+        id: "d",
+        text: "The entire list must be explicitly re-sorted after every single deletion",
+      },
     ],
     answer: "a",
     explanation:

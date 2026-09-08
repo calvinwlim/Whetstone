@@ -17,9 +17,18 @@ export const questions: Question[] = [
         id: "a",
         text: "A browser rule stopping a page reading data from a different origin",
       },
-      { id: "b", text: "A server rule rejecting requests from other domains" },
-      { id: "c", text: "A requirement that all assets load from one domain" },
-      { id: "d", text: "A rule that cookies expire when the origin changes" },
+      {
+        id: "b",
+        text: "A server-side rule that rejects requests coming from other domains",
+      },
+      {
+        id: "c",
+        text: "A requirement that every asset on a page loads from one single domain",
+      },
+      {
+        id: "d",
+        text: "A rule stating that cookies expire the moment the origin changes",
+      },
     ],
     answer: "a",
     explanation:
@@ -39,9 +48,12 @@ export const questions: Question[] = [
         id: "a",
         text: "So the browser reserves space and content does not jump when they load",
       },
-      { id: "b", text: "So the browser can compress them further" },
-      { id: "c", text: "Because CSS cannot size images otherwise" },
-      { id: "d", text: "So they load before the rest of the page" },
+      {
+        id: "b",
+        text: "So the browser is able to compress them further before painting",
+      },
+      { id: "c", text: "Because CSS is otherwise unable to size images at all" },
+      { id: "d", text: "So the images load before the rest of the page does" },
     ],
     answer: "a",
     explanation:
@@ -61,9 +73,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Server state is a local cache of data owned elsewhere; client state is owned by the UI",
       },
-      { id: "b", text: "Server state lives on the server and never reaches the browser" },
-      { id: "c", text: "Client state is anything stored in localStorage" },
-      { id: "d", text: "They are the same thing at different layers" },
+      {
+        id: "b",
+        text: "Server state lives permanently on the server and never reaches the browser",
+      },
+      {
+        id: "c",
+        text: "Client state is simply anything stored in localStorage",
+      },
+      {
+        id: "d",
+        text: "They are ultimately the same thing, just described at different layers",
+      },
     ],
     answer: "a",
     explanation:
