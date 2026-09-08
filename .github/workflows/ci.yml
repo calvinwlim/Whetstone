@@ -1,0 +1,51 @@
+name: CI
+
+# Runs on every push and PR against main. Nothing here deploys anything --
+# Vercel handles that separately on its own trigger. This workflow's only job
+# is to fail loudly before a broken or regressive change reaches main, since
+# nothing else in this repo currently does.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.9.0
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+
+      - run: pnpm lint
+
+      - run: pnpm test
+
+      # Guards the content bank itself: ids are stable, prompts stand alone,
+      # and every topic has an easy on-ramp. These are cheap (seconds)
+      # against 925 questions, and this is the only place they run
+      # automatically.
+      - name: Content audits
+        run: |
+          pnpm exec tsx scripts/content-stats.ts
+          pnpm exec tsx scripts/prompt-audit.ts
+          pnpm exec tsx scripts/easy-band-audit.ts
+
+      # No Supabase env vars are set here on purpose. src/lib/supabase/config.ts
+      # treats accounts as fully optional -- unconfigured, the app still
+      # builds and runs on localStorage alone -- and this is the one place
+      # that path is actually exercised, rather than assumed.
+      - run: pnpm build
