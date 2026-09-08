@@ -171,9 +171,12 @@ const questions: Question[] = [
         id: "a",
         text: "Ask what happens in that case, leaving room for context you may lack",
       },
-      { id: "b", text: "State that the code is broken and request changes" },
-      { id: "c", text: "Fix it yourself and push to their branch" },
-      { id: "d", text: "Approve and file a separate bug" },
+      {
+        id: "b",
+        text: "State plainly that the code is broken and request changes",
+      },
+      { id: "c", text: "Fix it yourself and push the fix straight to their branch" },
+      { id: "d", text: "Approve the change and file a separate bug for it" },
     ],
     answer: "a",
     explanation:
@@ -284,9 +287,12 @@ const questions: Question[] = [
         id: "a",
         text: "You do not know which change fixed it, so you cannot be sure it is fixed rather than hidden",
       },
-      { id: "b", text: "The other two changes will definitely cause new bugs" },
-      { id: "c", text: "Nothing — the bug is gone, which is what matters" },
-      { id: "d", text: "Reviewers will reject a three-part change" },
+      {
+        id: "b",
+        text: "The other two changes you made will almost certainly cause new bugs somewhere down the line",
+      },
+      { id: "c", text: "Nothing at all — the bug is gone, which is what actually matters" },
+      { id: "d", text: "Reviewers will reject a change that bundles three things" },
     ],
     answer: "a",
     explanation:
@@ -324,9 +330,12 @@ const questions: Question[] = [
         id: "a",
         text: "It shows the choice was reasoned rather than defaulted into, and pre-empts the obvious objections",
       },
-      { id: "b", text: "It makes the document longer and more thorough" },
-      { id: "c", text: "It is required by most review processes" },
-      { id: "d", text: "It lets readers pick their preferred option" },
+      {
+        id: "b",
+        text: "It simply makes the finished document noticeably longer and more thorough-looking overall",
+      },
+      { id: "c", text: "It is a required section in most review processes" },
+      { id: "d", text: "It lets readers pick whichever option they prefer" },
     ],
     answer: "a",
     explanation:
@@ -347,9 +356,12 @@ const questions: Question[] = [
         id: "a",
         text: "Ask specific questions, name a decision deadline, and tag the people whose input you need",
       },
-      { id: "b", text: "Send more reminders to the channel" },
-      { id: "c", text: "Shorten the document until people read it" },
-      { id: "d", text: "Schedule a meeting to read it together" },
+      { id: "b", text: "Send more reminders to the channel over the next few days" },
+      {
+        id: "c",
+        text: "Keep shortening the document further until people are actually willing to read it",
+      },
+      { id: "d", text: "Schedule a meeting for everyone to read it together" },
     ],
     answer: "a",
     explanation:
@@ -411,9 +423,9 @@ const questions: Question[] = [
         id: "a",
         text: "Coordinate, decide, and communicate — explicitly not to debug",
       },
-      { id: "b", text: "Personally find and fix the root cause" },
-      { id: "c", text: "Write the postmortem during the incident" },
-      { id: "d", text: "Approve every change made during the incident" },
+      { id: "b", text: "Personally find and fix the root cause themselves" },
+      { id: "c", text: "Write the postmortem while the incident is still ongoing" },
+      { id: "d", text: "Personally approve every change made during the incident" },
     ],
     answer: "a",
     explanation:
@@ -435,9 +447,12 @@ const questions: Question[] = [
         id: "a",
         text: "It stops at the person instead of asking why the system allowed it and why nothing caught it",
       },
-      { id: "b", text: "It names an individual, which is a privacy issue" },
-      { id: "c", text: "Human error is never a real cause" },
-      { id: "d", text: "Postmortems should not discuss migrations" },
+      {
+        id: "b",
+        text: "It names a specific individual engineer, which by itself raises a privacy issue",
+      },
+      { id: "c", text: "Human error is never a legitimate cause of anything" },
+      { id: "d", text: "A postmortem should never discuss specific migrations" },
     ],
     answer: "a",
     explanation:
@@ -568,9 +583,15 @@ const questions: Question[] = [
         id: "a",
         text: "Move it to a synchronous conversation, then write the outcome back into the pull request",
       },
-      { id: "b", text: "The reviewer should approve, since the author owns the code" },
-      { id: "c", text: "The author should implement the reviewer's version to unblock the queue" },
-      { id: "d", text: "Escalate to a manager to settle the technical question" },
+      {
+        id: "b",
+        text: "The reviewer should approve it, since the author owns the code",
+      },
+      {
+        id: "c",
+        text: "The author should just implement the reviewer's version to unblock the queue",
+      },
+      { id: "d", text: "Escalate straight to a manager to settle the technical question" },
     ],
     answer: "a",
     explanation:
@@ -742,9 +763,18 @@ const questions: Question[] = [
         id: "a",
         text: "The bypass also changed timing and load, so it may have hidden a different bug rather than fixed one",
       },
-      { id: "b", text: "None — a change that stops the error is by definition the fix" },
-      { id: "c", text: "The engineer should have bypassed the database instead" },
-      { id: "d", text: "The error will only return if the cache is switched back on" },
+      {
+        id: "b",
+        text: "None at all — a change that makes the error stop is, by definition, the actual fix for it",
+      },
+      {
+        id: "c",
+        text: "The engineer should have bypassed the database layer instead of the cache",
+      },
+      {
+        id: "d",
+        text: "The error will only ever return once the cache is switched back on again",
+      },
     ],
     answer: "a",
     explanation:
@@ -786,9 +816,15 @@ const questions: Question[] = [
         id: "a",
         text: "Inspect the value at the midpoint, then repeat on whichever half still contains the corruption",
       },
-      { id: "b", text: "Add logging to all six components and read the output end to end" },
-      { id: "c", text: "Start at the client and step forward through each component in turn" },
-      { id: "d", text: "Rewrite the two components most likely to be at fault" },
+      {
+        id: "b",
+        text: "Add logging to all six components at once and read the output end to end",
+      },
+      {
+        id: "c",
+        text: "Start at the client and step forward through each of the six components in turn",
+      },
+      { id: "d", text: "Rewrite the two components that seem most likely to be at fault" },
     ],
     answer: "a",
     explanation:
@@ -852,9 +888,18 @@ const questions: Question[] = [
         id: "a",
         text: "An estimate is a distribution and a commitment is a promise — converting one to the other takes an explicit buffer and a decision",
       },
-      { id: "b", text: "Nothing — once a number is stated it is a commitment" },
-      { id: "c", text: "The engineer should have declined to give a number at all" },
-      { id: "d", text: "The roadmap should have shown story points rather than weeks" },
+      {
+        id: "b",
+        text: "Nothing at all worth naming — once any number has been stated out loud to anyone, it is already effectively treated as a firm commitment",
+      },
+      {
+        id: "c",
+        text: "The engineer should simply have declined to give any number at all",
+      },
+      {
+        id: "d",
+        text: "The roadmap should have shown story points rather than a number of weeks",
+      },
     ],
     answer: "a",
     explanation:

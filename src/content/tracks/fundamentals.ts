@@ -314,9 +314,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The agreed shape of requests and responses that consumers can rely on",
       },
-      { id: "b", text: "A legal agreement covering API usage limits" },
-      { id: "c", text: "The rate limit applied to each client" },
-      { id: "d", text: "The authentication method the API accepts" },
+      {
+        id: "b",
+        text: "A formal legal agreement covering API usage limits and pricing",
+      },
+      { id: "c", text: "The specific rate limit applied to each individual client" },
+      { id: "d", text: "The particular authentication method the API accepts" },
     ],
     answer: "a",
     explanation:
@@ -336,9 +339,12 @@ export const questions: Question[] = [
         id: "a",
         text: "An HTTP request a provider sends to your endpoint when an event happens",
       },
-      { id: "b", text: "A scheduled job that polls an API for changes" },
-      { id: "c", text: "A persistent connection between browser and server" },
-      { id: "d", text: "A cache that stores API responses" },
+      {
+        id: "b",
+        text: "A scheduled job that repeatedly polls an API for changes",
+      },
+      { id: "c", text: "A persistent connection kept open between browser and server" },
+      { id: "d", text: "A cache that stores previous API responses locally" },
     ],
     answer: "a",
     explanation:
@@ -358,9 +364,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Letting an application act on a user's behalf without ever seeing their password",
       },
-      { id: "b", text: "Encrypting traffic between client and server" },
-      { id: "c", text: "Storing user passwords securely in a database" },
-      { id: "d", text: "Preventing brute-force login attempts" },
+      {
+        id: "b",
+        text: "Encrypting all traffic that passes between the client and the server",
+      },
+      { id: "c", text: "Storing user passwords securely inside a database" },
+      { id: "d", text: "Preventing brute-force attempts against a login form" },
     ],
     answer: "a",
     explanation:
@@ -379,9 +388,12 @@ export const questions: Question[] = [
     prompt: "What check is still missing?",
     options: [
       { id: "a", text: "That this particular user is allowed to see this particular record" },
-      { id: "b", text: "That the id is a valid number" },
-      { id: "c", text: "That the caller has accepted the terms of service" },
-      { id: "d", text: "Nothing — being logged in is sufficient" },
+      { id: "b", text: "That the given id is at least a valid number" },
+      {
+        id: "c",
+        text: "That the caller has formally accepted the terms of service",
+      },
+      { id: "d", text: "Nothing at all — being logged in is already sufficient" },
     ],
     answer: "a",
     explanation:
@@ -579,9 +591,18 @@ export const questions: Question[] = [
         id: "a",
         text: "An attacker getting their own JavaScript to run in another user's browser on your site",
       },
-      { id: "b", text: "A site loading scripts from a third-party domain" },
-      { id: "c", text: "A request sent from one origin to another" },
-      { id: "d", text: "Copying code between two projects" },
+      {
+        id: "b",
+        text: "A site simply loading scripts from a third-party domain",
+      },
+      {
+        id: "c",
+        text: "A request sent from one origin over to a different origin",
+      },
+      {
+        id: "d",
+        text: "Copying the exact same piece of code between two entirely separate projects",
+      },
     ],
     answer: "a",
     explanation:
@@ -601,9 +622,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Conveying the image's purpose to people who cannot see it, and when it fails to load",
       },
-      { id: "b", text: "Improving how fast the image loads" },
-      { id: "c", text: "Providing a caption displayed under the image" },
-      { id: "d", text: "Telling the browser which image format to use" },
+      {
+        id: "b",
+        text: "Improving how fast the image itself is able to load",
+      },
+      {
+        id: "c",
+        text: "Providing a visible caption that is displayed directly under the image",
+      },
+      { id: "d", text: "Telling the browser exactly which image format to use" },
     ],
     answer: "a",
     explanation:
@@ -623,9 +650,18 @@ export const questions: Question[] = [
         id: "a",
         text: "It must be downloaded, parsed, and executed before the page becomes interactive",
       },
-      { id: "b", text: "Larger files are always served more slowly by CDNs" },
-      { id: "c", text: "Browsers limit how much JavaScript a page may contain" },
-      { id: "d", text: "It only affects the first visit, never later ones" },
+      {
+        id: "b",
+        text: "Larger files are always served noticeably more slowly by CDNs",
+      },
+      {
+        id: "c",
+        text: "Browsers strictly limit how much JavaScript a page may contain",
+      },
+      {
+        id: "d",
+        text: "It only ever affects the very first visit, never any visits after that",
+      },
     ],
     answer: "a",
     explanation:
@@ -646,9 +682,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Server-side sends ready-made HTML; client-side sends a shell and builds the page with JavaScript",
       },
-      { id: "b", text: "Server-side is always faster in every respect" },
-      { id: "c", text: "Client-side rendering cannot fetch data" },
-      { id: "d", text: "They differ only in where the code is stored" },
+      {
+        id: "b",
+        text: "Server-side rendering is always faster in absolutely every respect",
+      },
+      {
+        id: "c",
+        text: "Client-side rendering is fundamentally unable to fetch data",
+      },
+      {
+        id: "d",
+        text: "They differ only in where the underlying application code happens to be physically stored",
+      },
     ],
     answer: "a",
     explanation:

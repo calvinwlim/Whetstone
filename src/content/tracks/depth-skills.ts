@@ -19,9 +19,15 @@ export const questions: Question[] = [
         id: "a",
         text: "What the six weeks buys and what the risk is of not doing it, then detail only if asked",
       },
-      { id: "b", text: "A walkthrough of the technical steps that make up the six weeks" },
-      { id: "c", text: "An explanation of the legacy system's design flaws" },
-      { id: "d", text: "A comparison of the three approaches you considered" },
+      {
+        id: "b",
+        text: "A full walkthrough of every single technical step that makes up the six weeks",
+      },
+      {
+        id: "c",
+        text: "A detailed explanation of the legacy system's specific design flaws",
+      },
+      { id: "d", text: "A comparison of the three approaches you seriously considered" },
     ],
     answer: "a",
     explanation:
@@ -44,9 +50,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The invariants the system must maintain and where it is easy to break them",
       },
-      { id: "b", text: "The full history of how the design evolved" },
-      { id: "c", text: "A file-by-file tour of the repository" },
-      { id: "d", text: "The deployment pipeline configuration" },
+      {
+        id: "b",
+        text: "The full history of every decision behind how the design evolved",
+      },
+      { id: "c", text: "A slow, file-by-file tour of the entire repository" },
+      { id: "d", text: "The full deployment pipeline configuration, step by step" },
     ],
     answer: "a",
     explanation:
@@ -89,9 +98,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Which user-visible behaviours are affected, and what to advise, in the customer's language",
       },
-      { id: "b", text: "The root cause and the current state of the fix" },
-      { id: "c", text: "A link to the incident channel so they can follow along" },
-      { id: "d", text: "The error rate and affected service names" },
+      {
+        id: "b",
+        text: "The full root cause and the current internal state of the fix",
+      },
+      {
+        id: "c",
+        text: "A link to the internal incident channel so they can follow along themselves",
+      },
+      { id: "d", text: "The exact error rate and the affected internal service names" },
     ],
     answer: "a",
     explanation:
@@ -151,9 +166,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Ask directly how the proposal handles that specific scenario",
       },
-      { id: "b", text: "Defer, since they have more context than you" },
-      { id: "c", text: "Escalate to your manager" },
-      { id: "d", text: "Restate the concern more forcefully" },
+      {
+        id: "b",
+        text: "Defer to them entirely, since they likely have more context than you",
+      },
+      { id: "c", text: "Escalate the disagreement straight to your manager" },
+      { id: "d", text: "Restate the same concern again, only more forcefully" },
     ],
     answer: "a",
     explanation:
@@ -173,9 +191,18 @@ export const questions: Question[] = [
         id: "a",
         text: "When the decision is consequential and hard to reverse, and the team is genuinely stuck",
       },
-      { id: "b", text: "Whenever you are confident you are correct" },
-      { id: "c", text: "As soon as a discussion runs longer than expected" },
-      { id: "d", text: "Never — escalation always damages relationships" },
+      {
+        id: "b",
+        text: "Whenever you personally feel confident that you are correct",
+      },
+      {
+        id: "c",
+        text: "As soon as a discussion runs on longer than you expected it to",
+      },
+      {
+        id: "d",
+        text: "Never — escalation always permanently damages working relationships beyond repair",
+      },
     ],
     answer: "a",
     explanation:
@@ -197,9 +224,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Identify a requirement that distinguishes them and check it, turning preference into evidence",
       },
-      { id: "b", text: "Take a team vote to settle it" },
-      { id: "c", text: "Defer to whoever will maintain it" },
-      { id: "d", text: "Pick one and revisit in six months" },
+      { id: "b", text: "Take a quick team vote and go with whatever wins" },
+      { id: "c", text: "Defer entirely to whoever will end up maintaining it" },
+      {
+        id: "d",
+        text: "Just pick one arbitrarily and plan to revisit the decision again in six months",
+      },
     ],
     answer: "a",
     explanation:
@@ -224,9 +254,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Name the full scope, then say which part you will design and why that part matters most",
       },
-      { id: "b", text: "Cover everything at a shallow level to show breadth" },
-      { id: "c", text: "Design the part you know best without comment" },
-      { id: "d", text: "Ask the interviewer to pick which part to cover" },
+      {
+        id: "b",
+        text: "Cover absolutely everything at a shallow level to show breadth",
+      },
+      {
+        id: "c",
+        text: "Silently design only the part you personally know best, without any comment",
+      },
+      { id: "d", text: "Ask the interviewer to pick which part you should cover" },
     ],
     answer: "a",
     explanation:
@@ -289,9 +325,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Say you are moving on, note what you would return to, and switch to the higher-value area",
       },
-      { id: "b", text: "Finish the detail properly before moving on" },
-      { id: "c", text: "Move on silently to save time" },
-      { id: "d", text: "Ask whether the interviewer wants more detail here" },
+      {
+        id: "b",
+        text: "Finish the detail properly and completely first before moving on to anything else",
+      },
+      { id: "c", text: "Move on silently without saying anything, to save time" },
+      { id: "d", text: "Ask the interviewer whether they want more detail here" },
     ],
     answer: "a",
     explanation:
@@ -312,9 +351,15 @@ export const questions: Question[] = [
         id: "a",
         text: "What you built, the main tradeoff you accepted, and what you would do next",
       },
-      { id: "b", text: "Any remaining components you did not get to" },
-      { id: "c", text: "A recap of the requirements you gathered at the start" },
-      { id: "d", text: "The alternatives you rejected early on" },
+      {
+        id: "b",
+        text: "A list of any remaining components you did not get to cover",
+      },
+      {
+        id: "c",
+        text: "A full recap of the requirements you gathered at the very start",
+      },
+      { id: "d", text: "The alternatives you considered and rejected early on" },
     ],
     answer: "a",
     explanation:
@@ -337,9 +382,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Answer briefly now, and say you will expand when you reach that section",
       },
-      { id: "b", text: "Ask them to hold the question until you get there" },
-      { id: "c", text: "Abandon your plan and go deep on their question" },
-      { id: "d", text: "Answer in full detail immediately" },
+      {
+        id: "b",
+        text: "Ask them politely to hold the question until you get there naturally",
+      },
+      {
+        id: "c",
+        text: "Abandon your plan entirely and go deep on their question instead",
+      },
+      { id: "d", text: "Answer in full, exhaustive detail immediately, right there" },
     ],
     answer: "a",
     explanation:
@@ -363,9 +414,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The cost you avoid, what you give up in control, and the condition under which you would build it",
       },
-      { id: "b", text: "That managed services are industry best practice" },
-      { id: "c", text: "That building it would take too long" },
-      { id: "d", text: "That the team lacks expertise in that area" },
+      {
+        id: "b",
+        text: "That using managed services is simply considered industry best practice these days",
+      },
+      { id: "c", text: "That building it yourself would simply take too long" },
+      { id: "d", text: "That the team lacks the expertise needed in that area" },
     ],
     answer: "a",
     explanation:
@@ -388,9 +442,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Restate the numbers you are designing for and show the maths, then ask what scale they have in mind",
       },
-      { id: "b", text: "Redesign for a larger scale to be safe" },
-      { id: "c", text: "Agree and move on to avoid friction" },
-      { id: "d", text: "Explain that premature optimisation is a mistake" },
+      {
+        id: "b",
+        text: "Quietly redesign the whole thing for a much larger scale than needed, just to be safe",
+      },
+      { id: "c", text: "Simply agree with them and move on to avoid any friction" },
+      {
+        id: "d",
+        text: "Explain generally that premature optimisation is always a mistake",
+      },
     ],
     answer: "a",
     explanation:
@@ -435,9 +495,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Memory proportional to distinct inputs, in exchange for eliminating repeat computation",
       },
-      { id: "b", text: "Computation time, in exchange for less memory" },
-      { id: "c", text: "Accuracy, in exchange for speed" },
-      { id: "d", text: "No trade — memoisation is free" },
+      {
+        id: "b",
+        text: "Extra computation time on every call, in exchange for a smaller memory footprint",
+      },
+      { id: "c", text: "A small loss of accuracy, in exchange for noticeably faster calls" },
+      { id: "d", text: "No trade at all — memoisation is essentially free to add" },
     ],
     answer: "a",
     explanation:
@@ -459,9 +522,12 @@ export const questions: Question[] = [
         id: "a",
         text: "A probabilistic cardinality estimator such as HyperLogLog, using kilobytes instead of storing every id",
       },
-      { id: "b", text: "A hash set of every visitor id seen" },
-      { id: "c", text: "Sorting the events and counting adjacent duplicates" },
-      { id: "d", text: "A Bloom filter, which returns an exact count" },
+      { id: "b", text: "A hash set holding every distinct visitor id ever seen" },
+      {
+        id: "c",
+        text: "Sorting the full stream of events by id first, then counting the adjacent duplicates that result",
+      },
+      { id: "d", text: "A Bloom filter, since it returns an exact distinct count" },
     ],
     answer: "a",
     explanation:
@@ -483,9 +549,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Each update invalidates every prefix after it — use a Fenwick or segment tree for O(log n) updates and queries",
       },
-      { id: "b", text: "Nothing — prefix sums handle updates in constant time" },
-      { id: "c", text: "Queries become O(n); rebuild the array on each read" },
-      { id: "d", text: "The array must be re-sorted after each update" },
+      {
+        id: "b",
+        text: "Nothing breaks — prefix sums already handle updates in constant time",
+      },
+      {
+        id: "c",
+        text: "Queries degrade to O(n) once updates are frequent; the usual fix is to rebuild the whole array on every single read",
+      },
+      { id: "d", text: "The underlying array must be re-sorted after every single update" },
     ],
     answer: "a",
     explanation:
@@ -545,9 +617,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Fast and slow pointers — they meet inside a cycle and the fast one exits if there is none",
       },
-      { id: "b", text: "A hash set of visited nodes" },
-      { id: "c", text: "Sorting the nodes by address" },
-      { id: "d", text: "Binary search over the list length" },
+      {
+        id: "b",
+        text: "A hash set of visited nodes, checked again before following each next pointer",
+      },
+      { id: "c", text: "Sorting the nodes by their memory address before walking them" },
+      { id: "d", text: "Binary search over the list's length to find where it repeats" },
     ],
     answer: "a",
     explanation:
@@ -569,9 +644,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Backtracking — build candidates incrementally and abandon partial ones that cannot succeed",
       },
-      { id: "b", text: "Dynamic programming over the count" },
-      { id: "c", text: "A greedy scan taking the best local option" },
-      { id: "d", text: "Binary search over the solution space" },
+      { id: "b", text: "Dynamic programming, memoising the count at each state" },
+      {
+        id: "c",
+        text: "A greedy scan that always takes the best local option and never reconsiders any of them",
+      },
+      { id: "d", text: "Binary search over the space of possible solutions" },
     ],
     answer: "a",
     explanation:
@@ -616,9 +694,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Strawmanned alternatives undermine the whole document — a reader cannot tell whether they were seriously considered",
       },
-      { id: "b", text: "Three alternatives is too many to include" },
-      { id: "c", text: "Alternatives should be listed without judgement" },
-      { id: "d", text: "Nothing — brevity is a virtue in design docs" },
+      {
+        id: "b",
+        text: "Three alternatives is simply too many to reasonably include",
+      },
+      {
+        id: "c",
+        text: "Alternatives should always be listed strictly neutrally, without passing any judgement on any of them at all",
+      },
+      { id: "d", text: "Nothing at all — brevity is a genuine virtue in design docs" },
     ],
     answer: "a",
     explanation:
@@ -638,9 +722,15 @@ export const questions: Question[] = [
         id: "a",
         text: "It bounds the review, stopping discussion of things this work deliberately does not address",
       },
-      { id: "b", text: "It lists features cut for time and planned for later" },
-      { id: "c", text: "It records requirements the team disagreed about" },
-      { id: "d", text: "It documents what the previous system failed to do" },
+      {
+        id: "b",
+        text: "It lists every feature that was cut for time and is now planned for a later release",
+      },
+      {
+        id: "c",
+        text: "It records the requirements the team disagreed about at the time",
+      },
+      { id: "d", text: "It documents everything the previous system failed to do" },
     ],
     answer: "a",
     explanation:
@@ -662,9 +752,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The constraints in force at the time, so a reader can check whether they still hold",
       },
-      { id: "b", text: "More detail about the implementation" },
-      { id: "c", text: "The names of everyone who approved it" },
-      { id: "d", text: "A longer list of alternatives" },
+      {
+        id: "b",
+        text: "Much more granular detail about the implementation itself, written line by line",
+      },
+      { id: "c", text: "The names of everyone who reviewed and formally approved it" },
+      { id: "d", text: "A considerably longer, more exhaustive list of alternatives" },
     ],
     answer: "a",
     explanation:
@@ -735,9 +828,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Write it down and keep going — fixing unrelated things mid-incident adds risk and confuses the timeline",
       },
-      { id: "b", text: "Fix it immediately while you are already in the code" },
-      { id: "c", text: "Stop the incident response and assess which is worse" },
-      { id: "d", text: "Ignore it, since it is not causing the outage" },
+      {
+        id: "b",
+        text: "Fix it immediately while you happen to already be in the code",
+      },
+      {
+        id: "c",
+        text: "Stop the incident response entirely and take the time to assess which of the two is actually worse",
+      },
+      { id: "d", text: "Ignore it completely, since it is not causing the outage" },
     ],
     answer: "a",
     explanation:

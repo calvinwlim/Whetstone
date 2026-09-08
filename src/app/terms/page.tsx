@@ -13,7 +13,7 @@ export default function TermsPage() {
     <article className="max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight">Terms of use</h1>
       <p className="mt-1.5 text-sm text-text-2">
-        Last updated 7 September 2026.
+        Last updated 8 September 2026.
       </p>
 
       <p className="mt-5 leading-relaxed">
@@ -66,15 +66,12 @@ export default function TermsPage() {
 
       <Section title="Paying for it">
         <p>
-          Whetstone is free and will stay free. There is nothing to buy, no
-          subscription, and at present no way to donate even if you wanted to.
-        </p>
-        <p className="mt-2">
-          If a donation link is ever added, this is what it will mean:
-          voluntary, buying no features and no advantage on the leaderboard,
-          not refundable, and covering hosting and the time spent writing
-          questions. Choosing not to donate would change nothing about what you
-          can use.
+          Whetstone is free and will stay free. There is nothing to buy and no
+          subscription. The Sponsor button in the footer goes to GitHub
+          Sponsors, which is voluntary, buys no features and no advantage on
+          the leaderboard, and is not refundable — it covers hosting and the
+          time spent writing questions. Choosing not to use it changes nothing
+          about what you can use.
         </p>
       </Section>
 

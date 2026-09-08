@@ -106,9 +106,15 @@ export const questions: Question[] = [
         id: "a",
         text: "OAuth2 handles authorisation; OIDC adds an identity layer on top with an ID token",
       },
-      { id: "b", text: "They are competing standards for the same problem" },
-      { id: "c", text: "OIDC is the older protocol that OAuth2 replaced" },
-      { id: "d", text: "OAuth2 authenticates users and OIDC authorises API access" },
+      {
+        id: "b",
+        text: "They are simply competing standards that both solve the same underlying problem",
+      },
+      { id: "c", text: "OIDC is the older protocol that OAuth2 eventually replaced" },
+      {
+        id: "d",
+        text: "OAuth2 authenticates users and OIDC authorises access to APIs",
+      },
     ],
     answer: "a",
     explanation:
@@ -146,9 +152,15 @@ export const questions: Question[] = [
         id: "a",
         text: "An intercepted authorisation code being exchanged by an attacker, by binding the exchange to the client that started it",
       },
-      { id: "b", text: "Access tokens being stolen from browser storage" },
-      { id: "c", text: "Brute-force attacks against the token endpoint" },
-      { id: "d", text: "Replay of refresh tokens after logout" },
+      {
+        id: "b",
+        text: "Access tokens being stolen directly out of browser storage",
+      },
+      {
+        id: "c",
+        text: "Brute-force attacks carried out repeatedly against the token endpoint itself over a very long period of time",
+      },
+      { id: "d", text: "Replay of refresh tokens after a user has already logged out" },
     ],
     answer: "a",
     explanation:
@@ -171,9 +183,12 @@ export const questions: Question[] = [
         id: "a",
         text: "The audience claim — which service the token was actually issued for",
       },
-      { id: "b", text: "The subject claim identifying the user" },
-      { id: "c", text: "The issued-at timestamp" },
-      { id: "d", text: "The token type header" },
+      {
+        id: "b",
+        text: "The subject claim identifying which user the token belongs to",
+      },
+      { id: "c", text: "The issued-at timestamp recorded on the token" },
+      { id: "d", text: "The token type header value" },
     ],
     answer: "a",
     explanation:
@@ -239,9 +254,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Broken object level authorisation — check that this user owns this object at the point of access",
       },
-      { id: "b", text: "Broken authentication — require a stronger login" },
-      { id: "c", text: "Excessive data exposure — return fewer fields" },
-      { id: "d", text: "Security misconfiguration — restrict the endpoint by IP" },
+      {
+        id: "b",
+        text: "Broken authentication — require a noticeably stronger login flow before granting access",
+      },
+      {
+        id: "c",
+        text: "Excessive data exposure — simply return fewer fields overall",
+      },
+      {
+        id: "d",
+        text: "Security misconfiguration — restrict the endpoint by source IP",
+      },
     ],
     answer: "a",
     explanation:
@@ -288,9 +312,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Yes — the data is in the response regardless of what the UI renders; filter server-side",
       },
-      { id: "b", text: "No — the client controls what users see" },
-      { id: "c", text: "Only if the endpoint is unauthenticated" },
-      { id: "d", text: "Only if the response is cached" },
+      {
+        id: "b",
+        text: "No — the client alone is entirely responsible for deciding what users actually see",
+      },
+      { id: "c", text: "Only a problem if the endpoint is left unauthenticated" },
+      { id: "d", text: "Only a problem if the response happens to be cached" },
     ],
     answer: "a",
     explanation:
@@ -370,9 +397,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Add the three fields additively and keep the old name as an alias — a rename rarely justifies a version",
       },
-      { id: "b", text: "Publish v2 and deprecate v1 immediately" },
-      { id: "c", text: "Publish v2 and maintain both indefinitely" },
-      { id: "d", text: "Rename the field in place and notify consumers" },
+      {
+        id: "b",
+        text: "Publish v2 for the changes and deprecate v1 immediately afterward",
+      },
+      {
+        id: "c",
+        text: "Publish v2 for the changes and commit to maintaining both versions indefinitely going forward",
+      },
+      {
+        id: "d",
+        text: "Rename the field in place immediately and simply notify consumers",
+      },
     ],
     answer: "a",
     explanation:
@@ -412,9 +448,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Automated rules are applied evenly and immediately, instead of depending on who reviewed it",
       },
-      { id: "b", text: "Linting catches security vulnerabilities that reviewers miss" },
-      { id: "c", text: "It removes the need for API review altogether" },
-      { id: "d", text: "Style consistency matters more than interface design" },
+      {
+        id: "b",
+        text: "Linting reliably catches security vulnerabilities that human reviewers routinely miss",
+      },
+      { id: "c", text: "It removes the need for any human API review altogether" },
+      {
+        id: "d",
+        text: "Style consistency simply matters more than interface design",
+      },
     ],
     answer: "a",
     explanation:
@@ -480,9 +522,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Validation is local, so nothing consults the issuer — shorten the lifetime, and check a revocation list where it matters",
       },
-      { id: "b", text: "Rotate the signing key, which is the normal way to end one user's session" },
-      { id: "c", text: "JWTs expire automatically the moment the user record changes" },
-      { id: "d", text: "The client is responsible for discarding the token" },
+      {
+        id: "b",
+        text: "Rotate the signing key immediately, which is the normal and expected way to end exactly one user's session",
+      },
+      {
+        id: "c",
+        text: "JWTs expire automatically the instant the underlying user record changes",
+      },
+      {
+        id: "d",
+        text: "The client alone is responsible for discarding the token itself",
+      },
     ],
     answer: "a",
     explanation:

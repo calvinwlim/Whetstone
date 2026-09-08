@@ -16,13 +16,14 @@ export default function PrivacyPage() {
     <article className="max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight">Privacy</h1>
       <p className="mt-1.5 text-sm text-text-2">
-        Last updated 7 September 2026.
+        Last updated 8 September 2026.
       </p>
 
       <p className="mt-5 leading-relaxed">
         Whetstone is a personal study tool. It is free, it is not funded by
         advertising, and none of what follows is sold or shared with anyone for
-        marketing. There are no advertising or analytics trackers on this site.
+        marketing. There is no advertising on this site, and the one analytics
+        tool in use is described plainly below rather than left unmentioned.
       </p>
 
       <Section title="If you never sign in">
@@ -68,10 +69,33 @@ export default function PrivacyPage() {
 
       <Section title="Cookies">
         <p>
-          Only sign-in cookies, which keep you logged in between visits. They
-          are strictly necessary for the account to work, there are no
-          advertising or tracking cookies, and so there is no consent banner to
-          click through. Signing out removes them.
+          Whetstone itself sets only sign-in cookies, which keep you logged in
+          between visits and are strictly necessary for the account to work.
+          Signing out removes them.
+        </p>
+        <p className="mt-2">
+          The Sponsor button in the footer is an embedded frame from GitHub,
+          present on every page, and GitHub may set its own cookies in it —
+          Whetstone has no say over that and does not read them. There is
+          still no advertising, and no tracking of you across other sites by
+          Whetstone itself, so there is no consent banner to click through.
+        </p>
+      </Section>
+
+      <Section title="Analytics">
+        <p>
+          Vercel Web Analytics counts page views and measures loading
+          performance. It is cookieless — it does not set a cookie or any
+          other identifier that would let it recognise you on a return visit
+          — and it stores no name, email, or account ID against what it
+          collects. What it does record is standard for this kind of tool:
+          which page was viewed, in what country, and general device and
+          browser information taken from the request.
+        </p>
+        <p className="mt-2">
+          It exists to answer one question honestly: whether anyone is
+          actually using this. It does not feed advertising, anywhere, and it
+          is never combined with your account or your progress.
         </p>
       </Section>
 
@@ -92,11 +116,27 @@ export default function PrivacyPage() {
           containing IP addresses for security and debugging.
         </p>
         <p className="mt-2">
+          If something breaks, the crash — the error message, a stack trace,
+          which page, and your IP address as the report arrives — is sent to{" "}
+          <strong>Rollbar</strong>, also as a processor, so it can be noticed
+          and fixed. Nothing about which questions you were answering or who
+          you are signed in as is attached to that report.
+        </p>
+        <p className="mt-2">
           If you sign in with <strong>GitHub</strong> rather than by email,
           GitHub necessarily learns that you use Whetstone, and passes back the
           email address on your GitHub account so the account can be created.
           What GitHub does with that is covered by their privacy policy, not
           this one. Choosing the email link instead avoids involving them.
+        </p>
+        <p className="mt-2">
+          Separately, every page carries a <strong>GitHub Sponsors</strong>{" "}
+          button in the footer, loaded live from github.com rather than drawn
+          as a static image. That means a request carrying your IP address
+          reaches GitHub on every page you visit here, whether or not you ever
+          click it — the same way it would for an embedded YouTube video or
+          Google Map on another site. Whetstone does not see anything from
+          that request; GitHub does, under their own privacy policy.
         </p>
         <p className="mt-2">
           Nobody else receives your data. It is never sold, and it is not used
@@ -106,10 +146,11 @@ export default function PrivacyPage() {
 
       <Section title="Where it is held">
         <p>
-          Vercel and Supabase are United States companies, so if you are in the
-          UK or EU your data is transferred outside it. Both are contractually
-          bound to protect it to the standard required here — in the usual way,
-          through standard contractual clauses in their terms.
+          Vercel, Supabase and Rollbar are United States companies, so if you
+          are in the UK or EU your data is transferred outside it. All three
+          are contractually bound to protect it to the standard required here
+          — in the usual way, through standard contractual clauses in their
+          terms.
         </p>
       </Section>
 
@@ -119,8 +160,11 @@ export default function PrivacyPage() {
           are processed to perform the service you asked for — there is no
           account without them. The leaderboard entry is processed on your
           consent, which is why it is off until you switch it on and why
-          switching it off deletes it. Server logs are kept on the legitimate
-          interest of keeping the site up and secure.
+          switching it off deletes it. Server logs and crash reports are kept
+          on the legitimate interest of keeping the site up and secure, and
+          analytics on the legitimate interest of knowing whether the site is
+          actually used — it needs no consent of its own precisely because it
+          is cookieless and does not identify you.
         </p>
       </Section>
 

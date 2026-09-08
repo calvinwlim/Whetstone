@@ -79,9 +79,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Deliberate bypasses — dangerouslySetInnerHTML, javascript: URLs, or injection into a script context",
       },
-      { id: "b", text: "Anywhere user content appears as a text child" },
-      { id: "c", text: "In server-rendered HTML only" },
-      { id: "d", text: "It cannot — React makes XSS impossible" },
+      {
+        id: "b",
+        text: "Anywhere user content appears as an ordinary text child inside the component tree itself",
+      },
+      {
+        id: "c",
+        text: "Only in server-rendered HTML, never on the client side at all",
+      },
+      {
+        id: "d",
+        text: "It cannot happen at all — React makes XSS entirely and completely impossible",
+      },
     ],
     answer: "a",
     explanation:
@@ -103,9 +112,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Very little against XSS — unsafe-inline permits exactly the injected inline scripts CSP exists to block",
       },
-      { id: "b", text: "Full XSS protection, since scripts are limited to their own origin" },
-      { id: "c", text: "Protection against CSRF but not XSS" },
-      { id: "d", text: "Protection only for scripts loaded from a CDN" },
+      {
+        id: "b",
+        text: "Full and complete XSS protection, since every script is now strictly limited to its own origin",
+      },
+      { id: "c", text: "Solid protection against CSRF, though not against XSS" },
+      {
+        id: "d",
+        text: "Protection that only applies to scripts loaded from a CDN",
+      },
     ],
     answer: "a",
     explanation:
@@ -125,9 +140,15 @@ export const questions: Question[] = [
         id: "a",
         text: "It protects users from cross-origin reads by other sites; it does not protect your API from non-browser clients",
       },
-      { id: "b", text: "It prevents unauthorised access to your API from any client" },
-      { id: "c", text: "It encrypts cross-origin requests" },
-      { id: "d", text: "It stops your server receiving requests from other origins" },
+      {
+        id: "b",
+        text: "It prevents any unauthorised access whatsoever to your API from any kind of client",
+      },
+      { id: "c", text: "It encrypts cross-origin requests as they travel over the wire" },
+      {
+        id: "d",
+        text: "It stops your server from ever receiving any requests at all that happen to originate from other origins",
+      },
     ],
     answer: "a",
     explanation:
@@ -190,9 +211,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Largely immune — browsers do not attach Authorization headers automatically, so a forged cross-site request is unauthenticated",
       },
-      { id: "b", text: "Identical, since the browser still sends the request" },
-      { id: "c", text: "Worse, because headers are easier to forge than cookies" },
-      { id: "d", text: "Unchanged; CSRF depends on the HTTP method, not the credential" },
+      {
+        id: "b",
+        text: "Identical exposure, since the browser still sends the request either way",
+      },
+      {
+        id: "c",
+        text: "Considerably worse overall, because headers are much easier to forge than cookies are",
+      },
+      {
+        id: "d",
+        text: "Unchanged either way; CSRF exposure depends entirely on which HTTP method is used, never on the credential type at all",
+      },
     ],
     answer: "a",
     explanation:
@@ -232,9 +262,12 @@ export const questions: Question[] = [
         id: "a",
         text: "Focusability, keyboard activation, and its announced role — all free with a button",
       },
-      { id: "b", text: "Nothing, provided a click handler is attached" },
-      { id: "c", text: "Only the default browser styling" },
-      { id: "d", text: "Only the ability to submit a form" },
+      {
+        id: "b",
+        text: "Nothing at all is lost, provided a click handler is properly attached to it",
+      },
+      { id: "c", text: "Only the default browser styling applied to native buttons" },
+      { id: "d", text: "Only the ability to submit a form when clicked" },
     ],
     answer: "a",
     explanation:
@@ -254,9 +287,15 @@ export const questions: Question[] = [
         id: "a",
         text: "ARIA changes what is announced without adding behaviour, so an incorrect role actively misleads",
       },
-      { id: "b", text: "ARIA attributes slow down rendering" },
-      { id: "c", text: "Screen readers ignore ARIA entirely" },
-      { id: "d", text: "ARIA is deprecated in favour of semantic HTML" },
+      {
+        id: "b",
+        text: "ARIA attributes noticeably slow down the browser's overall rendering performance",
+      },
+      { id: "c", text: "Screen readers simply ignore ARIA attributes entirely" },
+      {
+        id: "d",
+        text: "ARIA has been formally deprecated in favour of semantic HTML",
+      },
     ],
     answer: "a",
     explanation:
@@ -277,9 +316,15 @@ export const questions: Question[] = [
         id: "a",
         text: "It moves into the dialog, is trapped while open, and returns to the trigger on close",
       },
-      { id: "b", text: "It stays where it was, so the page behind is not disturbed" },
-      { id: "c", text: "It moves to the top of the document" },
-      { id: "d", text: "Focus handling is only relevant for screen reader users" },
+      {
+        id: "b",
+        text: "It stays exactly where it was before, so the page underneath is not disturbed",
+      },
+      { id: "c", text: "It moves to the very top of the document instead" },
+      {
+        id: "d",
+        text: "Focus handling only actually matters for screen reader users",
+      },
     ],
     answer: "a",
     explanation:
@@ -320,9 +365,15 @@ export const questions: Question[] = [
         id: "a",
         text: "It disappears once typing starts, usually fails contrast, and is announced inconsistently",
       },
-      { id: "b", text: "Placeholders cannot be styled" },
-      { id: "c", text: "Screen readers always ignore placeholder text" },
-      { id: "d", text: "Placeholders are not supported on all input types" },
+      { id: "b", text: "Placeholders simply cannot be styled to match the design" },
+      {
+        id: "c",
+        text: "Screen readers always ignore placeholder text entirely",
+      },
+      {
+        id: "d",
+        text: "Placeholders are simply not consistently supported across every input type",
+      },
     ],
     answer: "a",
     explanation:
@@ -435,9 +486,15 @@ export const questions: Question[] = [
         id: "a",
         text: "Everything your own code has — the DOM, any JavaScript-readable cookie, and requests made as the user",
       },
-      { id: "b", text: "Only the events it registers listeners for" },
-      { id: "c", text: "Nothing outside its own sandbox" },
-      { id: "d", text: "Read access to the DOM, but no way to send data anywhere" },
+      {
+        id: "b",
+        text: "Only the specific events it explicitly registers listeners for",
+      },
+      { id: "c", text: "Nothing at all outside of its own isolated sandbox" },
+      {
+        id: "d",
+        text: "Read access to the DOM only, but genuinely no way at all to send that data anywhere else",
+      },
     ],
     answer: "a",
     explanation:
@@ -525,9 +582,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Colour is not perceivable by every user, and two shades of red are not distinguishable even by those who see colour well",
       },
-      { id: "b", text: "Red text always fails the contrast ratio requirement" },
-      { id: "c", text: "Screen readers announce colour, so the information is duplicated" },
-      { id: "d", text: "Colour is acceptable as long as the contrast ratio passes" },
+      {
+        id: "b",
+        text: "Red text will always fail the required contrast ratio check",
+      },
+      {
+        id: "c",
+        text: "Screen readers announce the colour aloud on every single field, so the information ends up duplicated anyway",
+      },
+      {
+        id: "d",
+        text: "Colour alone is perfectly acceptable as long as the contrast ratio passes",
+      },
     ],
     answer: "a",
     explanation:

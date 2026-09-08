@@ -1,9 +1,20 @@
 "use client";
 
+import { useEffect } from "react";
+import Rollbar from "rollbar";
+import { clientConfig } from "@/lib/rollbar/config";
+
 /** The last resort: a failure in the root layout itself, where the shell and
  *  the stylesheet are both gone. Next replaces the whole document with this,
  *  and global styles do not reach it, so everything here is inline and it
- *  cannot rely on a single design token. */
+ *  cannot rely on a single design token.
+ *
+ *  RollbarProvider lives inside the root layout, so a crash here means that
+ *  context never mounted -- there is nothing to read with useRollbar(). A
+ *  fresh instance is built from the same config instead. Constructing it
+ *  inside the effect, not at module scope, matters more here than in most
+ *  places: this component runs *because* something already went wrong, and a
+ *  faulty client should not be able to take the crash page down with it. */
 export default function GlobalError({
   error,
   retry,
@@ -11,6 +22,14 @@ export default function GlobalError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  useEffect(() => {
+    try {
+      new Rollbar(clientConfig).error(error);
+    } catch {
+      // The one thing this component must not do is throw.
+    }
+  }, [error]);
+
   return (
     <html lang="en">
       <body

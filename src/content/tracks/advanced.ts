@@ -113,9 +113,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Say what you got wrong, what it invalidates, and what you would change — then adjust",
       },
-      { id: "b", text: "Continue, since changing course now will look disorganised" },
-      { id: "c", text: "Quietly adjust the later parts so they no longer depend on it" },
-      { id: "d", text: "Ask the interviewer whether they would like you to change it" },
+      {
+        id: "b",
+        text: "Keep going regardless, since changing course now will look disorganised",
+      },
+      {
+        id: "c",
+        text: "Quietly adjust the later parts so they no longer depend on the earlier mistake",
+      },
+      {
+        id: "d",
+        text: "Ask the interviewer directly whether they would like you to change it",
+      },
     ],
     answer: "a",
     explanation:
@@ -137,9 +146,18 @@ export const questions: Question[] = [
         id: "a",
         text: "Give a conditional estimate, name the unknown, and propose a timeboxed spike to resolve it before committing",
       },
-      { id: "b", text: "Give a padded date that assumes the worst case" },
-      { id: "c", text: "Decline to estimate until the dependency is documented" },
-      { id: "d", text: "Give the optimistic date and flag risk if it slips" },
+      {
+        id: "b",
+        text: "Give a heavily padded date that assumes the worst case throughout",
+      },
+      {
+        id: "c",
+        text: "Decline to give any estimate at all until the dependency has been fully documented by someone else",
+      },
+      {
+        id: "d",
+        text: "Give the optimistic date and only flag the risk if it later slips",
+      },
     ],
     answer: "a",
     explanation:
