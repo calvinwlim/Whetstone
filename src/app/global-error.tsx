@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Rollbar from "rollbar";
+import Rollbar from "rollbar/replay";
 import { clientConfig } from "@/lib/rollbar/config";
 
 /** The last resort: a failure in the root layout itself, where the shell and

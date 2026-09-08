@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Rubik, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { Provider as RollbarProvider } from "@rollbar/react";
+import { AppRollbarProvider } from "@/components/rollbar-provider";
 import { ProgressProvider } from "@/components/progress-provider";
 import { AppShell } from "@/components/app-shell";
 import {
@@ -10,7 +10,6 @@ import {
   SITE_URL,
   isIndexable,
 } from "@/lib/site";
-import { clientConfig } from "@/lib/rollbar/config";
 import "./globals.css";
 
 const rubik = Rubik({
@@ -69,13 +68,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full">
         {/* Outermost, so error.tsx's useRollbar() is reachable from any page.
             A crash inside the root layout itself -- above this line, or in
-            RollbarProvider's own render -- is what global-error.tsx exists
+            AppRollbarProvider's own render -- is what global-error.tsx exists
             for instead, since this context never mounts for it. */}
-        <RollbarProvider config={clientConfig}>
+        <AppRollbarProvider>
           <ProgressProvider>
             <AppShell>{children}</AppShell>
           </ProgressProvider>
-        </RollbarProvider>
+        </AppRollbarProvider>
         {/* Renders nothing -- it only injects the same-origin
             /_vercel/insights beacon script. Page views and Core Web Vitals
             only, aggregated by Vercel: no cookies, and nothing that

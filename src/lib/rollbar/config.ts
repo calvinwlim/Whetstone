@@ -30,13 +30,33 @@ export function isRollbarConfigured(): boolean {
  *  promise in an event handler, say) is not silently missed. No `person` is
  *  attached: crash reports get a stack trace and a URL, not who was signed
  *  in, which keeps this in the same category the privacy policy already
- *  discloses for server logs rather than opening a new one. */
+ *  discloses for server logs rather than opening a new one.
+ *
+ *  `replay` requires the constructor from "rollbar/replay", not this plain
+ *  "rollbar" -- imported separately in layout.tsx and global-error.tsx, the
+ *  two places a client instance is actually built, since replay is a
+ *  browser-only feature this file's server import has no use for. Its own
+ *  defaults are already conservative: disabled unless a real token exists,
+ *  and even then triggered only by an actual error rather than recording
+ *  continuously -- a rolling ~300ms buffer that is discarded unless an error
+ *  fires, never a video of ordinary browsing. Two fields are set deliberately
+ *  past that default: the library masks password inputs on its own, but this
+ *  app has no password field at all -- everything is magic-link or OAuth --
+ *  so email is the one field actually typed here worth the same treatment,
+ *  given how carefully the rest of this policy already treats it. */
 export const clientConfig = {
   accessToken: RAW_CLIENT_TOKEN,
   enabled: Boolean(RAW_CLIENT_TOKEN),
   captureUncaught: true,
   captureUnhandledRejections: true,
   environment: process.env.NODE_ENV,
+  replay: {
+    enabled: Boolean(RAW_CLIENT_TOKEN),
+    maskInputOptions: {
+      password: true,
+      email: true,
+    },
+  },
 };
 
 export function isRollbarServerConfigured(): boolean {

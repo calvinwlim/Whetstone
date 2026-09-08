@@ -8,9 +8,10 @@ const isDev = process.env.NODE_ENV === "development";
  *  The app loads no third-party script, stylesheet, font or image: next/font
  *  self-hosts at build time, the social images are generated here, and the
  *  only outbound hosts are Supabase, Rollbar when a crash is actually being
- *  reported, GitHub for the Sponsors button in the footer, and Vercel
- *  Analytics. So 'self' is very nearly the whole policy, and the directives
- *  that cost nothing to lock down are locked down.
+ *  reported (Session Replay posts to the same host), GitHub for the Sponsors
+ *  button in the footer, and Vercel Analytics. So 'self' is very nearly the
+ *  whole policy, and the directives that cost nothing to lock down are
+ *  locked down.
  *
  *  script-src keeps 'unsafe-inline' because Next.js inlines its bootstrap and
  *  flight data. The alternative is per-request nonces, and Next can only
@@ -56,6 +57,11 @@ function contentSecurityPolicy(): string {
     // The Sponsors button in the footer: a live iframe from github.com, not
     // a static badge. default-src would otherwise block it outright.
     "frame-src": ["https://github.com"],
+    // Session Replay compresses recordings off the main thread via a Worker
+    // constructed from a blob: URL. worker-src falls back to script-src when
+    // absent, which has no blob: entry, so without this the worker is
+    // silently blocked and nothing is ever recorded.
+    "worker-src": ["'self'", "blob:"],
     "frame-ancestors": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
