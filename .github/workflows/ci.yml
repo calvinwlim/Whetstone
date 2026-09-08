@@ -28,6 +28,15 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # tsc alone cannot see this: layout.tsx and page.tsx use LayoutProps /
+      # PageProps, App Router types Next.js generates into .next/types/ --
+      # normally a side effect of `next build` or `next dev`, neither of
+      # which has run yet on a fresh checkout. `next typegen` produces just
+      # those files, in under two seconds, with no build. Skipping this step
+      # is what let this pass on every local run all session: .next/ had
+      # already been built dozens of times and was never once absent locally.
+      - run: pnpm exec next typegen
+
       - run: pnpm typecheck
 
       - run: pnpm lint
