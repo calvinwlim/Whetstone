@@ -2,6 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import { getServerSupabase } from "@/lib/supabase/server";
 import { requireSupabaseEnv } from "@/lib/supabase/config";
 import { reportServerError } from "@/lib/rollbar/config";
+import { sendEmail } from "@/lib/email/config";
+import { accountDeletedEmail } from "@/lib/email/templates";
 
 /** Deleting your own account.
  *
@@ -44,6 +46,10 @@ export async function DELETE() {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
+  // Captured before deletion: there is no user record left to read it from
+  // afterwards, and it is the one thing the confirmation email needs.
+  const email = user.email;
+
   const { error } = await admin.auth.admin.deleteUser(user.id);
   if (error) {
     console.error("[whetstone] account deletion failed:", error.message);
@@ -59,6 +65,14 @@ export async function DELETE() {
   // Drop the session cookies so the browser is not left holding a token for an
   // account that no longer exists.
   await supabase.auth.signOut();
+
+  // The deletion has already succeeded by this point -- nothing below can
+  // turn it into a failure response. sendEmail() itself never throws and is
+  // a silent no-op with no Resend key configured, so this is safe to await
+  // without a try/catch of its own.
+  if (email) {
+    await sendEmail({ to: email, ...accountDeletedEmail() });
+  }
 
   return Response.json({ deleted: true });
 }

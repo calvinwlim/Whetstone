@@ -119,8 +119,20 @@ export default function PrivacyPage() {
           If something breaks, the crash — the error message, a stack trace,
           which page, and your IP address as the report arrives — is sent to{" "}
           <strong>Rollbar</strong>, also as a processor, so it can be noticed
-          and fixed. Nothing about which questions you were answering or who
-          you are signed in as is attached to that report.
+          and fixed. Nothing about who you are signed in as is attached to
+          that report.
+        </p>
+        <p className="mt-2">
+          Attached to the same report is a short recording of the screen
+          itself, covering roughly the half-second before the crash and the
+          five seconds after — reconstructed from the page&apos;s structure,
+          not a video, but close enough in effect that anything visible on
+          screen at that moment can appear in it, including a question you
+          were looking at. It only ever happens around an actual crash;
+          ordinary use of Whetstone is never recorded. Anything typed into a
+          password or email field is masked before it leaves your browser —
+          Whetstone has no password fields, so in practice this means your
+          email address, on the rare crash near the sign-in page.
         </p>
         <p className="mt-2">
           If you sign in with <strong>GitHub</strong> rather than by email,
