@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ALL_TOPICS } from "@/content";
 import { isKnownTopicId, stackMapTopicReferences, STACK_EDGES, STACK_NODES } from "@/content/stack-map";
 
 describe("stack map", () => {
@@ -29,5 +30,14 @@ describe("stack map", () => {
       (edge) => !nodeIds.has(edge.source) || !nodeIds.has(edge.target),
     );
     expect(bad).toEqual([]);
+  });
+
+  // The map is meant to be a complete picture of the content bank, not just
+  // the API-heavy corner it started as -- a newly authored topic should show
+  // up here as a failure, not silently go missing from the diagram.
+  it("references every topic in the content bank", () => {
+    const referenced = new Set(stackMapTopicReferences().map((r) => r.topicId));
+    const missing = ALL_TOPICS.map((t) => t.id).filter((id) => !referenced.has(id));
+    expect(missing).toEqual([]);
   });
 });
