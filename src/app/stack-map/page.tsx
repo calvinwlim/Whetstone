@@ -2,11 +2,11 @@
 
 import "@xyflow/react/dist/style.css";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Background,
   Controls,
-  MiniMap,
+  Panel,
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
@@ -15,6 +15,7 @@ import {
 } from "@xyflow/react";
 import { getTopic } from "@/content";
 import {
+  STACK_BOUNDS,
   STACK_EDGES,
   STACK_GROUPS,
   STACK_NODES,
@@ -84,25 +85,22 @@ function StackMap() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [groupFilter, setGroupFilter] = useState<StackGroupId | "all">("all");
-  const { fitView } = useReactFlow();
-  const isFirstRender = useRef(true);
+  const { fitBounds } = useReactFlow();
 
   const selected = findSelected(selectedId);
 
-  // Newly revealed children can land outside the current viewport, so pull
-  // the camera back out whenever a layer's expanded state changes. Skipped
-  // on mount -- the `fitView` prop below already handles the first paint,
-  // and running both races the canvas before it has real dimensions.
+  // Fit to a bounding box computed from our own authored positions rather
+  // than React Flow's auto-measured `fitView` -- on this graph's size,
+  // fitView settles on a box narrower than the real content and clips the
+  // rightmost column. Also covers expand/collapse, since a layer's children
+  // land within the same generous box. Runs once on mount too, since the
+  // canvas needs a moment to report its real size first.
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
     const id = window.setTimeout(() => {
-      fitView({ padding: 0.2 });
+      fitBounds(STACK_BOUNDS, { padding: 0.1 });
     }, 50);
     return () => window.clearTimeout(id);
-  }, [expanded, fitView]);
+  }, [expanded, fitBounds]);
 
   const highlightSet = useMemo(() => {
     if (!selectedId) return null;
@@ -211,135 +209,124 @@ function StackMap() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Stack Map</h1>
-      <p className="mt-2 max-w-2xl text-sm text-text-2">
-        A real system, laid out end to end. Click a layer to see what it talks
-        to and expand it into its topics; each topic links straight to the
-        lesson.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Stack Map</h1>
+          <p className="mt-1 max-w-xl text-sm text-text-2">
+            A real system, laid out end to end. Click a layer to see what it
+            talks to and expand it into its topics.
+          </p>
+        </div>
 
-      <div className="mt-4 flex flex-wrap gap-1.5">
-        <button
-          type="button"
-          onClick={() => setGroupFilter("all")}
-          aria-pressed={groupFilter === "all"}
-          className={`btn rounded-chip px-2.5 py-1 text-[0.8125rem] ${
-            groupFilter === "all"
-              ? "btn-primary"
-              : "border border-border text-text-2 hover:border-border-strong hover:text-text"
-          }`}
-        >
-          All layers
-        </button>
-        {STACK_GROUPS.map((group) => (
+        <div className="flex flex-wrap gap-1.5">
           <button
-            key={group.id}
             type="button"
-            onClick={() =>
-              setGroupFilter((current) => (current === group.id ? "all" : group.id))
-            }
-            aria-pressed={groupFilter === group.id}
+            onClick={() => setGroupFilter("all")}
+            aria-pressed={groupFilter === "all"}
             className={`btn rounded-chip px-2.5 py-1 text-[0.8125rem] ${
-              groupFilter === group.id
+              groupFilter === "all"
                 ? "btn-primary"
                 : "border border-border text-text-2 hover:border-border-strong hover:text-text"
             }`}
           >
-            {group.label}
+            All layers
           </button>
-        ))}
+          {STACK_GROUPS.map((group) => (
+            <button
+              key={group.id}
+              type="button"
+              onClick={() =>
+                setGroupFilter((current) => (current === group.id ? "all" : group.id))
+              }
+              aria-pressed={groupFilter === group.id}
+              className={`btn rounded-chip px-2.5 py-1 text-[0.8125rem] ${
+                groupFilter === group.id
+                  ? "btn-primary"
+                  : "border border-border text-text-2 hover:border-border-strong hover:text-text"
+              }`}
+            >
+              {group.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-3 lg:flex-row">
-        <div className="relative h-[420px] flex-none overflow-hidden rounded-card border border-border bg-surface sm:h-[520px] lg:h-[620px] lg:flex-1">
-          <ReactFlow
-            nodes={flowNodes}
-            edges={flowEdges}
-            nodeTypes={NODE_TYPES}
-            onNodeClick={(_, node) => setSelectedId(node.id)}
-            onPaneClick={() => setSelectedId(null)}
-            nodesConnectable={false}
-            elementsSelectable
-            nodeClickDistance={10}
-            fitView
-            fitViewOptions={{ padding: 0.2 }}
-            proOptions={{ hideAttribution: true }}
-            colorMode="light"
-          >
-            <Background gap={20} size={1} color="var(--border)" />
-            <Controls
-              showInteractive={false}
-              className="!shadow-none [&_button]:!border-border [&_button]:!bg-surface [&_button]:!fill-text [&_button]:!text-text"
-            />
-            <MiniMap
-              className="hidden sm:block"
-              maskColor="rgba(0,0,0,0.06)"
-              nodeColor="var(--border-strong)"
-              pannable
-              zoomable
-            />
-          </ReactFlow>
-        </div>
+      <div className="relative mt-3 h-[calc(100dvh-260px)] min-h-[560px] overflow-hidden rounded-card border border-border bg-surface">
+        <ReactFlow
+          nodes={flowNodes}
+          edges={flowEdges}
+          nodeTypes={NODE_TYPES}
+          onNodeClick={(_, node) => setSelectedId(node.id)}
+          onPaneClick={() => setSelectedId(null)}
+          nodesConnectable={false}
+          elementsSelectable
+          nodeClickDistance={10}
+          minZoom={0.1}
+          defaultViewport={{ x: 40, y: 150, zoom: 0.2 }}
+          proOptions={{ hideAttribution: true }}
+          colorMode="light"
+        >
+          <Background gap={20} size={1} color="var(--border)" />
+          <Controls
+            showInteractive={false}
+            className="!shadow-none [&_button]:!border-border [&_button]:!bg-surface [&_button]:!fill-text [&_button]:!text-text"
+          />
 
-        <aside className="w-full shrink-0 rounded-card border border-border bg-surface p-4 lg:w-80">
           {selected ? (
-            <div>
-              {selected.parentLabel ? (
-                <p className="label text-text-2">
-                  Part of {selected.parentLabel}
+            <Panel position="top-right">
+              <div className="max-h-[calc(100dvh-300px)] w-72 overflow-y-auto rounded-card border border-border bg-surface/95 p-4 shadow-lg backdrop-blur sm:w-80">
+                {selected.parentLabel ? (
+                  <p className="label text-text-2">
+                    Part of {selected.parentLabel}
+                  </p>
+                ) : selected.groupLabel ? (
+                  <p className="label text-text-2">{selected.groupLabel}</p>
+                ) : null}
+                <h2 className="mt-0.5 text-lg font-semibold">{selected.label}</h2>
+                <p className="mt-1.5 text-sm text-text-2">
+                  {selected.description}
                 </p>
-              ) : selected.groupLabel ? (
-                <p className="label text-text-2">{selected.groupLabel}</p>
-              ) : null}
-              <h2 className="mt-0.5 text-lg font-semibold">{selected.label}</h2>
-              <p className="mt-1.5 text-sm text-text-2">{selected.description}</p>
 
-              {selected.hasChildren ? (
-                <button
-                  type="button"
-                  onClick={() => toggleExpand(selected.id)}
-                  className="btn btn-primary mt-3 rounded-control px-3 py-1.5 text-sm"
-                >
-                  {expanded.has(selected.id) ? "Collapse" : "Expand"} topics
-                </button>
-              ) : null}
+                {selected.hasChildren ? (
+                  <button
+                    type="button"
+                    onClick={() => toggleExpand(selected.id)}
+                    className="btn btn-primary mt-3 rounded-control px-3 py-1.5 text-sm"
+                  >
+                    {expanded.has(selected.id) ? "Collapse" : "Expand"} topics
+                  </button>
+                ) : null}
 
-              {selected.relatedTopicIds.length ? (
-                <div className="mt-4">
-                  <p className="label text-text-2">Related topics</p>
-                  <ul className="mt-2 space-y-2">
-                    {selected.relatedTopicIds.map((topicId) => {
-                      const topic = getTopic(topicId);
-                      if (!topic) return null;
-                      return (
-                        <li key={topicId}>
-                          <Link
-                            href={`/topics/${topic.id}`}
-                            className="block rounded-control border border-border px-2.5 py-2 transition-colors hover:border-border-strong hover:bg-bg"
-                          >
-                            <p className="text-sm font-medium">{topic.title}</p>
-                            <p className="mt-0.5 text-xs text-text-2">
-                              {topic.blurb}
-                            </p>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ) : null}
-            </div>
-          ) : (
-            <div>
-              <p className="text-sm font-medium">Nothing selected</p>
-              <p className="mt-1.5 text-sm text-text-2">
-                Click a layer on the map to see what it does, how it connects
-                upstream and downstream, and which topics live there. Layers
-                with a chevron expand into their component topics.
-              </p>
-            </div>
-          )}
-        </aside>
+                {selected.relatedTopicIds.length ? (
+                  <div className="mt-4">
+                    <p className="label text-text-2">Related topics</p>
+                    <ul className="mt-2 space-y-2">
+                      {selected.relatedTopicIds.map((topicId) => {
+                        const topic = getTopic(topicId);
+                        if (!topic) return null;
+                        return (
+                          <li key={topicId}>
+                            <Link
+                              href={`/topics/${topic.id}`}
+                              className="block rounded-control border border-border px-2.5 py-2 transition-colors hover:border-border-strong hover:bg-bg"
+                            >
+                              <p className="text-sm font-medium">
+                                {topic.title}
+                              </p>
+                              <p className="mt-0.5 text-xs text-text-2">
+                                {topic.blurb}
+                              </p>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+            </Panel>
+          ) : null}
+        </ReactFlow>
       </div>
     </div>
   );

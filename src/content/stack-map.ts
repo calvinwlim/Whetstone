@@ -16,7 +16,8 @@ export type StackGroupId =
   | "eventing"
   | "storage"
   | "analytics"
-  | "delivery";
+  | "delivery"
+  | "practice";
 
 export interface StackGroup {
   id: StackGroupId;
@@ -35,6 +36,7 @@ export const STACK_GROUPS: StackGroup[] = [
   { id: "storage", label: "Storage" },
   { id: "analytics", label: "Analytics" },
   { id: "delivery", label: "Delivery" },
+  { id: "practice", label: "Engineering Practice" },
 ];
 
 /** A leaf revealed when its parent node is expanded. Carries its own topic
@@ -599,6 +601,158 @@ export const STACK_NODES: StackNodeDef[] = [
       },
     ],
   },
+  {
+    id: "code-quality",
+    label: "Code Quality & Design",
+    description:
+      "The craft underneath every layer above -- how the code inside a service is actually shaped and kept honest.",
+    group: "practice",
+    position: { x: 1120, y: 820 },
+    relatedTopicIds: ["design-patterns"],
+    children: [
+      {
+        id: "cq-spec",
+        label: "Spec-Driven Development",
+        description: "Writing down what a change should do before writing the code.",
+        relatedTopicIds: ["spec-driven-development"],
+      },
+      {
+        id: "cq-patterns",
+        label: "Design Patterns",
+        description: "Named shapes for recurring problems, and when one earns its complexity.",
+        relatedTopicIds: ["design-patterns"],
+      },
+      {
+        id: "cq-quality",
+        label: "Code Quality & Refactoring",
+        description: "Keeping a codebase changeable as it grows.",
+        relatedTopicIds: ["code-quality"],
+      },
+      {
+        id: "cq-domain",
+        label: "Domain Modelling",
+        description: "Shaping code around the business it serves, not the database under it.",
+        relatedTopicIds: ["domain-modelling"],
+      },
+    ],
+  },
+  {
+    id: "algorithms",
+    label: "Algorithms & Problem Solving",
+    description:
+      "The reasoning skills every layer above draws on -- picking the right structure and knowing what it costs.",
+    group: "practice",
+    position: { x: 1400, y: 820 },
+    relatedTopicIds: ["complexity"],
+    children: [
+      {
+        id: "algo-complexity",
+        label: "Complexity Analysis",
+        description: "Reasoning about how an approach scales before it ships.",
+        relatedTopicIds: ["complexity"],
+      },
+      {
+        id: "algo-structures",
+        label: "Choosing a Data Structure",
+        description: "Matching a structure to the operations that actually matter.",
+        relatedTopicIds: ["structure-choice"],
+      },
+      {
+        id: "algo-patterns",
+        label: "Algorithmic Patterns",
+        description: "The recurring techniques behind most interview and real-world problems.",
+        relatedTopicIds: ["patterns"],
+      },
+      {
+        id: "algo-tradeoffs",
+        label: "Space/Time Tradeoffs",
+        description: "Trading memory for speed, deliberately.",
+        relatedTopicIds: ["space-time"],
+      },
+    ],
+  },
+  {
+    id: "workplace",
+    label: "Workplace Craft",
+    description:
+      "How engineering actually gets done day to day, independent of any one layer of the stack.",
+    group: "practice",
+    position: { x: 0, y: 820 },
+    relatedTopicIds: ["code-review"],
+    children: [
+      {
+        id: "wp-review",
+        label: "Code Review",
+        description: "Giving and receiving feedback that actually improves the change.",
+        relatedTopicIds: ["code-review"],
+      },
+      {
+        id: "wp-debugging",
+        label: "Debugging Methodically",
+        description: "Finding the cause instead of guessing at fixes.",
+        relatedTopicIds: ["debugging"],
+      },
+      {
+        id: "wp-design-docs",
+        label: "Design Docs & RFCs",
+        description: "Writing down a plan so it can be argued with before it's built.",
+        relatedTopicIds: ["design-docs"],
+      },
+      {
+        id: "wp-incidents",
+        label: "Incidents",
+        description: "What happens when a layer of this diagram actually breaks.",
+        relatedTopicIds: ["incidents"],
+      },
+      {
+        id: "wp-estimation",
+        label: "Estimation & Scoping",
+        description: "Sizing work honestly enough to plan around.",
+        relatedTopicIds: ["estimation"],
+      },
+    ],
+  },
+  {
+    id: "communication",
+    label: "Technical Communication",
+    description:
+      "Explaining the system in this diagram to the people who need a decision from you.",
+    group: "practice",
+    position: { x: 280, y: 820 },
+    relatedTopicIds: ["scoping"],
+    children: [
+      {
+        id: "comm-scoping",
+        label: "Scoping the Problem",
+        description: "Making sure you're answering the question that was actually asked.",
+        relatedTopicIds: ["scoping"],
+      },
+      {
+        id: "comm-structuring",
+        label: "Structuring an Answer",
+        description: "Leading with the point instead of the path to it.",
+        relatedTopicIds: ["structuring"],
+      },
+      {
+        id: "comm-tradeoffs",
+        label: "Defending a Tradeoff",
+        description: "Explaining why you chose this and not the alternative.",
+        relatedTopicIds: ["tradeoffs"],
+      },
+      {
+        id: "comm-audience",
+        label: "Explaining to Different Audiences",
+        description: "The same decision, pitched differently to an engineer and a stakeholder.",
+        relatedTopicIds: ["audience"],
+      },
+      {
+        id: "comm-disagreement",
+        label: "Disagreeing Well",
+        description: "Pushing back on a decision without stalling it.",
+        relatedTopicIds: ["disagreement"],
+      },
+    ],
+  },
 ];
 
 export const STACK_EDGES: StackEdgeDef[] = [
@@ -622,7 +776,33 @@ export const STACK_EDGES: StackEdgeDef[] = [
   { id: "e-db-storage", source: "database", target: "storage", label: "backup" },
   { id: "e-delivery-services", source: "delivery", target: "services", label: "deploy" },
   { id: "e-enterprise-data", source: "enterprise", target: "data-access", label: "policy" },
+  { id: "e-services-codequality", source: "services", target: "code-quality", label: "shapes" },
+  { id: "e-services-algorithms", source: "services", target: "algorithms", label: "informs" },
+  { id: "e-delivery-workplace", source: "delivery", target: "workplace", label: "practice" },
+  { id: "e-workplace-communication", source: "workplace", target: "communication", label: "review" },
 ];
+
+/** A generous bounding box around every top-level node, used to drive
+ *  `fitBounds` instead of React Flow's own auto-measured `fitView`. On this
+ *  graph's size, fitView settles on a bounding box narrower than the real
+ *  content and clips the rightmost column -- computing the box from our own
+ *  authored positions sidesteps whatever it's under-measuring. The padding
+ *  is generous enough to cover a node's actual (longer than min-width)
+ *  rendered width and a layer's children once expanded. */
+export const STACK_BOUNDS = (() => {
+  const xs = STACK_NODES.map((n) => n.position.x);
+  const ys = STACK_NODES.map((n) => n.position.y);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  return {
+    x: minX - 40,
+    y: minY - 40,
+    width: maxX - minX + 320,
+    height: maxY - minY + 300,
+  };
+})();
 
 const knownTopicIds = new Set(ALL_TOPICS.map((t) => t.id));
 
