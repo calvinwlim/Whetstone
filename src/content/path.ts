@@ -189,6 +189,23 @@ export const PATH_LANES: PathLane[] = [
     topics: ["scoping", "structuring", "audience", "disagreement", "estimation"],
   },
   {
+    id: "embedded",
+    title: "Embedded systems",
+    blurb: "C, memory, concurrency, and networking from first principles -- for a hardware-adjacent or network-appliance interview.",
+    topics: [
+      "c-embedded",
+      "number-systems",
+      "digital-logic",
+      "assembly-fetch-execute",
+      "embedded-memory",
+      "embedded-concurrency",
+      "embedded-linux",
+      "embedded-debugging",
+      "embedded-sockets",
+      "embedded-netsec",
+    ],
+  },
+  {
     id: "enterprise",
     title: "Enterprise",
     blurb: "Identity, tenancy, and the obligations that arrive with a large customer.",

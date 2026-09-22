@@ -12,7 +12,8 @@ export type TrackId =
   | "sql-analytics"
   | "communication"
   | "dsa-concepts"
-  | "workplace";
+  | "workplace"
+  | "embedded-systems";
 
 /** 1 = fundamentals, 5 = staff-level ambiguity. Used to band questions to the
  *  learner's rolling accuracy so the bank stays useful as they level up. */
@@ -133,4 +134,5 @@ export const TRACK_IDS: TrackId[] = [
   "communication",
   "dsa-concepts",
   "workplace",
+  "embedded-systems",
 ];

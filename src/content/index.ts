@@ -10,6 +10,7 @@ import * as sqlAnalytics from "./tracks/sql-analytics";
 import * as communication from "./tracks/communication";
 import * as dsaConcepts from "./tracks/dsa-concepts";
 import * as workplace from "./tracks/workplace";
+import * as embeddedSystems from "./tracks/embedded-systems";
 import * as foundations from "./tracks/foundations";
 import * as fundamentals from "./tracks/fundamentals";
 import * as advanced from "./tracks/advanced";
@@ -40,6 +41,7 @@ export const TRACKS: Track[] = [
   communication.track,
   dsaConcepts.track,
   workplace.track,
+  embeddedSystems.track,
 ];
 
 export const ALL_QUESTIONS: Question[] = [
@@ -54,6 +56,7 @@ export const ALL_QUESTIONS: Question[] = [
   ...communication.questions,
   ...dsaConcepts.questions,
   ...workplace.questions,
+  ...embeddedSystems.questions,
   // Difficulty 1 and 5 sets live apart from the per-topic files so the easiest
   // and hardest bands stay easy to see, audit, and extend.
   ...foundations.questions,

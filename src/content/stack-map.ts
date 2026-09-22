@@ -17,7 +17,8 @@ export type StackGroupId =
   | "storage"
   | "analytics"
   | "delivery"
-  | "practice";
+  | "practice"
+  | "embedded";
 
 export interface StackGroup {
   id: StackGroupId;
@@ -37,6 +38,7 @@ export const STACK_GROUPS: StackGroup[] = [
   { id: "analytics", label: "Analytics" },
   { id: "delivery", label: "Delivery" },
   { id: "practice", label: "Engineering Practice" },
+  { id: "embedded", label: "Embedded" },
 ];
 
 /** A leaf revealed when its parent node is expanded. Carries its own topic
@@ -753,6 +755,77 @@ export const STACK_NODES: StackNodeDef[] = [
       },
     ],
   },
+  {
+    id: "embedded-systems-node",
+    label: "Embedded & Systems",
+    description:
+      "The layer underneath every layer above -- C, hardware fundamentals, and the OS/network primitives a hardware-adjacent or network-appliance interview actually tests.",
+    group: "embedded",
+    position: { x: 1680, y: 820 },
+    relatedTopicIds: ["c-embedded"],
+    children: [
+      {
+        id: "es-node-c",
+        label: "C for Systems & Embedded Programming",
+        description: "Pointers, memory corruption, and the qualifiers that matter with nothing managed for you.",
+        relatedTopicIds: ["c-embedded"],
+      },
+      {
+        id: "es-node-num",
+        label: "Number Systems & Bitwise Operations",
+        description: "Binary, hex, two's complement, and the bit-twiddling idioms in every protocol header.",
+        relatedTopicIds: ["number-systems"],
+      },
+      {
+        id: "es-node-logic",
+        label: "Digital Logic & Computer Architecture",
+        description: "Gates, registers, and the ALU -- what's actually underneath the C code.",
+        relatedTopicIds: ["digital-logic"],
+      },
+      {
+        id: "es-node-asm",
+        label: "Assembly & the Fetch-Execute Cycle",
+        description: "What one instruction actually does, and why a function call needs a stack frame.",
+        relatedTopicIds: ["assembly-fetch-execute"],
+      },
+      {
+        id: "es-node-mem",
+        label: "Memory Management in Constrained Systems",
+        description: "Stack vs. heap, memory-mapped I/O, and the bug classes interviewers probe for.",
+        relatedTopicIds: ["embedded-memory"],
+      },
+      {
+        id: "es-node-conc",
+        label: "Processes, Threads & Concurrency",
+        description: "Thread safety, races, and the primitives that stop two things touching memory at once.",
+        relatedTopicIds: ["embedded-concurrency"],
+      },
+      {
+        id: "es-node-linux",
+        label: "Linux Fundamentals for Embedded Systems",
+        description: "Why appliance-style devices run embedded Linux, and the kernel basics worth knowing.",
+        relatedTopicIds: ["embedded-linux"],
+      },
+      {
+        id: "es-node-debug",
+        label: "Debugging Embedded & Systems Code",
+        description: "Reading a crash, recognising bug shapes, and debugging without a search engine.",
+        relatedTopicIds: ["embedded-debugging"],
+      },
+      {
+        id: "es-node-sock",
+        label: "Sockets & Network Programming in C",
+        description: "TCP vs. UDP, the sockets API, and what DNS and ARP do underneath a connection.",
+        relatedTopicIds: ["embedded-sockets"],
+      },
+      {
+        id: "es-node-netsec",
+        label: "Network Security Fundamentals",
+        description: "Firewalls and vulnerability classes, framed around what a security-appliance company builds.",
+        relatedTopicIds: ["embedded-netsec"],
+      },
+    ],
+  },
 ];
 
 export const STACK_EDGES: StackEdgeDef[] = [
@@ -780,6 +853,7 @@ export const STACK_EDGES: StackEdgeDef[] = [
   { id: "e-services-algorithms", source: "services", target: "algorithms", label: "informs" },
   { id: "e-delivery-workplace", source: "delivery", target: "workplace", label: "practice" },
   { id: "e-workplace-communication", source: "workplace", target: "communication", label: "review" },
+  { id: "e-services-embedded", source: "services", target: "embedded-systems-node", label: "underlies" },
 ];
 
 /** A generous bounding box around every top-level node, used to drive
